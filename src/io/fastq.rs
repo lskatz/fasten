@@ -1,9 +1,31 @@
 use std::io;
 use std::io::prelude::*;
+use std::fs::File;
+use std::io::BufReader;
 use io::seq::Seq;
 use io::seq::Cleanable;
 
 use regex::Regex;
+
+#[test]
+/// Test whether we can read the test data carefully.
+fn test_the_careful_reader () {
+    let my_file = File::open("testdata/four_reads.fastq").expect("Could not open file");
+    let my_buffer=BufReader::new(my_file);
+    let mut fastq_reader=Reader::new(my_buffer);
+    let seq_obj = fastq_reader.read_carefully().expect("Could not read four_reads.fastq");
+    assert_eq!(seq_obj.seq.trim(), "AAAGTGCTCTTAACTTGTCCCGCTCCACATCAGCGCGACATCAATCGACATTAAACCGAGTATCTTGTCAGCCTGGGGTGACGATGCGTCCCATTAAAGT");
+}
+
+#[test]
+/// Test whether we can read the test data quickly.
+fn test_the_fast_reader () {
+    let my_file = File::open("testdata/four_reads.fastq").expect("Could not open file");
+    let my_buffer=BufReader::new(my_file);
+    let mut fastq_reader=Reader::new(my_buffer);
+    let seq_obj = fastq_reader.read_quickly().expect("Could not read four_reads.fastq");
+    assert_eq!(seq_obj.seq.trim(), "AAAGTGCTCTTAACTTGTCCCGCTCCACATCAGCGCGACATCAATCGACATTAAACCGAGTATCTTGTCAGCCTGGGGTGACGATGCGTCCCATTAAAGT");
+}
 
 /// A FastQ reader
 pub struct Reader<R: io::Read> {

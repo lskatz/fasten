@@ -1,5 +1,30 @@
 use std::collections::HashMap;
 
+#[test]
+/// Test whether a cleanable sequence is instantiated
+fn test_new_seq() {
+    let id   = "MY_ID".to_string();
+    let seq  = "AATNGGCC".to_string();
+    let qual = "#ABCDE!!".to_string();
+    let cleanable = Seq::new(&id,&seq,&qual);
+    
+    let formatted = format!("@{}\n{}\n+\n{}", &id, &seq, &qual);
+    assert_eq!(cleanable.to_string(), formatted);
+}
+#[test]
+/// Test whether a cleanable sequence can be cleaned
+fn test_cleanable() {
+    let id   = "MY_ID".to_string();
+    let seq  = "AATNGGCC".to_string();
+    let qual = "#ABCDE!!".to_string();
+    let mut cleanable = Seq::new(&id,&seq,&qual);
+    
+    cleanable.lower_ambiguity_q();
+    cleanable.trim();
+    assert_eq!(cleanable.to_string(), "@MY_ID\nATNGG\n+\nAB!DE".to_string());
+}
+
+
 /// A sequence struct that contains the ID, sequence, and quality cigar line
 pub struct Seq {
   pub id:   String,
