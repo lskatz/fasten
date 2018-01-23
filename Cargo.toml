@@ -1,0 +1,23 @@
+[package]
+name = "ross"
+version = "0.1.0"
+authors = ["Lee Katz <gzu2@cdc.gov>"]
+
+[[bin]]
+name = "friends_carol"
+path = "src/bin/friends_carol.rs"
+
+[[bin]]
+name = "friends_rachel"
+path = "src/bin/friends_rachel.rs"
+
+[[bin]]
+name = "friends_monica"
+path = "src/bin/friends_monica.rs"
+
+[dependencies]
+bio = "0.15"
+regex = "0.2"
+getopts = "0.2"
+statistical = "0.1.1"
+
