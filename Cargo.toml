@@ -20,4 +20,5 @@ bio = "0.15"
 regex = "0.2"
 getopts = "0.2"
 statistical = "0.1.1"
+multiqueue = "0.3.2"
 

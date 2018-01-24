@@ -37,6 +37,10 @@ pub struct Seq {
 pub trait Cleanable{
     /// new sequence object
     fn new (id: &String, seq: &String, qual: &String) -> Seq;
+    /// Make a blank sequence object.
+    fn blank () -> Seq;
+    /// Make a seq object from a String.
+    fn from_String (seq_str: &String) -> Seq;
     /// sanitize an identifier string
     fn sanitize_id(id: &String) -> (String);
     /// lower any low quality base to a zero and "N"
@@ -67,6 +71,32 @@ impl Cleanable for Seq {
             thresholds: thresholds,
         };
     }
+    /// Make a blank sequence object.
+    fn blank () -> Seq{
+        return Seq{
+            id:   String::new(),
+            seq:  String::new(),
+            qual: String::new(),
+            thresholds: HashMap::new(),
+        };
+    }
+    /// Create a sequence object from a string.
+    /// TODO make it more like the careful method than quick.
+    fn from_String (seq_str: &String) -> Seq {
+        let mut lines = seq_str.lines();
+        let id = lines.next().expect("Could not parse ID");
+        let seq = lines.next().expect("Could not parse sequence");
+        lines.next().expect("Could not parse +");
+        let qual = lines.next().expect("Could not parse qual");
+
+        return Seq{
+            id:    id.to_string(),
+            seq:   seq.to_string(),
+            qual:  qual.to_string(),
+            thresholds: HashMap::new(),
+        }
+    }
+
     /// Read an identifier and return a cleaned version,
     /// e.g., removing @ in a fastq identifier.
     fn sanitize_id(id: &String) -> (String) {
@@ -133,8 +163,13 @@ impl Cleanable for Seq {
             }
         }
         
-        self.qual = self.qual[trim5..trim3].to_string();
-        self.seq  = self.seq[trim5..trim3].to_string();
+        if trim5 >= trim3 {
+            self.qual = String::new();
+            self.seq  = String::new();
+        } else {
+            self.qual = self.qual[trim5..trim3].to_string();
+            self.seq  = self.seq[trim5..trim3].to_string();
+        }
     }
 
     /// Reports bool whether the read passes thresholds.
