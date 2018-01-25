@@ -39,6 +39,8 @@ pub trait Cleanable{
     fn new (id: &String, seq: &String, qual: &String) -> Seq;
     /// Make a blank sequence object.
     fn blank () -> Seq;
+    /// Determine if it is a blank sequence.
+    fn is_blank (&self) -> bool;
     /// Make a seq object from a String.
     fn from_String (seq_str: &String) -> Seq;
     /// sanitize an identifier string
@@ -80,6 +82,13 @@ impl Cleanable for Seq {
             thresholds: HashMap::new(),
         };
     }
+    /// Determine if it is a blank sequence.
+    fn is_blank (&self) -> bool {
+        if self.seq.len() == 0 && self.qual.len() == 0 {
+            return true;
+        }
+        return false;
+    }
     /// Create a sequence object from a string.
     /// TODO make it more like the careful method than quick.
     fn from_String (seq_str: &String) -> Seq {
@@ -87,7 +96,11 @@ impl Cleanable for Seq {
         let id = lines.next().expect("Could not parse ID");
         let seq = lines.next().expect("Could not parse sequence");
         lines.next().expect("Could not parse +");
-        let qual = lines.next().expect("Could not parse qual");
+        let qual_opt = lines.next();
+        if qual_opt == None {
+            return Seq::blank();
+        }
+        let qual = qual_opt.expect("Could not read the qual line");
 
         return Seq{
             id:    id.to_string(),

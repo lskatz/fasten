@@ -52,7 +52,16 @@ impl<R: io::Read> Reader<R>{
     let mut qual=  String::new();
 
     // Read the ID of the entry
-    self.reader.read_line(&mut id).expect("ERROR: could not read ID line");
+    match self.reader.read_line(&mut id) {
+        Ok(n) => {
+            if n < 1 {
+                return None;
+            }
+        }
+        Err(error) => {
+            panic!("ERROR: could not read ID line: {}",error);
+        }
+    }
 
     self.reader.read_line(&mut seq).expect("ERROR: could not read sequence line");
     
