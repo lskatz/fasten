@@ -100,6 +100,9 @@ impl Cleanable for Seq {
     /// Read an identifier and return a cleaned version,
     /// e.g., removing @ in a fastq identifier.
     fn sanitize_id(id: &String) -> (String) {
+        if id.len() == 0 {
+            return String::new();
+        }
         let mut id_copy = id.clone();
         if id_copy.chars().nth(0).expect("ID was empty") == '@' {
             id_copy.pop();
@@ -199,7 +202,7 @@ impl Cleanable for Seq {
 
     fn to_string(&self) -> String {
         let mut entry = String::new();
-        if self.id.chars().nth(0).expect("Seq ID was not set") != '@' {
+        if self.id.len() > 0 && self.id.chars().nth(0).expect("Seq ID was not set") != '@' {
             entry.push('@');
         }
         entry.push_str(self.id.trim());
