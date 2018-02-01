@@ -39,6 +39,8 @@ pub trait Cleanable{
     fn new (id: &String, seq: &String, qual: &String) -> Seq;
     /// Make a blank sequence object.
     fn blank () -> Seq;
+    /// Determine if it is a blank sequence.
+    fn is_blank (&self) -> bool;
     /// Make a seq object from a String.
     fn from_String (seq_str: &String) -> Seq;
     /// sanitize an identifier string
@@ -75,6 +77,13 @@ impl Cleanable for Seq {
     fn blank () -> Seq{
         return Seq::new(&String::new(),&String::new(),&String::new());
     }
+    /// Determine if it is a blank sequence.
+    fn is_blank (&self) -> bool {
+        if self.seq.len() == 0 && self.qual.len() == 0 {
+            return true;
+        }
+        return false;
+    }
     /// Create a sequence object from a string.
     /// TODO make it more like the careful method than quick.
     fn from_String (seq_str: &String) -> Seq {
@@ -82,7 +91,11 @@ impl Cleanable for Seq {
         let id = lines.next().expect("Could not parse ID");
         let seq = lines.next().expect("Could not parse sequence");
         lines.next().expect("Could not parse +");
-        let qual = lines.next().expect("Could not parse qual");
+        let qual_opt = lines.next();
+        if qual_opt == None {
+            return Seq::blank();
+        }
+        let qual = qual_opt.expect("Could not read the qual line");
 
         return Seq{
             id:    id.to_string(),
@@ -95,6 +108,9 @@ impl Cleanable for Seq {
     /// Read an identifier and return a cleaned version,
     /// e.g., removing @ in a fastq identifier.
     fn sanitize_id(id: &String) -> (String) {
+        if id.len() == 0 {
+            return String::new();
+        }
         let mut id_copy = id.clone();
         if id_copy.chars().nth(0).expect("ID was empty") == '@' {
             id_copy.pop();
@@ -194,7 +210,7 @@ impl Cleanable for Seq {
 
     fn to_string(&self) -> String {
         let mut entry = String::new();
-        if self.id.chars().nth(0).expect("Seq ID was not set") != '@' {
+        if self.id.len() > 0 && self.id.chars().nth(0).expect("Seq ID was not set") != '@' {
             entry.push('@');
         }
         entry.push_str(self.id.trim());
