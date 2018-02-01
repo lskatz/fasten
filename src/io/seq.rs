@@ -42,7 +42,7 @@ pub trait Cleanable{
     /// Determine if it is a blank sequence.
     fn is_blank (&self) -> bool;
     /// Make a seq object from a String.
-    fn from_String (seq_str: &String) -> Seq;
+    fn from_string (seq_str: &String) -> Seq;
     /// sanitize an identifier string
     fn sanitize_id(id: &String) -> (String);
     /// lower any low quality base to a zero and "N"
@@ -86,7 +86,7 @@ impl Cleanable for Seq {
     }
     /// Create a sequence object from a string.
     /// TODO make it more like the careful method than quick.
-    fn from_String (seq_str: &String) -> Seq {
+    fn from_string (seq_str: &String) -> Seq {
         let mut lines = seq_str.lines();
         let id = lines.next().expect("Could not parse ID");
         let seq = lines.next().expect("Could not parse sequence");
