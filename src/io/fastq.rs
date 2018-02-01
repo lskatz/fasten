@@ -49,7 +49,6 @@ impl<R: io::Read> FastqReader<R>{
   }
 }
 
-<<<<<<< HEAD
 impl<R: Read> Iterator for FastqReader<R> {
     type Item = Seq;
 
@@ -78,32 +77,6 @@ impl<R: Read> Iterator for FastqReader<R> {
                     panic!("ERROR: could not read the ID line: {}",error);
                 }
             };
-=======
-  /// Read a fastq entry but assume that there are only
-  /// four lines per entry (id, seq, plus, qual).
-  pub fn read_quickly(&mut self) -> Option<Seq> {
-    let mut id=    String::new();
-    let mut seq=   String::new();
-    let mut qual=  String::new();
-
-    // Read the ID of the entry
-    match self.reader.read_line(&mut id) {
-        Ok(n) => {
-            if n < 1 {
-                return None;
-            }
-        }
-        Err(error) => {
-            panic!("ERROR: could not read ID line: {}",error);
-        }
-    }
-
-    self.reader.read_line(&mut seq).expect("ERROR: could not read sequence line");
-    
-    // burn the plus sign
-    let mut _plus = String::new();
-    self.reader.read_line(&mut _plus).expect("ERROR: plus sign line not found");
->>>>>>> abaad74675e9d8ae312bceef28194ea4a39a168e
 
             self.reader.read_line(&mut seq).expect("ERROR: could not read sequence line");
         
