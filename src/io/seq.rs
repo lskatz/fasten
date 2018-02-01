@@ -73,12 +73,7 @@ impl Cleanable for Seq {
     }
     /// Make a blank sequence object.
     fn blank () -> Seq{
-        return Seq{
-            id:   String::new(),
-            seq:  String::new(),
-            qual: String::new(),
-            thresholds: HashMap::new(),
-        };
+        return Seq::new(&String::new(),&String::new(),&String::new());
     }
     /// Create a sequence object from a string.
     /// TODO make it more like the careful method than quick.
