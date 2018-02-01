@@ -12,7 +12,7 @@ use ross::io::seq::Cleanable;
 
 fn main(){
     ross::parse_args();
-    let mut numcpus :u64=12;
+    let mut numcpus :u32=12;
     if numcpus < 2 {
         numcpus=2;
     }
@@ -28,7 +28,7 @@ fn main(){
         handles.push(thread::spawn(move || {
             for seq_buffer in cur_rx {
                 for seq_str in seq_buffer {
-                    let mut seq = Seq::from_String(&seq_str);
+                    let mut seq = Seq::from_string(&seq_str);
                     if seq.qual.len() == 0 {
                         eprintln!("Terminating signal!");
                         return;
@@ -51,9 +51,9 @@ fn main(){
     let mut seq_buffer = vec![];
     let my_file = File::open("/dev/stdin").expect("Could not open file");
     let my_buffer=BufReader::new(my_file);
-    let mut fastq_reader=fastq::Reader::new(my_buffer);
+    let fastq_reader=fastq::FastqReader::new(my_buffer);
     let mut i = 0;
-    for seq_obj in fastq_reader.read_quickly() {
+    for seq_obj in fastq_reader {
         if seq_obj.seq.len() == 0 {
             continue;
         }
