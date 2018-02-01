@@ -11,18 +11,18 @@ fn challenge_dataset () {
     // Open the difficult file
     let challenge_file = File::open("testdata/four_reads.gt_16_lines.fastq").expect("Could not open testdata/four_reads.gt_16_lines.fastq");
     let challenge_buffer=BufReader::new(challenge_file);
-    let mut challenge_reader=fastq::Reader::new(challenge_buffer);
+    let challenge_reader=fastq::FastqReader::new_careful(challenge_buffer);
     let mut challenge_string = String::new();
-    while let Some(seq_obj) = challenge_reader.read_carefully() {
+    for seq_obj in challenge_reader {
         challenge_string.push_str(&seq_obj.to_string());
     }
 
     // Open the easy file
     let easy_file  = File::open("testdata/four_reads.fastq").expect("Could not open testdata/four_reads.fastq");
     let easy_buffer= BufReader::new(easy_file);
-    let mut easy_reader=fastq::Reader::new(easy_buffer);
+    let easy_reader=fastq::FastqReader::new(easy_buffer);
     let mut easy_string = String::new();
-    while let Some(seq_obj) = easy_reader.read_carefully() {
+    for seq_obj in easy_reader {
         easy_string.push_str(&seq_obj.to_string());
     }
     
