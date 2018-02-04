@@ -32,7 +32,12 @@ fn challenge_dataset () {
 
 fn main(){
     
-    //ross::parse_args();
+    let opts = vec![
+        vec![
+            //"z", "zebracadabra", "test help message",
+        ],
+    ];
+    ross::parse_args(&opts);
 
     let my_file = File::open("/dev/stdin").expect("Could not open file");
     let my_buffer=BufReader::new(my_file);
