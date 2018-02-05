@@ -4,6 +4,7 @@
 
 extern crate ross;
 extern crate statistical;
+extern crate getopts;
 
 use std::fs::File;
 use std::io::BufReader;
@@ -13,11 +14,36 @@ use ross::io::fastq;
 use std::sync::mpsc;
 use std::thread;
 
+use std::env;
+use getopts::Options;
+
 fn main(){
+    let args: Vec<String> = env::args().collect();
+    let mut opts = Options::new();
+    // ROSS flags.
+    // TODO put these options into ROSS to streamline.
+    opts.optflag("h", "help", "Print this help menu.");
+    opts.optopt("n","numcpus","Number of CPUs (default: 1)","INT");
+    // Options specific to this script
+    opts.optopt("s", "sample", "Only accept a frequency of reads, between 0 and 1 (default: 1)", "FLOAT");
+    let matches = opts.parse(&args[1..]).expect("ERROR: could not parse parameters");
+
+    if matches.opt_present("h") {
+        println!("{}", opts.usage(&opts.short_usage(&args[0])));
+    }
+
+    // defaults
+    let mut numcpus=1;
+    if matches.opt_present("numcpus") {
+        numcpus = matches.opt_str("numcpus")
+            .expect("ERROR: could not read the numcpus argument")
+            .parse()
+            .expect("ERROR: numcpus is not an int");
+    }
+
     let filename = "/dev/stdin";
 
     // receiving threads
-    let numcpus=1;
     let (tx,rx)=mpsc::channel();
 
     // Read the file in a thread.
@@ -26,7 +52,7 @@ fn main(){
 
       let my_file = File::open(&filename).expect("Could not open file");
       let my_buffer=BufReader::new(my_file);
-      let mut fastq_reader=fastq::Reader::new(my_buffer);
+      let mut fastq_reader=fastq::FastqReader::new(my_buffer);
 
       let mut read_length :Vec<f32> = Vec::new();
       let mut avg_qual :Vec<f32> = Vec::new();
@@ -34,7 +60,7 @@ fn main(){
       let mut min_read_length :f32 = std::f32::MAX;
       let mut max_read_length :f32 = 0.0;
 
-      while let Some(seq_obj) = fastq_reader.read_carefully() {
+      for seq_obj in fastq_reader {
         let mut abbr_entry = seq_obj.seq.clone();
         abbr_entry.push_str("\n");
         abbr_entry.push_str(&seq_obj.qual);
