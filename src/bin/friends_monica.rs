@@ -1,3 +1,4 @@
+extern crate getopts;
 extern crate ross;
 extern crate multiqueue;
 
@@ -10,9 +11,31 @@ use ross::io::fastq;
 use ross::io::seq::Seq;
 use ross::io::seq::Cleanable;
 
+use std::env;
+use getopts::Options;
+
 fn main(){
-    ross::parse_args();
-    let mut numcpus :u32=12;
+    let args: Vec<String> = env::args().collect();
+    let mut opts = Options::new();
+    // ROSS flags.
+    // TODO put these options into ROSS to streamline.
+    opts.optflag("h", "help", "Print this help menu.");
+    opts.optopt("n","numcpus","Number of CPUs (default: 1)","INT");
+    // Options specific to this script
+    let matches = opts.parse(&args[1..]).expect("ERROR: could not parse parameters");
+
+    if matches.opt_present("h") {
+        println!("{}", opts.usage(&opts.short_usage(&args[0])));
+    }
+
+    // defaults
+    let mut numcpus :u32=1;
+    if matches.opt_present("numcpus") {
+        numcpus = matches.opt_str("numcpus")
+            .expect("ERROR: could not read the numcpus argument")
+            .parse()
+            .expect("ERROR: numcpus is not an int");
+    }
     if numcpus < 2 {
         numcpus=2;
     }
