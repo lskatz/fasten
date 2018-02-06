@@ -40,7 +40,8 @@ fn main(){
         numcpus=2;
     }
 
-    let (tx, rx) = multiqueue::mpmc_queue(numcpus.pow(4));
+    //let capacity = numcpus.pow(4) as u64;
+    let (tx, rx) = multiqueue::mpmc_queue(10000);
 
     // receiving threads
     let mut handles = vec![];
