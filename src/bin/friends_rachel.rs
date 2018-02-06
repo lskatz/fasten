@@ -32,15 +32,6 @@ fn main(){
         println!("{}", opts.usage(&opts.short_usage(&args[0])));
     }
 
-    // defaults
-    let mut numcpus=1;
-    if matches.opt_present("numcpus") {
-        numcpus = matches.opt_str("numcpus")
-            .expect("ERROR: could not read the numcpus argument")
-            .parse()
-            .expect("ERROR: numcpus is not an int");
-    }
-
     let filename = "/dev/stdin";
 
     // receiving threads

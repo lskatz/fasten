@@ -48,15 +48,6 @@ fn main(){
         println!("{}", opts.usage(&opts.short_usage(&args[0])));
     }
 
-    // defaults
-    let mut numcpus=1;
-    if matches.opt_present("numcpus") {
-        numcpus = matches.opt_str("numcpus")
-            .expect("ERROR: could not read the numcpus argument")
-            .parse()
-            .expect("ERROR: numcpus is not an int");
-    }
-
     let my_file = File::open("/dev/stdin").expect("Could not open file");
     let my_buffer=BufReader::new(my_file);
     let fastq_reader=fastq::FastqReader::new(my_buffer);
