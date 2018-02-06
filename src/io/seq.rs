@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use std::clone::Clone;
 
 #[test]
 /// Test whether a cleanable sequence is instantiated
@@ -225,4 +226,14 @@ impl Cleanable for Seq {
     }
 } 
 
+impl Clone for Seq {
+    fn clone(&self) -> Seq {
+        return Seq{
+            id:   self.id.clone(),
+            seq:  self.seq.clone(),
+            qual: self.qual.clone(),
+            thresholds: self.thresholds.clone(),
+        }
+    }
+}
 
