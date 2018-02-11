@@ -19,10 +19,14 @@ path = "src/bin/friends_monica.rs"
 name = "friends_joey"
 path = "src/bin/friends_joey.rs"
 
+[[bin]]
+name = "friends_phoebe"
+path = "src/bin/friends_phoebe.rs"
+
 [dependencies]
 bio = "0.15"
 regex = "0.2"
 getopts = "0.2"
 statistical = "0.1.1"
 multiqueue = "0.3.2"
-
+rand = "0.4"
