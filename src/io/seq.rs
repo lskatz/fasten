@@ -28,9 +28,10 @@ fn test_cleanable() {
 
 /// A sequence struct that contains the ID, sequence, and quality cigar line
 pub struct Seq {
-  pub id:   String,
-  pub seq:  String,
-  pub qual: String,
+  pub id:     String,
+  pub seq:    String,
+  pub qual:   String,
+  pub pairid: String,
   pub thresholds: HashMap<String,f32>,
 }
 
@@ -68,9 +69,10 @@ impl Cleanable for Seq {
         thresholds.insert("min_trim_qual".to_string(),20.0);
 
         return Seq{
-            id:   id_copy,
-            seq:  seq.clone(),
-            qual: qual.clone(),
+            id:     id_copy,
+            seq:    seq.clone(),
+            qual:   qual.clone(),
+            pairid: String::new(),
             thresholds: thresholds,
         };
     }
@@ -98,10 +100,13 @@ impl Cleanable for Seq {
         }
         let qual = qual_opt.expect("Could not read the qual line");
 
+        // TODO try to guess the pair ID, e.g., replace /1 with /2
+
         return Seq{
-            id:    id.to_string(),
-            seq:   seq.to_string(),
-            qual:  qual.to_string(),
+            id:       id.to_string(),
+            seq:      seq.to_string(),
+            qual:     qual.to_string(),
+            pairid:   String::new(),
             thresholds: HashMap::new(),
         }
     }
@@ -229,9 +234,10 @@ impl Cleanable for Seq {
 impl Clone for Seq {
     fn clone(&self) -> Seq {
         return Seq{
-            id:   self.id.clone(),
-            seq:  self.seq.clone(),
-            qual: self.qual.clone(),
+            id:     self.id.clone(),
+            seq:    self.seq.clone(),
+            qual:   self.qual.clone(),
+            pairid: self.pairid.clone(),
             thresholds: self.thresholds.clone(),
         }
     }
