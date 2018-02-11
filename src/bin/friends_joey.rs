@@ -1,6 +1,7 @@
 extern crate getopts;
 extern crate ross;
 use std::fs::File;
+use std::io::Write;
 use std::io::BufReader;
 
 use ross::io::fastq;
@@ -24,7 +25,7 @@ fn main(){
 
     let matches = opts.parse(&args[1..]).expect("Error: could not parse parameters");
     if matches.opt_present("h") {
-        println!("Interleaves reads from either stdin or file parameters.\n{}", opts.usage(&opts.short_usage(&args[0])));
+        println!("Interleaves reads from either stdin or file parameters. Joey interleaves his friends!\n{}", opts.usage(&opts.short_usage(&args[0])));
         std::process::exit(0);
     }
 
@@ -49,15 +50,25 @@ fn deshuffle(matches: &getopts::Matches) -> () {
         "/dev/stdout".to_string()
     };
 
+    let mut file1 = File::create(r1_filename).expect("ERROR: could not write to file");
+    let mut file2 = File::create(r2_filename).expect("ERROR: could not write to file");
+
     // read stdin
     let my_file = File::open("/dev/stdin").expect("Could not open file");
     let my_buffer=BufReader::new(my_file);
     let fastq_reader=fastq::FastqReader::new(my_buffer);
+    let mut read_counter=0;
     for seq in fastq_reader {
+        
         // print to file 1 and to file 2, alternating each Seq
+        if read_counter % 2 == 0 {
+            write!(file1,"{}\n",seq.to_string()).unwrap();
+        } else {
+            write!(file2,"{}\n",seq.to_string()).unwrap();
+        }
+        read_counter+=1;
     }
 
-    panic!("not implemented");
 }
 
 fn shuffle(matches: &getopts::Matches) -> () {
