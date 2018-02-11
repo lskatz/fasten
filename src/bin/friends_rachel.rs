@@ -30,6 +30,7 @@ fn main(){
 
     if matches.opt_present("h") {
         println!("{}", opts.usage(&opts.short_usage(&args[0])));
+        std::process::exit(0);
     }
 
     let filename = "/dev/stdin";
