@@ -9,6 +9,8 @@ extern crate getopts;
 use std::fs::File;
 use std::io::BufReader;
 use ross::io::fastq;
+use ross::io::seq::Seq;
+use ross::io::seq::Cleanable;
 //use statistical::mean;
 
 use std::sync::mpsc;
@@ -53,9 +55,8 @@ fn main(){
       let mut max_read_length :f32 = 0.0;
 
       for seq_obj in fastq_reader {
-        let mut abbr_entry = seq_obj.seq.clone();
+        let mut abbr_entry = seq_obj.to_string();
         abbr_entry.push_str("\n");
-        abbr_entry.push_str(&seq_obj.qual);
         tx.send(abbr_entry).expect("Could not send a String");
         num_reads+=1;
       }
@@ -65,54 +66,28 @@ fn main(){
 
     // Analyze the fastq entries in a thread.
     let analysis_handle = thread::spawn(move || {
-      let mut num_entries=0;
-      for abbr_entry in rx{
-        num_entries+=1;
-      }
-      return num_entries;
+        let mut num_entries=0;
+        let mut total_length=0;
+        let mut total_qual=0;
+        for abbr_entry in rx{
+            let seq = Seq::from_string(&abbr_entry);
+            num_entries+=1;
+            total_length+=seq.seq.len();
+            for qual_char in seq.qual.chars() {
+                let qual_int = qual_char as u8 -33;
+                total_qual = total_qual.clone() + qual_int.clone();
+            }
+            println!("{}/{} => {} avg", total_qual, total_length, total_qual as f32/total_length as f32); 
+            //std::process::exit(0);
+        }
+        println!("Avg length: {}, avg qual: {}", 
+                 total_length as f32/num_entries as f32,
+                 total_qual as f32/total_length as f32,
+                );
+        return num_entries;
     });
 
-    let num_reads=reader_handle.join();
+    let num_reads=reader_handle.join().expect("ERROR: could not read number of reads from analysis handle");
     analysis_handle.join();
 }
-
-        /*
-        // length of read
-        let len = seq_obj.seq.len() as f32;
-        read_length.push(len);
-        num_bases += len;
-
-        if len > max_read_length {
-          max_read_length = len;
-        }
-        if len < min_read_length {
-          min_read_length = len;
-        }
-
-        // quality
-        let qual :Vec<f32> = seq_obj.qual.chars()
-                                  .map(|x| {x as u8 as f32-33.0})
-                                  .collect();
-        avg_qual.push(mean(&qual));
-        for received in rx {
-        println!("{}", received);
-      }
-    return;
-
-    
-    println!("{}",vec![
-        "read_length", "num_bases",
-        "min_read_length", "max_read_length",
-        "avg_quality", "num_reads", "PE?",
-        "coverage",
-    ].join("\t"));
-    println!("{}",vec![
-        mean(&read_length).to_string(),
-        num_bases.to_string(),
-        min_read_length.to_string(), max_read_length.to_string(),
-        mean(&avg_qual).to_string(), num_reads.to_string(), 
-        "0".to_string(),
-    ].join("\t"));
-
-     */
 
