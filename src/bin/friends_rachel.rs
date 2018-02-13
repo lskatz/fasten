@@ -1,7 +1,3 @@
-#![allow(unused_must_use)]
-#![allow(unused_mut)]
-#![allow(unused_variables)]
-
 extern crate ross;
 extern crate statistical;
 extern crate getopts;
@@ -37,22 +33,25 @@ fn main(){
 
     let filename = "/dev/stdin";
 
+    let mut numcpus :u8 = 1; // default: 1
+    if matches.opt_present("numcpus") {
+        numcpus = str::parse::<u8>( 
+            &matches.opt_str("numcpus")
+            .expect("ERROR: numcpus was not supplied")
+            ).expect("ERROR: could not convert numcpus to u8 type");
+    }
+
     // receiving threads
     let (tx,rx)=mpsc::channel();
 
     // Read the file in a thread.
+    //let mut reader_handle=Vec::new();
     let reader_handle = thread::spawn(move || {
       let mut num_reads=0;
 
       let my_file = File::open(&filename).expect("Could not open file");
       let my_buffer=BufReader::new(my_file);
-      let mut fastq_reader=fastq::FastqReader::new(my_buffer);
-
-      let mut read_length :Vec<f32> = Vec::new();
-      let mut avg_qual :Vec<f32> = Vec::new();
-      let mut num_bases :f32 = 0.0;
-      let mut min_read_length :f32 = std::f32::MAX;
-      let mut max_read_length :f32 = 0.0;
+      let fastq_reader=fastq::FastqReader::new(my_buffer);
 
       for seq_obj in fastq_reader {
         let mut abbr_entry = seq_obj.to_string();
@@ -65,6 +64,7 @@ fn main(){
     });
 
     // Analyze the fastq entries in a thread.
+    println!("{}",vec!["avgReadLength","avgQual"].join("\t"));
     let analysis_handle = thread::spawn(move || {
         let mut num_entries=0;
         let mut total_length=0;
@@ -77,16 +77,18 @@ fn main(){
                 let qual_int = qual_char as usize -33;
                 total_qual = total_qual + qual_int;
             }
-            //std::process::exit(0);
         }
-        println!("Avg length: {}, avg qual: {}", 
-                 total_length as f32/num_entries as f32,
-                 total_qual as f32/total_length as f32,
-                );
+        println!("{}", vec![
+                 (total_length as f32/num_entries as f32).to_string(),
+                 (total_qual as f32/total_length as f32).to_string(),
+        ].join("\t"));
+
         return num_entries;
     });
 
-    let num_reads=reader_handle.join().expect("ERROR: could not read number of reads from analysis handle");
-    analysis_handle.join();
+    reader_handle.join()
+        .expect("ERROR: could not join the reader handle");
+    analysis_handle.join()
+        .expect("ERROR: could not join the analysis handle");
 }
 
