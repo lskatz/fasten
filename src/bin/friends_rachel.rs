@@ -33,6 +33,8 @@ fn main(){
 
     let filename = "/dev/stdin";
 
+    // TODO add in numcpus functionality
+    /*
     let mut numcpus :u8 = 1; // default: 1
     if matches.opt_present("numcpus") {
         numcpus = str::parse::<u8>( 
@@ -40,6 +42,7 @@ fn main(){
             .expect("ERROR: numcpus was not supplied")
             ).expect("ERROR: could not convert numcpus to u8 type");
     }
+    */
 
     // receiving threads
     let (tx,rx)=mpsc::channel();
@@ -64,7 +67,7 @@ fn main(){
     });
 
     // Analyze the fastq entries in a thread.
-    println!("{}",vec!["avgReadLength","avgQual"].join("\t"));
+    println!("{}",vec!["totalLength", "numReads", "avgReadLength","avgQual"].join("\t"));
     let analysis_handle = thread::spawn(move || {
         let mut num_entries=0;
         let mut total_length=0;
@@ -74,11 +77,12 @@ fn main(){
             num_entries+=1;
             total_length+=seq.seq.len();
             for qual_char in seq.qual.chars() {
-                let qual_int = qual_char as usize -33;
-                total_qual = total_qual + qual_int;
+                total_qual = total_qual + qual_char as usize -33;
             }
         }
         println!("{}", vec![
+                 total_length.to_string(),
+                 num_entries.to_string(),
                  (total_length as f32/num_entries as f32).to_string(),
                  (total_qual as f32/total_length as f32).to_string(),
         ].join("\t"));
