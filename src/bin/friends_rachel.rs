@@ -74,10 +74,9 @@ fn main(){
             num_entries+=1;
             total_length+=seq.seq.len();
             for qual_char in seq.qual.chars() {
-                let qual_int = qual_char as u8 -33;
-                total_qual = total_qual.clone() + qual_int.clone();
+                let qual_int = qual_char as usize -33;
+                total_qual = total_qual + qual_int;
             }
-            println!("{}/{} => {} avg", total_qual, total_length, total_qual as f32/total_length as f32); 
             //std::process::exit(0);
         }
         println!("Avg length: {}, avg qual: {}", 
