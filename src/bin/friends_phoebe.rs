@@ -4,7 +4,9 @@ extern crate rand;
 use std::fs::File;
 use std::io::BufReader;
 use std::env;
+use std::collections::HashMap;
 use getopts::Options;
+
 use rand::{Rng,thread_rng};
 
 use ross::io::fastq;
@@ -31,36 +33,48 @@ fn main(){
         std::process::exit(0);
     }
 
-    if args.len() > 0 {
-        print_reads_from_files(&Vec::from(&args[1..]));
-    } else {
-        print_random_reads();
-    }
+    let is_pe = matches.opt_present("paired-end");
+    println!("{}",is_pe);
+
+    print_reads_from_stdin(is_pe);
 }
 
-fn print_reads_from_files(file: &Vec<String>) -> () {
-    // collect all reads from all files
-    let mut seqs :Vec<Seq> = vec![];
-    for filename in file.iter() {
-        let my_file = File::open(&filename).expect("Could not open file");
-        let my_buffer=BufReader::new(my_file);
-        let fastq_reader=fastq::FastqReader::new(my_buffer);
-        for seq in fastq_reader {
-            // TODO add 'pair' trait to seq struct,
-            // so that we can have PE reads easily.
-            seqs.push(seq);
+fn print_reads_from_stdin(is_pe: bool) -> () {
+    // Start off with a capacity of 10k reads.
+    let mut seqs :Vec<Seq> = Vec::with_capacity(10000);
+    let mut seqs_pe :HashMap<String,Seq> = HashMap::with_capacity(10000);
+    let my_file = File::open("/dev/stdin").expect("Could not open stdin");
+    let my_buffer=BufReader::new(my_file);
+    let mut fastq_reader=fastq::FastqReader::new(my_buffer);
+    while let Some(mut seq) = fastq_reader.next() {
+        if is_pe {
+            let mut seq2 = fastq_reader.next().expect("ERROR: could not read the entry pair");
+            seq2.pairid=seq.id.clone();
+            seq.pairid=seq2.id.clone();
+
+            seqs_pe.insert(seq2.id.clone(), seq2);
         }
+        seqs.push(seq);
     }
+
+    /*
+    for (id,seq) in seqs_pe.iter() {
+        println!("{} => {}\n", id, seq.pairid);
+    }
+    return;
+    */
 
     // choose random reads
     let mut rng = thread_rng();
     rng.shuffle(&mut seqs);
     for seq in seqs {
         seq.print();
+        if is_pe {
+            seqs_pe.entry(seq.pairid.trim().to_string())
+                .or_insert(Seq::blank())
+                .print();
+        }
     }
 }
 
-fn print_random_reads() -> () {
-
-}
 
