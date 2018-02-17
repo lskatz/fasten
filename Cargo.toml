@@ -23,6 +23,10 @@ path = "src/bin/friends_joey.rs"
 name = "friends_phoebe"
 path = "src/bin/friends_phoebe.rs"
 
+[[bin]]
+name = "friends_gunther"
+path = "src/bin/friends_gunther.rs"
+
 [dependencies]
 bio = "0.15"
 regex = "0.2"
