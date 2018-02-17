@@ -17,6 +17,8 @@ fn main(){
     opts.optflag("h", "help", "Print this help menu.");
     opts.optopt("n","numcpus","Number of CPUs (default: 1)","INT");
     // Options specific to this script
+    opts.optopt("","min-length","Minimum read length allowed","INT");
+    opts.optopt("","min-quality","Minimum quality allowed","FLOAT");
     opts.optflag("","paired-end","The reads are interleaved paired-end");
     opts.optflag("","print","Print the reads as they are being validated (useful for unix pipes)");
     opts.optflag("v","verbose","");
@@ -38,6 +40,27 @@ fn main(){
             8
         }
     };
+    let min_length :usize={
+        if matches.opt_present("min-length") {
+            matches.opt_str("min-length")
+                .expect("ERROR parsing min-length")
+                .parse()
+                .expect("ERROR parsing min-length as INT")
+        } else {
+            0
+        }
+    };
+    let min_qual :f32={
+        if matches.opt_present("min-quality") {
+            matches.opt_str("min-quality")
+                .expect("ERROR parsing min-quality")
+                .parse()
+                .expect("ERROR parsing min-quality as FLOAT")
+        } else {
+            0.0
+        }
+    };
+
 
     // save this option to avoid the overhead of calling
     // opt_present many times in a loop
@@ -47,7 +70,7 @@ fn main(){
     // In other words, we are looking for a pattern that
     // is NOT the target seq or qual
     let seq_regex = Regex::new(r"[^a-zA-Z]").expect("malformed seq regex");
-    let qual_regex= Regex::new(r"[^!-I]").expect("malformed qual regex");
+    let qual_regex= Regex::new(r"[^!-Z]").expect("malformed qual regex");
 
     // TODO have a print buffer, something like 4096 bytes
 
@@ -70,6 +93,9 @@ fn main(){
                 if seq_regex.is_match(&line) {
                     panic!("ERROR: there are characters that are not in the alphabet in line {}. Contents are:\n  {}",i,line);
                 }
+                if min_length > 0 && line.len() > min_length {
+                    panic!("ERROR: sequence at line {} is less than the minimum sequence length",i);
+                }
             }
             2=>{
                 if line.chars().nth(0).unwrap() != '+' {
@@ -80,6 +106,17 @@ fn main(){
                 in_middle_of_entry=false;
                 if qual_regex.is_match(&line) {
                     panic!("ERROR: there are characters that are not qual characters in line {}. Contents are:\n  {}",i,line);
+                }
+                // only calculate read quality if we are testing for it
+                if min_qual > 0.0 {
+                    let mut qual_total :usize = 0;
+                    for q in line.chars() {
+                        qual_total += q as usize;
+                    }
+                    let avg_qual :f32 = qual_total as f32 / line.len() as f32 - 33.0;
+                    if avg_qual < min_qual {
+                        panic!("ERROR: quality is less than min qual in line {}.\n  Avg qual is {}.\n  Min qual is {}\n  Contents are:\n  {}",i,avg_qual,min_qual,line);
+                    }
                 }
             }
             _=>{
