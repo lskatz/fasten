@@ -22,14 +22,18 @@ fn main(){
     // TODO put these options into ROSS to streamline.
     opts.optflag("h", "help", "Print this help menu.");
     opts.optopt("n","numcpus","Number of CPUs (default: 1)","INT");
-    // Options specific to this script
-    opts.optopt("s", "sample", "Only accept a frequency of reads, between 0 and 1 (default: 1)", "FLOAT");
+
+    // script-specific options
+    opts.optflag("","each-read","Print the metrics for each read. This creates very large output");
+
     let matches = opts.parse(&args[1..]).expect("ERROR: could not parse parameters");
 
     if matches.opt_present("h") {
         println!("{}", opts.usage(&opts.short_usage(&args[0])));
         std::process::exit(0);
     }
+
+    let each_read :bool=matches.opt_present("each-read");
 
     let filename = "/dev/stdin";
 
@@ -66,8 +70,14 @@ fn main(){
       return num_reads;
     });
 
+    // Header
+    if each_read {
+        println!("readLength\tavgQual");
+    } else {
+        println!("{}",vec!["totalLength", "numReads", "avgReadLength","avgQual"].join("\t"));
+    }
+
     // Analyze the fastq entries in a thread.
-    println!("{}",vec!["totalLength", "numReads", "avgReadLength","avgQual"].join("\t"));
     let analysis_handle = thread::spawn(move || {
         let mut num_entries=0;
         let mut total_length=0;
@@ -76,16 +86,30 @@ fn main(){
             let seq = Seq::from_string(&abbr_entry);
             num_entries+=1;
             total_length+=seq.seq.len();
+            let mut read_qual=0;
             for qual_char in seq.qual.chars() {
-                total_qual = total_qual + qual_char as usize -33;
+                read_qual += qual_char as usize -33;
+            }
+            total_qual += read_qual;
+
+            if each_read {
+                let my_read_length=seq.seq.len();
+                println!("{}",vec![
+                         my_read_length.to_string(),
+                         (read_qual as f32/my_read_length as f32).to_string(),
+                ].join("\t")
+                );
             }
         }
-        println!("{}", vec![
-                 total_length.to_string(),
-                 num_entries.to_string(),
-                 (total_length as f32/num_entries as f32).to_string(),
-                 (total_qual as f32/total_length as f32).to_string(),
-        ].join("\t"));
+
+        if !each_read {
+            println!("{}", vec![
+                     total_length.to_string(),
+                     num_entries.to_string(),
+                     (total_length as f32/num_entries as f32).to_string(),
+                     (total_qual as f32/total_length as f32).to_string(),
+            ].join("\t"));
+        }
 
         return num_entries;
     });
