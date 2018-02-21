@@ -35,9 +35,9 @@ fn main(){
     let mut in_middle_of_entry=false;
     let lines_per_read={
         if matches.opt_present("paired-end") {
-            4
-        }else{
             8
+        }else{
+            4
         }
     };
     let min_length :usize={
