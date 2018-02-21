@@ -24,6 +24,10 @@ name = "friends_phoebe"
 path = "src/bin/friends_phoebe.rs"
 
 [[bin]]
+name = "friends_ursula"
+path = "src/bin/friends_ursula.rs"
+
+[[bin]]
 name = "friends_gunther"
 path = "src/bin/friends_gunther.rs"
 
