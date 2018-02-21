@@ -4,9 +4,7 @@ extern crate rand;
 
 use std::fs::File;
 use std::io::BufReader;
-use ross::io::fastq;
-use ross::io::seq::Cleanable;
-//use statistical::mean;
+use std::io::BufRead;
 
 use std::env;
 use getopts::Options;
@@ -42,14 +40,34 @@ fn main(){
         }
     };
 
+    let lines_per_read={
+        if matches.opt_present("paired-end") {
+            8
+        }else{
+            4
+        }
+    };
+
     let mut rng = thread_rng();
 
     let my_file = File::open("/dev/stdin").expect("Could not open file");
     let my_buffer=BufReader::new(my_file);
-    let fastq_reader=fastq::FastqReader::new(my_buffer);
-    for seq in fastq_reader {
-        if rng.gen_range(0.0,1.0) < frequency {
-            seq.print();
+    let mut line_counter =0;
+    let mut entry = String::new();
+    for line in my_buffer.lines() {
+        // unwrap the line here and shadow-set the variable.
+        let line=line.expect("ERROR: did not get a line");
+        line_counter+=1;
+        entry.push_str(&line);
+
+        // Action if we have a full entry when mod 0
+        if line_counter % lines_per_read == 0 {
+            // Should we print?
+            if rng.gen_range(0.0,1.0) < frequency {
+                println!("{}",entry);
+            }
+            // reset the entry string
+            entry = String::new();
         }
     }
 }
