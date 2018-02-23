@@ -21,6 +21,7 @@ fn main(){
     opts.optopt("n","numcpus","Number of CPUs (default: 1)","INT");
 
     opts.optopt("f","frequency","Frequency of sequences to print, 0 to 1. Default: 1","FLOAT");
+    opts.optflag("p", "paired-end", "Reads are interleaved");
 
     let matches = opts.parse(&args[1..]).expect("ERROR: could not parse parameters");
 
@@ -59,12 +60,13 @@ fn main(){
         let line=line.expect("ERROR: did not get a line");
         line_counter+=1;
         entry.push_str(&line);
+        entry.push_str("\n");
 
         // Action if we have a full entry when mod 0
         if line_counter % lines_per_read == 0 {
             // Should we print?
             if rng.gen_range(0.0,1.0) < frequency {
-                println!("{}",entry);
+                print!("{}",entry);
             }
             // reset the entry string
             entry = String::new();
