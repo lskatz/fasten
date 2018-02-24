@@ -128,7 +128,7 @@ impl Cleanable for Seq {
     /// Alter any ambiguity site with a quality=0
     fn lower_ambiguity_q(&mut self){
         let zero_score:char  = 33 as char;
-        let low_score :char  = (33 + 20) as u8 as char;
+        let low_score :char  = (33 + 0) as u8 as char;
 
         let mut low_qual_idx = vec![false; self.seq.len()];
         // First find the indices b/c it is so slow to
@@ -157,7 +157,8 @@ impl Cleanable for Seq {
 
     /// Trim the ends of reads with low quality
     fn trim(&mut self) {
-        let min_qual = 20;
+        let min_qual = *self.thresholds.entry("min_trim_qual".to_string())
+            .or_insert(0.0) as u8;
 
         let mut trim5=0;
         let mut trim3=&self.qual.len()-0;
@@ -173,7 +174,7 @@ impl Cleanable for Seq {
 
         // 3'
         for qual in self.qual.chars().rev() {
-            if qual as u8 - 33 < min_qual {
+            if qual as u8  - 33 < min_qual {
                 trim3-=1;
             } else {
                 break;
