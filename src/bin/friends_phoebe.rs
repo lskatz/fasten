@@ -23,13 +23,13 @@ fn main(){
     
     //script-specific flags
     opts.optopt("r","readlength","Read length (default: 150)","INT");
-    opts.optopt("n","numbases","Maximum number of nucleotides (default: 0, unlimited)","INT");
-    opts.optopt("n","numreads","Maximum number of reads (default: 0, unlimited)","INT");
+    //opts.optopt("n","numbases","Maximum number of nucleotides (default: 0, unlimited)","INT");
+    //opts.optopt("n","numreads","Maximum number of reads (default: 0, unlimited)","INT");
     opts.optflag("p","paired-end","Paired end reads");
 
     let matches = opts.parse(&args[1..]).expect("Error: could not parse parameters");
-    if matches.opt_present("h") {
-        println!("Create random reads, or choose random reads from an input file. Phoebe is totally random!\n{}", opts.usage(&opts.short_usage(&args[0])));
+    if matches.opt_present("help") {
+        println!("Create random reads from stdin. Phoebe is totally random!\n{}", opts.usage(&opts.short_usage(&args[0])));
         std::process::exit(0);
     }
 
@@ -56,13 +56,6 @@ fn print_reads_from_stdin(is_pe: bool) -> () {
         }
         seqs.push(seq);
     }
-
-    /*
-    for (id,seq) in seqs_pe.iter() {
-        println!("{} => {}\n", id, seq.pairid);
-    }
-    return;
-    */
 
     // choose random reads
     let mut rng = thread_rng();
