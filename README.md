@@ -13,7 +13,7 @@ All executables will be in the directory `ROSS.rs/target/release`.
 
 ## General usage
 
-All scripts accept the parameters
+All scripts accept the parameters, read uncompressed fastq format, and print uncompressed fastq format to stdout.
 
 * `--help`
 * `--numcpus` Not all scripts will take advantage of numcpus.
