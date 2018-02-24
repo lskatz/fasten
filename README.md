@@ -37,3 +37,5 @@ All scripts accept the parameters, read uncompressed fastq format, and print unc
 |`friends_barry`   | Joins overlapping paired ends together | ![Barry](/images/barry.png) |
 |`friends_gunther` | Validates your reads ... and *you* | ![Gunther](/images/gunther.png) |
 
+[![Build Status](https://travis-ci.org/lskatz/ROSS.rs.svg?branch=master)](https://travis-ci.org/lskatz/ROSS.rs)
+
