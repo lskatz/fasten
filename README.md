@@ -2,6 +2,15 @@
 
 Perform random operations on fastq files, using unix streaming.  This is an implementation of the ROSS project but in the Rust language.
 
+## Installation
+
+After downloading, use the Rust executable `cargo` like so:
+
+    cd ROSS.rs
+    cargo build --release
+
+All executables will be in the directory `ROSS.rs/target/release`.
+
 ## General usage
 
 All scripts accept the parameters
