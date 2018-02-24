@@ -35,5 +35,5 @@ All scripts accept the parameters
 |`friends_ursula`  | Removes duplicate reads and/or downsamples reads| ![Ursula](/images/ursula.png) | 
 |`friends_joey`    | Shuffles or deshuffles paired end reads| ![Joey](/images/joey.png) |
 |`friends_barry`   | Joins overlapping paired ends together | ![Barry](/images/barry.png) |
-|`friends_gunther` | Validates your reads ... and *you* | ! [Gunther](/images/gunther.png) |
+|`friends_gunther` | Validates your reads ... and *you* | ![Gunther](/images/gunther.png) |
 
