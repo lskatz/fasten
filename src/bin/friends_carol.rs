@@ -41,16 +41,15 @@ fn main(){
     // TODO put these options into ROSS to streamline.
     opts.optflag("h", "help", "Print this help menu.");
     opts.optopt("n","numcpus","Number of CPUs (default: 1)","INT");
-    // Options specific to this script
-    opts.optopt("s", "sample", "Only accept a frequency of reads, between 0 and 1 (default: 1)", "FLOAT");
     let matches = opts.parse(&args[1..]).expect("ERROR: could not parse parameters");
     if matches.opt_present("h") {
-        println!("{}", opts.usage(&opts.short_usage(&args[0])));
+        println!("Convert a fastq file to a standard 4-lines-per-entry format\n{}", opts.usage(&opts.short_usage(&args[0])));
+        std::process::exit(0);
     }
 
     let my_file = File::open("/dev/stdin").expect("Could not open file");
     let my_buffer=BufReader::new(my_file);
-    let fastq_reader=fastq::FastqReader::new(my_buffer);
+    let fastq_reader=fastq::FastqReader::new_careful(my_buffer);
     for seq in fastq_reader {
         seq.print();
     }
