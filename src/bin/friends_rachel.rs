@@ -4,13 +4,7 @@ extern crate getopts;
 
 use std::fs::File;
 use std::io::BufReader;
-use ross::io::fastq;
-use ross::io::seq::Seq;
-use ross::io::seq::Cleanable;
-//use statistical::mean;
-
-use std::sync::mpsc;
-use std::thread;
+use std::io::BufRead;
 
 use std::env;
 use getopts::Options;
@@ -44,87 +38,93 @@ fn main(){
     };
 
     let filename = "/dev/stdin";
-
-    // TODO add in numcpus functionality
-    /*
-    let mut numcpus :u8 = 1; // default: 1
-    if matches.opt_present("numcpus") {
-        numcpus = str::parse::<u8>( 
-            &matches.opt_str("numcpus")
-            .expect("ERROR: numcpus was not supplied")
-            ).expect("ERROR: could not convert numcpus to u8 type");
-    }
-    */
-
-    // receiving threads
-    let (tx,rx)=mpsc::channel();
-
-    // Read the file in a thread.
-    //let mut reader_handle=Vec::new();
-    let reader_handle = thread::spawn(move || {
-      let mut num_reads=0;
-
-      let my_file = File::open(&filename).expect("Could not open file");
-      let my_buffer=BufReader::new(my_file);
-      let fastq_reader=fastq::FastqReader::new(my_buffer);
-
-      for seq_obj in fastq_reader {
-        let mut abbr_entry = seq_obj.to_string();
-        abbr_entry.push_str("\n");
-        tx.send(abbr_entry).expect("Could not send a String");
-        num_reads+=1;
-      }
-
-      return num_reads;
-    });
-
+    
     // Header
     if each_read {
         println!("readLength\tavgQual");
     } else {
         println!("{}",vec!["totalLength", "numReads", "avgReadLength","avgQual"].join("\t"));
+
+    }
+    
+    let mut read_length :Vec<u32> = vec![];
+    let mut read_qual   :Vec<u32> = vec![];
+    let mut num_lines   :u32   =0;
+
+    // read the file
+    let my_file = File::open(&filename).expect("Could not open file");
+    let my_buffer=BufReader::new(my_file);
+    for line in my_buffer.lines() {
+        num_lines+=1;
+
+        match num_lines % 4 {
+            2 => {
+                let my_read_length=line.expect("Expected a sequence line").len() as u32;
+                if each_read {
+                    print!("{}\t",my_read_length);
+                }
+                read_length.push(my_read_length);
+            }
+            0 => {
+                let mut my_read_qual :u32=0;
+                let qual_line=line.expect("Expected a qual line");
+                for qual_char in qual_line.chars() {
+                    my_read_qual += qual_char as u8 as u32 - 33;
+                }
+                if each_read {
+                    println!("{}",my_read_qual as f32/qual_line.len() as f32);
+                }
+                read_qual.push(my_read_qual);
+            }
+            _ => {
+
+            }
+        };
+    }
+    let num_reads :u32 = num_lines / 4;
+    let total_length = read_length.iter().fold(0,|a,&b| a+b);
+    let total_qual   = read_qual.iter().fold(0,|a,&b| a+b);
+
+    let mut summary_metrics=vec![total_length.to_string(),num_reads.to_string()];
+
+    // add statistics if requested
+    let mut total_length_str = (total_length as f32/num_reads as f32).to_string();
+    let mut total_qual_str   = (total_qual as f32/total_length as f32).to_string();
+    if distribution == "normal" {
+        total_length_str.push_str("±");
+        total_length_str.push_str(&standard_deviation(&read_length).to_string());
+        total_qual_str.push_str("±");
+        total_length_str.push_str(&standard_deviation(&read_qual).to_string());
+
+        summary_metrics.push(total_length_str);
+        summary_metrics.push(total_qual_str);
+    } else if distribution == "nonparametric" {
+
+    } else if distribution == "" {
+        summary_metrics.push(total_length_str);
+        summary_metrics.push(total_qual_str);
+    } else {
+        panic!("I did not understand --distribution {}",distribution);
     }
 
-    // Analyze the fastq entries in a thread.
-    let analysis_handle = thread::spawn(move || {
-        let mut num_entries=0;
-        let mut total_length=0;
-        let mut total_qual=0;
-        for abbr_entry in rx{
-            let seq = Seq::from_string(&abbr_entry);
-            num_entries+=1;
-            total_length+=seq.seq.len();
-            let mut read_qual=0;
-            for qual_char in seq.qual.chars() {
-                read_qual += qual_char as usize -33;
-            }
-            total_qual += read_qual;
+    // summary metrics
+    if !each_read {
+        println!("{}", summary_metrics.join("\t"));
+    }
 
-            if each_read {
-                let my_read_length=seq.seq.len();
-                println!("{}",vec![
-                         my_read_length.to_string(),
-                         (read_qual as f32/my_read_length as f32).to_string(),
-                ].join("\t")
-                );
-            }
-        }
-
-        if !each_read {
-            println!("{}", vec![
-                     total_length.to_string(),
-                     num_entries.to_string(),
-                     (total_length as f32/num_entries as f32).to_string(),
-                     (total_qual as f32/total_length as f32).to_string(),
-            ].join("\t"));
-        }
-
-        return num_entries;
-    });
-
-    reader_handle.join()
-        .expect("ERROR: could not join the reader handle");
-    analysis_handle.join()
-        .expect("ERROR: could not join the analysis handle");
 }
 
+fn standard_deviation(vec :&Vec<u32>) -> f32{
+
+    let avg :f32 = vec.iter().fold(0,|a,&b| a+b) as f32 / vec.len() as f32;
+
+    let mut square_diffs = vec![];
+    for int in vec {
+        square_diffs.push(*int as f32 - avg);
+    }
+
+    let avg_square_diff = square_diffs.iter().fold(0.0,|a,&b| a+b) / (square_diffs.len() - 1) as f32;
+    
+    return avg_square_diff.sqrt();
+
+}
