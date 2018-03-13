@@ -84,7 +84,6 @@ fn main(){
     }
     let num_reads :u32 = num_lines / 4;
     let total_length = read_length.iter().fold(0.0,|a,&b| a+b);
-    let total_qual   = read_qual.iter().fold(0.0,|a,&b| a+b);
 
     let mut summary_metrics=vec![total_length.to_string(),num_reads.to_string()];
 
