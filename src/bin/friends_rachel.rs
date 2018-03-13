@@ -5,6 +5,7 @@ extern crate getopts;
 use std::fs::File;
 use std::io::BufReader;
 use std::io::BufRead;
+use std::f32;
 
 use std::env;
 use getopts::Options;
@@ -47,8 +48,8 @@ fn main(){
 
     }
     
-    let mut read_length :Vec<u32> = vec![];
-    let mut read_qual   :Vec<u32> = vec![];
+    let mut read_length :Vec<f32> = vec![];
+    let mut read_qual   :Vec<f32> = vec![];
     let mut num_lines   :u32   =0;
 
     // read the file
@@ -59,7 +60,7 @@ fn main(){
 
         match num_lines % 4 {
             2 => {
-                let my_read_length=line.expect("Expected a sequence line").len() as u32;
+                let my_read_length=line.expect("Expected a sequence line").len() as f32;
                 if each_read {
                     print!("{}\t",my_read_length);
                 }
@@ -74,7 +75,7 @@ fn main(){
                 if each_read {
                     println!("{}",my_read_qual as f32/qual_line.len() as f32);
                 }
-                read_qual.push(my_read_qual);
+                read_qual.push(my_read_qual as f32 / qual_line.len() as f32);
             }
             _ => {
 
@@ -82,23 +83,24 @@ fn main(){
         };
     }
     let num_reads :u32 = num_lines / 4;
-    let total_length = read_length.iter().fold(0,|a,&b| a+b);
-    let total_qual   = read_qual.iter().fold(0,|a,&b| a+b);
+    let total_length = read_length.iter().fold(0.0,|a,&b| a+b);
+    let total_qual   = read_qual.iter().fold(0.0,|a,&b| a+b);
 
     let mut summary_metrics=vec![total_length.to_string(),num_reads.to_string()];
 
     // add statistics if requested
     let mut total_length_str = (total_length as f32/num_reads as f32).to_string();
-    let mut total_qual_str   = (total_qual as f32/total_length as f32).to_string();
+    let mut total_qual_str   = ((read_qual.iter().fold(0.0,|a,&b| a+b)) / num_reads as f32).to_string();
     if distribution == "normal" {
         total_length_str.push_str("±");
         total_length_str.push_str(&standard_deviation(&read_length).to_string());
         total_qual_str.push_str("±");
-        total_length_str.push_str(&standard_deviation(&read_qual).to_string());
+        total_qual_str.push_str(&standard_deviation(&read_qual).to_string());
 
         summary_metrics.push(total_length_str);
         summary_metrics.push(total_qual_str);
     } else if distribution == "nonparametric" {
+        eprintln!("WARNING: nonparametric distribution not yet supported");
 
     } else if distribution == "" {
         summary_metrics.push(total_length_str);
@@ -114,16 +116,17 @@ fn main(){
 
 }
 
-fn standard_deviation(vec :&Vec<u32>) -> f32{
+fn standard_deviation(vec :&Vec<f32>) -> f32{
 
-    let avg :f32 = vec.iter().fold(0,|a,&b| a+b) as f32 / vec.len() as f32;
+    let num_data_points = vec.len();
+    let avg :f32 = vec.iter().fold(0.0,|a,&b| a+b) as f32 / num_data_points as f32;
 
-    let mut square_diffs = vec![];
+    let mut sum_squares :f32 = 0.0;
     for int in vec {
-        square_diffs.push(*int as f32 - avg);
+        sum_squares += (*int as f32 - avg).powi(2);
     }
 
-    let avg_square_diff = square_diffs.iter().fold(0.0,|a,&b| a+b) / (square_diffs.len() - 1) as f32;
+    let avg_square_diff = sum_squares / (num_data_points - 1) as f32;
     
     return avg_square_diff.sqrt();
 
