@@ -5,20 +5,16 @@ extern crate multiqueue;
 use std::fs::File;
 use std::io::BufReader;
 
+use ross::ross_base_options;
 use ross::io::fastq;
 //use ross::io::seq::Seq;
 use ross::io::seq::Cleanable;
 
 use std::env;
-use getopts::Options;
 
 fn main(){
     let args: Vec<String> = env::args().collect();
-    let mut opts = Options::new();
-    // ROSS flags.
-    // TODO put these options into ROSS to streamline.
-    opts.optflag("h", "help", "Print this help menu.");
-    opts.optopt("n","numcpus","Number of CPUs (default: 1)","INT");
+    let mut opts = ross_base_options();
 
     // script-specific options
     opts.optopt("","min-length","Minimum length for each read in bp","INT");

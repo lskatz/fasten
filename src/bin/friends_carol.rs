@@ -3,11 +3,11 @@ extern crate ross;
 use std::fs::File;
 use std::io::BufReader;
 
+use ross::ross_base_options;
 use ross::io::fastq;
 use ross::io::seq::Cleanable;
 
 use std::env;
-use getopts::Options;
 
 #[test]
 /// Test to see whether we read the challenge dataset correctly
@@ -36,13 +36,9 @@ fn challenge_dataset () {
 
 fn main(){
     let args: Vec<String> = env::args().collect();
-    let mut opts = Options::new();
-    // ROSS flags.
-    // TODO put these options into ROSS to streamline.
-    opts.optflag("h", "help", "Print this help menu.");
-    opts.optopt("n","numcpus","Number of CPUs (default: 1)","INT");
+    let opts = ross_base_options();
     let matches = opts.parse(&args[1..]).expect("ERROR: could not parse parameters");
-    if matches.opt_present("h") {
+    if matches.opt_present("help") {
         println!("Convert a fastq file to a standard 4-lines-per-entry format\n{}", opts.usage(&opts.short_usage(&args[0])));
         std::process::exit(0);
     }

@@ -4,11 +4,19 @@ extern crate getopts;
 use std::env;
 use std::path::Path;
 
+use getopts::Options;
+
 pub mod io;
 
 
-// TODO a function that reads an options object and adds
-// default options.
+/// a function that reads an options object and adds ROSS default options.
+pub fn ross_base_options() -> Options{
+    let mut opts = Options::new();
+    opts.optflag("h", "help", "Print this help menu.");
+    opts.optopt("n","numcpus","Number of CPUs (default: 1)","INT");
+
+    return opts;
+}
 
 /// Print a formatted message to stderr 
 pub fn logmsg(msg: &str) {

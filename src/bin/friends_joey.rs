@@ -4,20 +4,16 @@ use std::fs::File;
 use std::io::Write;
 use std::io::BufReader;
 
+use ross::ross_base_options;
 use ross::io::fastq;
 use ross::io::seq::Cleanable;
 use ross::io::seq::Seq;
 
 use std::env;
-use getopts::Options;
 
 fn main(){
     let args: Vec<String> = env::args().collect();
-    let mut opts = Options::new();
-    //ROSS flags
-    opts.optflag("h","help","Print this help menu.");
-    opts.optopt("n","numcpus","Number of CPUs (default: 1)", "INT");
-    
+    let mut opts = ross_base_options();
     //script-specific flags
     opts.optflag("d","deshuffle","Deshuffle reads from stdin");
     opts.optopt("1","","Forward reads. If deshuffling, reads are written to this file.","1.fastq");

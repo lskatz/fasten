@@ -7,18 +7,15 @@ use std::io::BufReader;
 use std::io::BufRead;
 
 use std::env;
-use getopts::Options;
 
 use rand::thread_rng;
 use rand::Rng;
 
+use ross::ross_base_options;
+
 fn main(){
     let args: Vec<String> = env::args().collect();
-    let mut opts = Options::new();
-    // ROSS flags.
-    // TODO put these options into ROSS to streamline.
-    opts.optflag("h", "help", "Print this help menu.");
-    opts.optopt("n","numcpus","Number of CPUs (default: 1)","INT");
+    let mut opts = ross_base_options();
 
     opts.optopt("f","frequency","Frequency of sequences to print, 0 to 1. Default: 1","FLOAT");
     opts.optflag("p", "paired-end", "Reads are interleaved");

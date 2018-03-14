@@ -5,10 +5,10 @@ use std::fs::File;
 use std::io::BufReader;
 use std::env;
 use std::collections::HashMap;
-use getopts::Options;
 
 use rand::{Rng,thread_rng};
 
+use ross::ross_base_options;
 use ross::io::fastq;
 use ross::io::seq::Seq;
 use ross::io::seq::Cleanable;
@@ -16,11 +16,7 @@ use ross::io::seq::Cleanable;
 
 fn main(){
     let args: Vec<String> = env::args().collect();
-    let mut opts = Options::new();
-    //ROSS flags
-    opts.optflag("h","help","Print this help menu.");
-    opts.optopt("n","numcpus","Number of CPUs (default: 1)", "INT");
-    
+    let mut opts = ross_base_options();
     //script-specific flags
     opts.optopt("r","readlength","Read length (default: 150)","INT");
     //opts.optopt("n","numbases","Maximum number of nucleotides (default: 0, unlimited)","INT");

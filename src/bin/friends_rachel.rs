@@ -8,15 +8,12 @@ use std::io::BufRead;
 use std::f32;
 
 use std::env;
-use getopts::Options;
+
+use ross::ross_base_options;
 
 fn main(){
     let args: Vec<String> = env::args().collect();
-    let mut opts = Options::new();
-    // ROSS flags.
-    // TODO put these options into ROSS to streamline.
-    opts.optflag("h", "help", "Print this help menu.");
-    opts.optopt("n","numcpus","Number of CPUs (default: 1)","INT");
+    let mut opts = ross_base_options();
 
     // script-specific options
     opts.optflag("","each-read","Print the metrics for each read. This creates very large output");

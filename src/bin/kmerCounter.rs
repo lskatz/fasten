@@ -3,6 +3,7 @@ use bio::io::fastq;
 use std::str;
 use std::collections::HashMap;
 
+
 fn main() {
   let reader = fastq::Reader::from_file("reads.fastq").unwrap();
   let kmerlength = 21;
