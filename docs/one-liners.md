@@ -28,6 +28,14 @@ Most scripts in ROSS require interleaved reads, and so you should use `friends_j
       friends_monica --min-trim-quality 30 | \
       friends_rachel --each-read
 
+## read cleaning
+
+ROSS cleans reads by trimming and filtering.  View those options by running `friends_monica --help`
+
+    zcat some_file.fastq.gz | \
+      friends_monica --min-trim-quality 30 --min-avg-quality 20 --min-length 50 | \
+      gzip -c > cleaned.fastq.gz
+
 ## In-place fastq compression
 
 This works by sorting by GC content, which plays into how the gzip algorithm works.
