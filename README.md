@@ -18,6 +18,7 @@ All scripts accept the parameters, read uncompressed fastq format, and print unc
 * `--help`
 * `--numcpus` Not all scripts will take advantage of numcpus.
 * `--paired-end` Input reads are interleaved paired end
+* `--verbose` Print more status messages
 
 ## Ross script descriptions
 
