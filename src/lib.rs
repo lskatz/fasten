@@ -14,6 +14,7 @@ pub fn ross_base_options() -> Options{
     opts.optflag("h", "help", "Print this help menu.");
     opts.optopt("n","numcpus","Number of CPUs (default: 1)","INT");
     opts.optflag("p","paired-end","The input reads are interleaved paired-end");
+    opts.optflag("v","verbose","Print more status messages");
 
     return opts;
 }
