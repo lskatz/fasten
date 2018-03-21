@@ -7,7 +7,9 @@ First, it might make sense to change your path, for readability.  Choose either 
 
     export PATH=$PATH:~/src/ROSS.rs/target/debug
 
-## Generate interleaved reads
+## Generate interleaved reads 
+
+![Joey](/images/joey.png)
 
 Most scripts in ROSS require interleaved reads, and so you should use `friends_joey` to shuffle them.  The following example goes a step further with `grep` to help show you that the reads are interleaved.
 
@@ -15,13 +17,17 @@ Most scripts in ROSS require interleaved reads, and so you should use `friends_j
       friends_joey | \
       grep '^@read'
 
-### Interleave split reads and feed directly to the cleaning script
+### Interleave split reads and feed directly to the cleaning script 
+
+![Joey](/images/joey.png) => ![Monica](/images/monica.jpg)
 
     cat testdata/R1.fastq testdata/R2.fastq | \
       friends_joey | \
       friends_monica --min-trim-quality 30
 
 ### Interleave split reads, feed directly to the cleaning script, and then see how well it cleaned the reads
+
+![Joey](/images/joey.png) => ![Monica](/images/monica.jpg) => ![Rachel](/images/rachel.jpg)
 
     cat testdata/R1.fastq testdata/R2.fastq | \
       friends_joey | \
