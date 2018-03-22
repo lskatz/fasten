@@ -4,6 +4,10 @@ version = "0.1.3"
 authors = ["Lee Katz <gzu2@cdc.gov>"]
 
 [[bin]]
+name = "friends_emma"
+path = "src/bin/friends_emma.rs"
+
+[[bin]]
 name = "friends_chandler"
 path = "src/bin/friends_chandler.rs"
 
