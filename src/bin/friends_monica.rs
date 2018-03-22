@@ -58,6 +58,7 @@ fn main(){
         }
     };
 
+
     // Read the file and send seqs to threads
     let my_file = File::open("/dev/stdin").expect("Could not open file");
     let my_buffer=BufReader::new(my_file);
@@ -66,12 +67,12 @@ fn main(){
     let mut id2   :String = String::new();
     let mut seq1  :String = String::new();
     let mut seq2  :String = String::new();
-    let mut qual1 :String = String::new();
-    let mut qual2 :String = String::new();
+    let mut qual1 :String;
+    let mut qual2 :String;
     let mut seq1_trimmed  = String::new();
-    let mut seq2_trimmed  = String::new();
+    let mut seq2_trimmed :String;
     let mut qual1_trimmed = String::new();
-    let mut qual2_trimmed = String::new();
+    let mut qual2_trimmed :String;
 
     for (i,wrapped_line) in my_buffer.lines().enumerate() {
         let line = wrapped_line.expect("ERROR: could not read line");
@@ -87,66 +88,68 @@ fn main(){
             // Sequence
             1=>{
                 seq1 = line;
-                seq1_trimmed=String::new();
             }
             5=>{
                 seq2 = line;
-                seq2_trimmed=String::new();
             }
-            // qual
+
+            // Qual line. If we've gotten here, then we can also trim/filter/print
+            // First qual line
             3=>{
                 qual1 = line;
-                qual1_trimmed=String::new();
+
+                // Trim
+                let tuple=trim(&seq1,&qual1,min_trim_qual);
+                seq1_trimmed=tuple.0;
+                qual1_trimmed=tuple.1;
+
+                // If this is single end, go ahead and filter/print
+                if lines_per_read==4 {
+                    if seq1_trimmed.len() >= min_length && avg_quality(&qual1_trimmed) >= min_avg_qual {
+                        println!("{}\n{}\n+\n{}",
+                             id1,seq1_trimmed,qual1_trimmed,
+                             );
+                    }
+                }
+
             }
+            // Second qual line
             7=>{
                 qual2 = line;
-                qual2_trimmed=String::new();
+
+                // Trim
+                let tuple=trim(&seq2,&qual2,min_trim_qual);
+                seq2_trimmed=tuple.0;
+                qual2_trimmed=tuple.1;
+
+                // Since we are at the second qual line, this is PE and we can
+                // go ahead with filter/print and not check for the PE param.
+
+                if seq1_trimmed.len() >= min_length && seq2_trimmed.len() >= min_length 
+                    && avg_quality(&qual1_trimmed) >= min_avg_qual 
+                    && avg_quality(&qual2_trimmed) >= min_avg_qual {
+
+                    println!("{}\n{}\n+\n{}\n{}\n{}\n+\n{}",
+                         id1,seq1_trimmed,qual1_trimmed,
+                         id2,seq2_trimmed,qual2_trimmed
+                         );
+                }
             }
             _=>{}
         }
 
-        // Trim read1
-        if lines_per_read==4 && qual1.len() > 0 {
-            // trim
-            let tuple=trim(&seq1,&qual1,min_trim_qual);
-            seq1_trimmed=tuple.0;
-            qual1_trimmed=tuple.1;
-        }
-
-        // Trim read2
-        if lines_per_read==8 && qual2.len() > 0 {
-            let tuple=trim(&seq2,&qual2,min_trim_qual);
-            seq2_trimmed=tuple.0;
-            qual2_trimmed=tuple.1;
-        }
-
-        // Print or filter
-        if (lines_per_read==4 && qual1.len() > 0) || (lines_per_read==8 && qual2.len() > 0) {
-
-            // print only if it passes length and quality
-            if lines_per_read==4 && qual1_trimmed.len() > min_length {
-                println!("{}\n{}\n+\n{}",
-                     id1,seq1_trimmed,qual1_trimmed,
-                     );
-            }
-
-            if lines_per_read==8 && qual1_trimmed.len() > min_length && qual2_trimmed.len() > min_length {
-                println!("{}\n{}\n+\n{}\n{}\n{}\n+\n{}",
-                     id1,seq1_trimmed,qual1_trimmed,
-                     id2,seq2_trimmed,qual2_trimmed
-                     );
-            }
-
-            // reset
-            id1=    String::new();
-            id2=    String::new();
-            seq1=   String::new();
-            seq2=   String::new();
-            qual1=  String::new();
-            qual2=  String::new();
-        }
     }
 
+}
+
+/// determine average quality of a qual cigar string
+fn avg_quality(qual: &String) -> f32 {
+    let mut total :u32 = 0;
+    for qual_char in qual.chars() {
+        total += qual_char as u8 as u32;
+    }
+    let avg = (total as f32 / qual.len() as f32) - 33.0;
+    return avg;
 }
 
 /// Trim the ends of reads with low quality
