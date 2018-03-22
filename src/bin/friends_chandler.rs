@@ -53,7 +53,7 @@ fn main(){
                 let my_num_kmers=seq.len() - kmer_length + 1;
                 for idx in 0..my_num_kmers {
                     // increment the kmer count by reference
-                    let mut kmer_count = kmer_hash.entry(String::from(&seq[idx..kmer_length+idx])).
+                    let kmer_count = kmer_hash.entry(String::from(&seq[idx..kmer_length+idx])).
                         or_insert(0);
                     *kmer_count += 1;
                 }
@@ -62,15 +62,6 @@ fn main(){
         };
     }
 
-    /*
-    let keys :Vec<String> = kmer_hash.keys().map(|x| x);
-    panic!("{:?}",keys);
-
-    for kmer in keys {
-        println!("{}\t{}",kmer,kmer_hash.entry(kmer).or_insert(0));
-    }
-    */
-    
     for (kmer,count) in kmer_hash.iter() {
         println!("{}\t{}",kmer,count);
     }

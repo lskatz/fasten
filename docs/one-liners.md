@@ -36,6 +36,8 @@ Most scripts in ROSS require interleaved reads, and so you should use `friends_j
 
 ## read cleaning
 
+![Monica](/images/monica.jpg)
+
 ROSS cleans reads by trimming and filtering.  View those options by running `friends_monica --help`
 
     zcat some_file.fastq.gz | \
