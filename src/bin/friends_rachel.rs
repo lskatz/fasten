@@ -39,7 +39,7 @@ fn main(){
     
     // Header
     if each_read {
-        println!("readLength\tavgQual");
+        println!("readID\treadLength\tavgQual");
     } else {
         println!("{}",vec!["totalLength", "numReads", "avgReadLength","avgQual"].join("\t"));
 
@@ -56,6 +56,12 @@ fn main(){
         num_lines+=1;
 
         match num_lines % 4 {
+            1 => {
+                if each_read {
+                    let id = line.expect("Expected an ID line");
+                    print!("{}\t",&id[1..]);
+                }
+            }
             2 => {
                 let my_read_length=line.expect("Expected a sequence line").len() as f32;
                 if each_read {
