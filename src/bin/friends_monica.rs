@@ -4,11 +4,9 @@ extern crate multiqueue;
 
 use std::fs::File;
 use std::io::BufReader;
+use std::io::BufRead;
 
 use ross::ross_base_options;
-use ross::io::fastq;
-//use ross::io::seq::Seq;
-use ross::io::seq::Cleanable;
 
 use std::env;
 
@@ -28,7 +26,7 @@ fn main(){
         std::process::exit(0);
     }
 
-    let mut min_length :f32 = 0.0;
+    let mut min_length :usize = 0;
     if matches.opt_present("min-length") {
         min_length = matches.opt_str("min-length")
             .expect("ERROR: could not read the minimum length parameter")
@@ -44,10 +42,10 @@ fn main(){
             .expect("ERROR: min-avg-qual is not an integer");
     }
 
-    let mut min_trim_qual :f32 = 0.0;
+    let mut min_trim_qual :u8 = 0;
     if matches.opt_present("min-trim-quality") {
         min_trim_qual = matches.opt_str("min-trim-quality")
-            .expect("ERROR: could not read the minimum average quality parameter")
+            .expect("ERROR: could not read the minimum trim quality parameter")
             .parse()
             .expect("ERROR: min-trim-qual is not an integer");
     }
@@ -70,9 +68,14 @@ fn main(){
     let mut seq2  :String = String::new();
     let mut qual1 :String = String::new();
     let mut qual2 :String = String::new();
+    let mut seq1_trimmed  = String::new();
+    let mut seq2_trimmed  = String::new();
+    let mut qual1_trimmed = String::new();
+    let mut qual2_trimmed = String::new();
 
-    for (i,line) in my_buffer.lines().enumerate() {
-        match num_lines % lines_per_read {
+    for (i,wrapped_line) in my_buffer.lines().enumerate() {
+        let line = wrapped_line.expect("ERROR: could not read line");
+        match i % lines_per_read {
             // read ID
             0=>{
                 id1 = line;
@@ -84,35 +87,54 @@ fn main(){
             // Sequence
             1=>{
                 seq1 = line;
+                seq1_trimmed=String::new();
             }
             5=>{
                 seq2 = line;
+                seq2_trimmed=String::new();
             }
             // qual
             3=>{
                 qual1 = line;
+                qual1_trimmed=String::new();
             }
             7=>{
                 qual2 = line;
+                qual2_trimmed=String::new();
             }
             _=>{}
         }
 
-        // If both reads are set, then trim and clean
-        if (lines_per_read==4 && id1.len() > 0) || (lines_per_read==8 && id2.len() > 0) {
+        // Trim read1
+        if lines_per_read==4 && qual1.len() > 0 {
             // trim
-            (seq1_trimmed,qual1_trimmed)=trim(seq1,qual1,min_trim_qual);
-            // filter
-            // print
-            println!("{}{}+\n{}",
+            let tuple=trim(&seq1,&qual1,min_trim_qual);
+            seq1_trimmed=tuple.0;
+            qual1_trimmed=tuple.1;
+        }
+
+        // Trim read2
+        if lines_per_read==8 && qual2.len() > 0 {
+            let tuple=trim(&seq2,&qual2,min_trim_qual);
+            seq2_trimmed=tuple.0;
+            qual2_trimmed=tuple.1;
+        }
+
+        // Print or filter
+        if (lines_per_read==4 && qual1.len() > 0) || (lines_per_read==8 && qual2.len() > 0) {
+
+            // print only if it passes length and quality
+            if lines_per_read==4 && qual1_trimmed.len() > min_length {
+                println!("{}\n{}\n+\n{}",
                      id1,seq1_trimmed,qual1_trimmed,
                      );
+            }
 
-            if lines_per_read==8 {
-                (seq2_trimmed,qual2_trimmed)=trim(seq2,qual2,min_trim_qual);
-                println!("{}{}+\n{}",
-                         id2,seq2_trimmed,qual2_trimmed
-                         );
+            if lines_per_read==8 && qual1_trimmed.len() > min_length && qual2_trimmed.len() > min_length {
+                println!("{}\n{}\n+\n{}\n{}\n{}\n+\n{}",
+                     id1,seq1_trimmed,qual1_trimmed,
+                     id2,seq2_trimmed,qual2_trimmed
+                     );
             }
 
             // reset
@@ -128,15 +150,15 @@ fn main(){
 }
 
 /// Trim the ends of reads with low quality
-fn trim(&seq: String, &qual: String, min_qual: u8) -> (String,String) {
-    let mut trim5 :u32=0;
-    let mut trim3 :u32=qual.len() as u32;
+fn trim(seq: &String, qual: &String, min_qual: u8) -> (String,String) {
+    let mut trim5 :usize=0;
+    let mut trim3 :usize=qual.len();
 
     let offset_min_qual = min_qual + 33;
     
     // 5'
     for qual in qual.chars(){
-        if qual as u8 < offset_min_qual {
+        if (qual as u8) < offset_min_qual {
             trim5+=1;
         } else {
             break;
@@ -145,15 +167,15 @@ fn trim(&seq: String, &qual: String, min_qual: u8) -> (String,String) {
 
     // 3'
     for qual in qual.chars().rev() {
-        if qual as u8 < offset_min_qual {
+        if (qual as u8) < offset_min_qual {
             trim3-=1;
         } else {
             break;
         }
     }
 
-    let mut new_seq :String;
-    let mut new_qual:String;
+    let new_seq :String;
+    let new_qual:String;
     
     if trim5 >= trim3 {
         new_seq = String::new();

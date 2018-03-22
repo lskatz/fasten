@@ -43,7 +43,7 @@ fn main(){
     let my_file = File::open(&filename).expect("Could not open file");
     let my_buffer=BufReader::new(my_file);
     let mut num_lines=0;
-    let mut kmer_hash = HashMap::new();
+    let mut kmer_hash :HashMap<String,u32> = HashMap::new();
     for line in my_buffer.lines() {
         num_lines+=1;
 
@@ -61,7 +61,18 @@ fn main(){
             _ => { }
         };
     }
-    let sorted_kmers :Vec<str> = &kmer_hash.keys().collect();
-    println!("{:?}",sorted_kmers);
+
+    /*
+    let keys :Vec<String> = kmer_hash.keys().map(|x| x);
+    panic!("{:?}",keys);
+
+    for kmer in keys {
+        println!("{}\t{}",kmer,kmer_hash.entry(kmer).or_insert(0));
+    }
+    */
+    
+    for (kmer,count) in kmer_hash.iter() {
+        println!("{}\t{}",kmer,count);
+    }
 }
 

@@ -37,7 +37,7 @@ fn main() {
     };
 
     let mut id1=String::new();
-    let mut id2=String::new();
+    let mut id2 :String;
     let mut pairs_counter=0;
 
     let my_file = File::open("/dev/stdin").expect("Could not open file");
