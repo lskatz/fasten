@@ -21,7 +21,6 @@ fn main(){
     opts.optopt("r","readlength","Read length (default: 150)","INT");
     //opts.optopt("n","numbases","Maximum number of nucleotides (default: 0, unlimited)","INT");
     //opts.optopt("n","numreads","Maximum number of reads (default: 0, unlimited)","INT");
-    opts.optflag("p","paired-end","Paired end reads");
 
     let matches = opts.parse(&args[1..]).expect("Error: could not parse parameters");
     if matches.opt_present("help") {
@@ -30,7 +29,6 @@ fn main(){
     }
 
     let is_pe = matches.opt_present("paired-end");
-    println!("{}",is_pe);
 
     print_reads_from_stdin(is_pe);
 }
