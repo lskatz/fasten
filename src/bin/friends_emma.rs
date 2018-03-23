@@ -16,7 +16,8 @@ use ross::ross_base_options;
 // need this constant because the compiler had a problem
 // with the syntax 10.0.pow()
 const TEN: f32 = 10.0;
-const READ_SEPARATOR = "~~~~";
+const READ_SEPARATOR :&'static str = "~~~~";
+const READ_SEPARATOR_LENGTH :usize = 4;
 
 fn main(){
     let args: Vec<String> = env::args().collect();
@@ -42,7 +43,7 @@ fn main(){
     // sequence => count
     let mut seq_count:HashMap<String,u32>   =HashMap::new();
     // sequence => quality cigar String
-    let mut quality  :HashMap<String,String>=HashMap::new();
+    let mut seq_qual :HashMap<String,String>=HashMap::new();
 
     let mut current_seq = String::new();
     let mut current_qual= String::new();
@@ -51,41 +52,83 @@ fn main(){
     let my_buffer=BufReader::new(my_file);
     let mut line_counter =0;
     for line in my_buffer.lines() {
-        match lines_per_read {
+        match line_counter % lines_per_read {
             1 => {
                 current_seq.push_str(&line.expect("Could not unwrap seq line"));
             }
             5 => {
-                current_seq.push_str(READ_SEPARATOR)
+                current_seq.push_str(READ_SEPARATOR);
                 current_seq.push_str(&line.expect("Could not unwrap seq line"));
             }
+
+            // 3 and 7: the qual lines
             3 => {
                 current_qual.push_str(&line.expect("Could not unwrap qual line"));
-                // TODO add an entry
+
+                // Add an entry if SE
+                if lines_per_read == 4 {
+                    let count = seq_count.entry(current_seq.clone()).or_insert(0);
+                    *count += 1;
+                    //println!("{} <= {}",*count, &current_seq);
+
+                    // TODO collect all qual lines and combine them later
+                    seq_qual.entry(current_seq.clone()).or_insert(current_qual.clone());
+
+                    current_qual=String::new();
+                    current_seq= String::new();
+                }
             }
-            0 => {
-                current_qual.push_str(READ_SEPARATOR)
+            7 => {
+                current_qual.push_str(READ_SEPARATOR);
                 current_qual.push_str(&line.expect("Could not unwrap qual line"));
 
-                // TODO add an entry
-            }
-            _={}
-        }
-        // unwrap the line here and shadow-set the variable.
-        let line=line.expect("ERROR: did not get a line");
-        line_counter+=1;
-        entry.push_str(&line);
-        entry.push_str("\n");
+                // Add an entry here since it's PE
+                let count = seq_count.entry(current_seq.clone()).or_insert(0);
+                *count += 1;
+                
+                // TODO collect all qual lines and combine them later
+                seq_qual.entry(current_seq.clone()).or_insert(current_qual.clone());
 
-        // Action if we have a full entry when mod 0
-        if line_counter % lines_per_read == 0 {
-            // increment the counter
-            let count = entries.entry(entry).or_insert(0);
-            *count += 1;
-            // reset the entry string
-            entry = String::new();
+                current_qual=String::new();
+                current_seq= String::new();
+            }
+            _=>{}
+        }
+        line_counter += 1;
+    }
+
+    let mut id_counter=0;
+    //println!("{:?}", seq_count);
+    for (sequence, count) in seq_count {
+        let qual = seq_qual.entry(sequence.clone()).or_insert(String::new());
+        if qual == "" {
+            panic!("ERROR: quality cigar string not found for {}",&sequence);
+        }
+        id_counter += 1;
+
+        match lines_per_read {
+            4=>{
+                println!("@read{} collapsed_reads:{}\n{}\n+\n{}",&id_counter,&count,&sequence,&qual);
+            }
+            8=>{
+                // Split the sequences and quals into separate reads.
+                let read1_length = sequence.find(READ_SEPARATOR).expect("ERROR finding read separator");
+                let sequence1 = &sequence[0..read1_length];
+                let quality1  = recalculate_qual(&qual[0..read1_length],count);
+                let sequence2 = &sequence[read1_length+READ_SEPARATOR_LENGTH..];
+                let quality2  = recalculate_qual(&qual[read1_length+READ_SEPARATOR_LENGTH..],count);
+
+                println!("@read{}/1 collapsed_reads:{}\n{}\n+\n{}",&id_counter,&count,&sequence1,&quality1);
+                println!("@read{}/2 collapsed_reads:{}\n{}\n+\n{}",&id_counter,&count,&sequence2,&quality2);
+            }
+            _=>{
+                panic!("INTERNAL ERROR: number of lines per entry is {}, but it should be either 4 or 8",lines_per_read);
+            }
         }
     }
+}
+
+        /*
 
     for (entry,count) in entries {
         let mut lines = entry.lines();
@@ -116,9 +159,13 @@ fn main(){
         }
     }
 }
+*/
 
 fn recalculate_qual(qual_str: &str, count: u32) -> String {
     let mut qual_out = String::new();
+
+    let max_qual = 'I' as u8;
+    let min_qual = '#' as u8;
 
     let qual = qual_str.to_string();
     for qual_char in qual.chars() {
@@ -126,10 +173,20 @@ fn recalculate_qual(qual_str: &str, count: u32) -> String {
         //let ten:f32=10.0;
         let p :f32 = TEN.powf((-1.0 * qual_int)/TEN);
         let p_recalc :f32 = p.powi(count as i32);
-        let qual_recalc = -TEN * (p_recalc).log(TEN)+33.0;
+        let mut qual_recalc :f32 = -TEN * (p_recalc).log(TEN)+33.0;
+        // check for overflow before switching to u8
+        if qual_recalc.is_infinite() || qual_recalc > 255.0 {
+            qual_recalc = 255.0;
+        }
+
+        // switch to u8 and then the corresponding char
         let mut qual_recalc_char = qual_recalc.floor() as u8 as char;
-        if qual_recalc_char as u8 > 'I' as u8 {
+        if (qual_recalc_char as u8) > max_qual {
             qual_recalc_char = 'I';
+        }
+        // a reduction in quality is not expected... but just in case.
+        if (qual_recalc_char as u8) < min_qual {
+            qual_recalc_char = '#';
         }
         qual_out.push(qual_recalc_char);
     }
