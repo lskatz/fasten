@@ -11,12 +11,15 @@ use std::env;
 use std::f32;
 
 use ross::ross_base_options;
+//use ross::logmsg;
 
-const  TEN: f32 = 10.0;
+// need this constant because the compiler had a problem
+// with the syntax 10.0.pow()
+const TEN: f32 = 10.0;
 
 fn main(){
     let args: Vec<String> = env::args().collect();
-    let mut opts = ross_base_options();
+    let opts = ross_base_options();
 
     let matches = opts.parse(&args[1..]).expect("ERROR: could not parse parameters");
 
@@ -58,19 +61,32 @@ fn main(){
     }
 
     for (entry,count) in entries {
-        //println!("{} => {}",count,entry);
         let mut lines = entry.lines();
         let mut id=  lines.next().expect("Could not parse for the ID line").to_string();
         let     seq= lines.next().expect("Could not parse for the seq line");
                      lines.next().expect("Could not parse for the + line");
         let     qual=lines.next().expect("Could not parse for the qual line");
-        id.push_str(" ");
+        
+        // Edit the ID by adding the count 
+        id.push_str(" collapsed_reads:");
         id.push_str(&count.to_string());
 
-        println!("{} {} {}",id,seq,recalculate_qual(qual,count));
-        // TODO edit the count 
-        // TODO edit the qual
-        // TODO paired end
+        // Print the sequence and edit the qual
+        println!("{}\n{}\n+\n{}",id,seq,recalculate_qual(qual,count));
+        // Paired end
+        if lines_per_read==8 {
+            let mut id2=  lines.next().expect("Could not parse for the R2 ID line").to_string();
+            let     seq2= lines.next().expect("Could not parse for the R2 seq line");
+                         lines.next().expect("Could not parse for the R2 + line");
+            let     qual2=lines.next().expect("Could not parse for the R2 qual line");
+            
+            // Edit the ID by adding the count 
+            id2.push_str(" collapsed_reads:");
+            id2.push_str(&count.to_string());
+
+            // Print the sequence and edit the qual
+            println!("{}\n{}\n+\n{}",id2,seq2,recalculate_qual(qual2,count));
+        }
     }
 }
 
