@@ -16,6 +16,7 @@ use ross::ross_base_options;
 // need this constant because the compiler had a problem
 // with the syntax 10.0.pow()
 const TEN: f32 = 10.0;
+const READ_SEPARATOR = "~~~~";
 
 fn main(){
     let args: Vec<String> = env::args().collect();
@@ -37,13 +38,39 @@ fn main(){
         }
     };
 
-    let mut entries :HashMap<String,u32>= HashMap::new();
+    // TODO? keep track of IDs
+    // sequence => count
+    let mut seq_count:HashMap<String,u32>   =HashMap::new();
+    // sequence => quality cigar String
+    let mut quality  :HashMap<String,String>=HashMap::new();
+
+    let mut current_seq = String::new();
+    let mut current_qual= String::new();
 
     let my_file = File::open("/dev/stdin").expect("Could not open file");
     let my_buffer=BufReader::new(my_file);
     let mut line_counter =0;
-    let mut entry = String::new();
     for line in my_buffer.lines() {
+        match lines_per_read {
+            1 => {
+                current_seq.push_str(&line.expect("Could not unwrap seq line"));
+            }
+            5 => {
+                current_seq.push_str(READ_SEPARATOR)
+                current_seq.push_str(&line.expect("Could not unwrap seq line"));
+            }
+            3 => {
+                current_qual.push_str(&line.expect("Could not unwrap qual line"));
+                // TODO add an entry
+            }
+            0 => {
+                current_qual.push_str(READ_SEPARATOR)
+                current_qual.push_str(&line.expect("Could not unwrap qual line"));
+
+                // TODO add an entry
+            }
+            _={}
+        }
         // unwrap the line here and shadow-set the variable.
         let line=line.expect("ERROR: did not get a line");
         line_counter+=1;
