@@ -16,8 +16,5 @@ if [ "$one_cleaned_read" != $'read3/2\t94\t18.446808' ]; then
   exit 1
 fi
 
-jdkfjkd command not found intentionall error
-exit 1
-
 echo "friends_monica passed"
 
