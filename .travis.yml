@@ -1,6 +1,6 @@
 language: rust
 rust:
   - stable
-install:
+script:
   - bash tests/friends_rachel.sh
   - bash tests/friends_monica.sh
