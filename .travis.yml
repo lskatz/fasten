@@ -1,6 +1,7 @@
 language: rust
 rust:
   - stable
-after_script:
+script:
+  - cargo build --verbose
   - bash tests/friends_rachel.sh
   - bash tests/friends_monica.sh
