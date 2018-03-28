@@ -39,127 +39,79 @@ fn main(){
         }
     };
 
-    // TODO? keep track of IDs
-    // sequence => count
-    let mut seq_count:HashMap<String,u32>   =HashMap::new();
-    // sequence => quality cigar String
-    let mut seq_qual :HashMap<String,String>=HashMap::new();
+    // Keep track of IDs
+    // id => seq
+    // id => qual
+    let mut seq_id    :HashMap<String,String>=HashMap::new();
+    //let mut qual_id   :HashMap<String,String>=HashMap::new();
+    // ID => count
+    let mut seq_count :HashMap<String,u32>   =HashMap::new();
+    // keep track of sequence pairing
+    // ID1 => ID2
+    let mut seq_pair  :HashMap<String,String>=HashMap::new();
+    // ID => vec![quality cigar String]
+    let mut qual      :HashMap<String,Vec<char>>=HashMap::new();
 
-    let mut current_seq = String::new();
-    let mut current_qual= String::new();
+    // SEQ1~~~~SEQ2 => Vec<ID1~~~~ID2>
+    let mut identical_seq :HashMap<String,Vec<String>>=HashMap::new();
+
+    let mut current_id1  = String::new();
+    let mut current_id2  = String::new();
+    let mut current_seq1 = String::new();
+    let mut current_seq2 = String::new();
 
     let my_file = File::open("/dev/stdin").expect("Could not open file");
     let my_buffer=BufReader::new(my_file);
     let mut line_counter =0;
     for line in my_buffer.lines() {
         match line_counter % lines_per_read {
+            0 => {
+                current_id1 = line.expect("Could not unwrap ID1");
+            }
+            4 => {
+                current_id2 = line.expect("Could not unwrap ID2");
+            }
             1 => {
-                current_seq.push_str(&line.expect("Could not unwrap seq line"));
+                current_seq1 = line.expect("Could not unwrap seq1");
+                let count = seq_count.entry(current_id1.clone()).or_insert(0);
+                *count += 1;
+
+                seq_id.insert(current_id1.clone(),current_seq1.clone());
             }
             5 => {
-                current_seq.push_str(READ_SEPARATOR);
-                current_seq.push_str(&line.expect("Could not unwrap seq line"));
+                let current_seq2 = line.expect("Could not unwrap seq2");
+                let count = seq_count.entry(current_id2.clone()).or_insert(0);
+                *count += 1;
+
+                seq_id.insert(current_id2.clone(),current_seq2.clone());
+
+                seq_pair.insert(current_id1.clone(),current_id2.clone());
             }
 
             // 3 and 7: the qual lines
             3 => {
-                current_qual.push_str(&line.expect("Could not unwrap qual line"));
-
-                // Add an entry if SE
+                let qual1 = line.expect("Could not unwrap qual1");
+                qual.insert(current_id1.clone(),qual1.chars().collect());
                 if lines_per_read == 4 {
-                    let count = seq_count.entry(current_seq.clone()).or_insert(0);
-                    *count += 1;
-                    //println!("{} <= {}",*count, &current_seq);
-
-                    // TODO collect all qual lines and combine them later
-                    seq_qual.entry(current_seq.clone()).or_insert(current_qual.clone());
-
-                    current_qual=String::new();
-                    current_seq= String::new();
+                    let mut seq_set :&Vec<String> = identical_seq.entry(current_seq1.clone()).or_insert(Vec::new());
+                    seq_set.push(current_id1.clone());
                 }
+
             }
             7 => {
-                current_qual.push_str(READ_SEPARATOR);
-                current_qual.push_str(&line.expect("Could not unwrap qual line"));
-
-                // Add an entry here since it's PE
-                let count = seq_count.entry(current_seq.clone()).or_insert(0);
-                *count += 1;
-                
-                // TODO collect all qual lines and combine them later
-                seq_qual.entry(current_seq.clone()).or_insert(current_qual.clone());
-
-                current_qual=String::new();
-                current_seq= String::new();
+                let qual2 = line.expect("Could not unwrap qual2");
+                qual.insert(current_id2.clone(),qual2.chars().collect());
             }
             _=>{}
         }
         line_counter += 1;
     }
 
-    let mut id_counter=0;
-    //println!("{:?}", seq_count);
-    for (sequence, count) in seq_count {
-        let qual = seq_qual.entry(sequence.clone()).or_insert(String::new());
-        if qual == "" {
-            panic!("ERROR: quality cigar string not found for {}",&sequence);
-        }
-        id_counter += 1;
-
-        match lines_per_read {
-            4=>{
-                println!("@read{} collapsed_reads:{}\n{}\n+\n{}",&id_counter,&count,&sequence,&qual);
-            }
-            8=>{
-                // Split the sequences and quals into separate reads.
-                let read1_length = sequence.find(READ_SEPARATOR).expect("ERROR finding read separator");
-                let sequence1 = &sequence[0..read1_length];
-                let quality1  = recalculate_qual(&qual[0..read1_length],count);
-                let sequence2 = &sequence[read1_length+READ_SEPARATOR_LENGTH..];
-                let quality2  = recalculate_qual(&qual[read1_length+READ_SEPARATOR_LENGTH..],count);
-
-                println!("@read{}/1 collapsed_reads:{}\n{}\n+\n{}",&id_counter,&count,&sequence1,&quality1);
-                println!("@read{}/2 collapsed_reads:{}\n{}\n+\n{}",&id_counter,&count,&sequence2,&quality2);
-            }
-            _=>{
-                panic!("INTERNAL ERROR: number of lines per entry is {}, but it should be either 4 or 8",lines_per_read);
-            }
-        }
+    // collapse the reads
+    for (id1,id2) in seq_pair {
+        println!("{} => {}",id1,id2);
     }
 }
-
-        /*
-
-    for (entry,count) in entries {
-        let mut lines = entry.lines();
-        let mut id=  lines.next().expect("Could not parse for the ID line").to_string();
-        let     seq= lines.next().expect("Could not parse for the seq line");
-                     lines.next().expect("Could not parse for the + line");
-        let     qual=lines.next().expect("Could not parse for the qual line");
-        
-        // Edit the ID by adding the count 
-        id.push_str(" collapsed_reads:");
-        id.push_str(&count.to_string());
-
-        // Print the sequence and edit the qual
-        println!("{}\n{}\n+\n{}",id,seq,recalculate_qual(qual,count));
-        // Paired end
-        if lines_per_read==8 {
-            let mut id2=  lines.next().expect("Could not parse for the R2 ID line").to_string();
-            let     seq2= lines.next().expect("Could not parse for the R2 seq line");
-                         lines.next().expect("Could not parse for the R2 + line");
-            let     qual2=lines.next().expect("Could not parse for the R2 qual line");
-            
-            // Edit the ID by adding the count 
-            id2.push_str(" collapsed_reads:");
-            id2.push_str(&count.to_string());
-
-            // Print the sequence and edit the qual
-            println!("{}\n{}\n+\n{}",id2,seq2,recalculate_qual(qual2,count));
-        }
-    }
-}
-*/
 
 fn recalculate_qual(qual_str: &str, count: u32) -> String {
     let mut qual_out = String::new();
