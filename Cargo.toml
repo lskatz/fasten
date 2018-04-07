@@ -1,7 +1,11 @@
 [package]
 name = "ross"
-version = "0.1.4"
+version = "0.1.5"
 authors = ["Lee Katz <gzu2@cdc.gov>"]
+
+[[bin]]
+name = "friends_trimmer"
+path = "src/bin/friends_trimmer.rs"
 
 [[bin]]
 name = "friends_emma"
