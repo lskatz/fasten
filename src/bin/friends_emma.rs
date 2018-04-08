@@ -89,7 +89,7 @@ fn main(){
     }
 
     let max_qual = 'I' as u8;
-    let min_qual = '#' as u8;
+    let min_qual = '!' as u8;
 
     let mut seq_counter=0;
     for (seq,combined_qual) in seq_error_rate {
@@ -105,13 +105,13 @@ fn main(){
             }
 
             // switch to u8 and then the corresponding char
-            let mut qual_recalc_char = qual_recalc.floor() as u8 as char;
+            let mut qual_recalc_char = qual_recalc.round() as u8 as char;
             if (qual_recalc_char as u8) > max_qual {
                 qual_recalc_char = 'I';
             }
             // a reduction in quality is not expected... but just in case.
             if (qual_recalc_char as u8) < min_qual {
-                qual_recalc_char = '#';
+                qual_recalc_char = '!';
             }
             qual_cigar.push(qual_recalc_char);
         }
@@ -143,7 +143,7 @@ fn recalculate_qual(qual_str: &str, count: u32) -> String {
     let mut qual_out = String::new();
 
     let max_qual = 'I' as u8;
-    let min_qual = '#' as u8;
+    let min_qual = '!' as u8;
 
     let qual = qual_str.to_string();
     for qual_char in qual.chars() {
@@ -158,13 +158,13 @@ fn recalculate_qual(qual_str: &str, count: u32) -> String {
         }
 
         // switch to u8 and then the corresponding char
-        let mut qual_recalc_char = qual_recalc.floor() as u8 as char;
+        let mut qual_recalc_char = qual_recalc.round() as u8 as char;
         if (qual_recalc_char as u8) > max_qual {
             qual_recalc_char = 'I';
         }
         // a reduction in quality is not expected... but just in case.
         if (qual_recalc_char as u8) < min_qual {
-            qual_recalc_char = '#';
+            qual_recalc_char = '!';
         }
         qual_out.push(qual_recalc_char);
     }
