@@ -7,3 +7,5 @@ script:
   - bash tests/friends_monica.sh
   - bash tests/friends_carol.sh
   - bash tests/friends_chandler.sh
+  - bash tests/friends_emma.sh
+

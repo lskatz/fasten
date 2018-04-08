@@ -29,7 +29,6 @@ fn main(){
     let my_file = File::open("/dev/stdin").expect("Could not open file");
     let my_buffer=BufReader::new(my_file);
 
-    let mut in_middle_of_entry=false;
     let lines_per_read={
         if matches.opt_present("paired-end") {
             8
@@ -71,7 +70,8 @@ fn main(){
 
     // TODO have a print buffer, something like 4096 bytes
 
-    for (i,line) in my_buffer.lines().enumerate() {
+    let mut i = 0;
+    for line in my_buffer.lines() {
         let line=line.expect("ERROR: did not get a line");
         if should_print {
             println!("{}",line);
@@ -79,9 +79,8 @@ fn main(){
 
         // TODO pattern match for each kind of line:
         // id, seq, +, qual
-        match i%lines_per_read {
+        match i%4{
             0=>{
-                in_middle_of_entry=true;
                 if line.chars().nth(0).unwrap() != '@' {
                     panic!("ERROR: first character of the identifier is not @ in the line {}. Contents are:\n  {}",i,line); 
                 }
@@ -100,7 +99,6 @@ fn main(){
                 }
             }
             3=>{
-                in_middle_of_entry=false;
                 if qual_regex.is_match(&line) {
                     panic!("ERROR: there are characters that are not qual characters in line {}. Contents are:\n  {}",i,line);
                 }
@@ -120,9 +118,10 @@ fn main(){
                 panic!("INTERNAL ERROR");
             }
         }
+        i += 1;
     }
-    if in_middle_of_entry {
-        panic!("ERROR: incomplete fastq entry");
+    if i % lines_per_read > 0{
+        panic!("ERROR: incomplete fastq entry. Num lines: {}",i);
     }
 
     if matches.opt_present("verbose") {
