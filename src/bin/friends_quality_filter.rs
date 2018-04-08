@@ -65,7 +65,7 @@ fn main(){
                     let phred = current_qual as u8;
                     if phred < max_quality {
                         new_seq.push('N');
-                        new_qual.push('#');
+                        new_qual.push('!');
                     } else {
                         new_seq.push(current_nt);
                         new_qual.push(current_qual);
