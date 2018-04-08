@@ -4,6 +4,10 @@ version = "0.1.5"
 authors = ["Lee Katz <gzu2@cdc.gov>"]
 
 [[bin]]
+name = "friends_quality_filter"
+path = "src/bin/friends_quality_filter.rs"
+
+[[bin]]
 name = "friends_trimmer"
 path = "src/bin/friends_trimmer.rs"
 
