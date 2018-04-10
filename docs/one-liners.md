@@ -62,3 +62,28 @@ an estimated 10-30% compression gain.  Please see this blog for more details.  h
 
 Next, run `ls -lhS` on the original and sorted reads to check their size.
 
+## Adapter discovery
+
+What adapters are being used for your reads?  Maybe you should trim them!  Many adapters are 19mers but they can be different lengths.
+
+    zcat file.fastq.gz | \
+      friends_trimmer --last-base 19 | \
+      friends_chandler --kmer-length 19 | \
+      sort -k2,2nr | head -n 1
+
+    => ATCGGAAGAGCACACGTCT	146
+
+Or why not just try many kmer lengths?
+
+    for length in $(seq 6 65); do 
+      zcat PT01-001_R1.fastq.gz | \
+        friends_trimmer --last-base $length | \
+        friends_chandler --kmer-length $length | \
+        sort -k2,2nr | \
+        head -n 2; 
+      done;
+
+    => CCGGCG  1623
+    ...
+       ATCGGAAGAGCACACGTCTGAACTCCAGTCACGTGGCCTTATCTCGTATGCCGTCTTCTGCTTGA       24
+
