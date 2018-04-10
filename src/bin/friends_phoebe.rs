@@ -18,7 +18,7 @@ fn main(){
     let args: Vec<String> = env::args().collect();
     let mut opts = ross_base_options();
     //script-specific flags
-    opts.optopt("r","readlength","Read length (default: 150)","INT");
+    //opts.optopt("r","readlength","Read length (default: 150)","INT");
     //opts.optopt("n","numbases","Maximum number of nucleotides (default: 0, unlimited)","INT");
     //opts.optopt("n","numreads","Maximum number of reads (default: 0, unlimited)","INT");
 
