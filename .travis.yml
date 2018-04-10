@@ -8,4 +8,5 @@ script:
   - bash tests/friends_carol.sh
   - bash tests/friends_chandler.sh
   - bash tests/friends_emma.sh
-
+  - bash tests/friends_trimmer.sh
+  - bash tests/friends_gunther.sh
