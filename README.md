@@ -1,8 +1,10 @@
 # Random Operations on Sequences Suite - ROSS
 
-Perform random operations on fastq files, using unix streaming.  This is an implementation of the ROSS project but in the Rust language.
+Perform random operations on fastq files, using unix streaming.
 
 ## Installation
+
+ROSS.rs is programmed in the Rust programming language.  More information about Rust, including installation and the executable `cargo`, can be found at [rust-lang.org](https://www.rust-lang.org).
 
 After downloading, use the Rust executable `cargo` like so:
 
