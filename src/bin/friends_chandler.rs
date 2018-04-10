@@ -50,13 +50,38 @@ fn main(){
         match num_lines % 4 {
             2 => {
                 let seq = line.expect("ERROR reading line");
-                let my_num_kmers=seq.len() - kmer_length + 1;
+                let seq_length=seq.len();
+                if seq_length < kmer_length {
+                    continue;
+                }
+
+                let my_num_kmers=seq_length - kmer_length + 1;
                 for idx in 0..my_num_kmers {
                     // increment the kmer count by reference
                     let kmer_count = kmer_hash.entry(String::from(&seq[idx..kmer_length+idx])).
                         or_insert(0);
                     *kmer_count += 1;
                 }
+
+                /* testing revcomp on each kmer instead of
+                 * each sequence instead: it's slower.
+                // kmer count on the revcomp sequence too
+                for idx in 0..my_num_kmers {
+                    let kmer_count = kmer_hash.entry(revcomp(&seq[idx..kmer_length+idx]))
+                        .or_insert(0);
+                    *kmer_count += 1;
+                }
+                continue;
+                */
+
+                // kmer count on the revcomp sequence too
+                let revcomp = revcomp(&seq);
+                for idx in 0..my_num_kmers {
+                    let kmer_count = kmer_hash.entry(String::from(&revcomp[idx..kmer_length+idx]))
+                        .or_insert(0);
+                    *kmer_count += 1;
+                }
+
             }
             _ => { }
         };
@@ -64,6 +89,35 @@ fn main(){
 
     for (kmer,count) in kmer_hash.iter() {
         println!("{}\t{}",kmer,count);
+    }
+}
+
+/// reverse-complement a dna sequence
+// Thanks Henk for supplying these functions.
+fn revcomp(dna: &str) -> String {
+    let mut rc_dna: String = String::with_capacity(dna.len());
+    for c in dna.chars().rev() {
+        rc_dna.push(switch_base(c))
+    }
+    rc_dna
+}
+
+/// Complementary nucleotide
+fn switch_base(c: char) -> char {
+    match c {
+        'a' => 't',
+        'c' => 'g',
+        't' => 'a',
+        'g' => 'c',
+        'u' => 'a',
+        'n' => 'n',
+        'A' => 'T',
+        'C' => 'G',
+        'T' => 'A',
+        'G' => 'C',
+        'U' => 'A',
+        'N' => 'N',
+        _ => 'N',
     }
 }
 
