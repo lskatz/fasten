@@ -1,8 +1,10 @@
 # Random Operations on Sequences Suite - ROSS
 
-Perform random operations on fastq files, using unix streaming.  This is an implementation of the ROSS project but in the Rust language.
+Perform random operations on fastq files, using unix streaming.
 
 ## Installation
+
+ROSS.rs is programmed in the Rust programming language.  More information about Rust, including installation and the executable `cargo`, can be found at [rust-lang.org](https://www.rust-lang.org).
 
 After downloading, use the Rust executable `cargo` like so:
 
@@ -13,7 +15,7 @@ All executables will be in the directory `ROSS.rs/target/release`.
 
 ## General usage
 
-All scripts accept the parameters, read uncompressed fastq format, and print uncompressed fastq format to stdout.
+All scripts accept the parameters, read uncompressed fastq format from stdin, and print uncompressed fastq format to stdout.
 
 * `--help`
 * `--numcpus` Not all scripts will take advantage of numcpus.
@@ -38,6 +40,8 @@ All scripts accept the parameters, read uncompressed fastq format, and print unc
 |`friends_joey`    | Shuffles or deshuffles paired end reads. Joey can socialize!| ![Joey](/images/joey.png) |
 |`friends_barry`   | Joins overlapping paired ends together. They might not always like it, but Barry can be a connection between friends of friends. | ![Barry](/images/barry.png) |
 |`friends_gunther` | Validates your reads ... and *you* | ![Gunther](/images/gunther.png) |
+|`friends_quality_filter` | Transforms nucleotides to "N" if the quality is low | |
+|`friends_trimmer` | Blunt-end trims reads | |
 
 [![Build Status](https://travis-ci.org/lskatz/ROSS.rs.svg?branch=master)](https://travis-ci.org/lskatz/ROSS.rs)
 
