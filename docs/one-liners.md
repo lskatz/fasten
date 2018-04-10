@@ -57,7 +57,7 @@ an estimated 10-30% compression gain.  Please see this blog for more details.  h
       sort -k1,1n | \
       cut -f2- | \
       tr '\t' '\n' | \
-      friends_joey.pl --deshuffle -1 1.fastq -2 2.fastq
+      friends_joey --deshuffle -1 1.fastq -2 2.fastq
     gzip 1.fastq 2.fastq
 
 Next, run `ls -lhS` on the original and sorted reads to check their size.
@@ -86,4 +86,5 @@ Or why not just try many kmer lengths?
     => CCGGCG  1623
     ...
        ATCGGAAGAGCACACGTCTGAACTCCAGTCACGTGGCCTTATCTCGTATGCCGTCTTCTGCTTGA       24
+
 
