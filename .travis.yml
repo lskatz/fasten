@@ -11,3 +11,4 @@ script:
   - bash tests/friends_trimmer.sh
   - bash tests/friends_gunther.sh
   - bash tests/friends_joey.sh
+  - bash tests/friends_phoebe.sh
