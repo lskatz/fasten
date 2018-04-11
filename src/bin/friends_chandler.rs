@@ -42,55 +42,46 @@ fn main(){
     // read the file
     let my_file = File::open(&filename).expect("Could not open file");
     let my_buffer=BufReader::new(my_file);
-    let mut num_lines=0;
+    let mut buffer_iter = my_buffer.lines();
     let mut kmer_hash :HashMap<String,u32> = HashMap::new();
-    for line in my_buffer.lines() {
-        num_lines+=1;
+    while let Some(_) = buffer_iter.next() {
+        let seq = buffer_iter.next().expect("ERROR reading a sequence line")
+            .expect("ERROR reading a sequence line");
+        buffer_iter.next();
+        buffer_iter.next();
 
-        match num_lines % 4 {
-            2 => {
-                let seq = line.expect("ERROR reading line");
-                let seq_length=seq.len();
-                if seq_length < kmer_length {
-                    continue;
-                }
+        let seq_length=seq.len();
+        // Don't count short sequences
+        if seq_length < kmer_length {
+            continue;
+        }
 
-                let my_num_kmers=seq_length - kmer_length + 1;
-                for idx in 0..my_num_kmers {
-                    // increment the kmer count by reference
-                    let kmer_count = kmer_hash.entry(String::from(&seq[idx..kmer_length+idx])).
-                        or_insert(0);
-                    *kmer_count += 1;
-                }
+        let my_num_kmers=seq_length - kmer_length + 1;
+        for idx in 0..my_num_kmers {
+            // increment the kmer count by reference
+            let kmer_count = kmer_hash.entry(String::from(&seq[idx..kmer_length+idx])).
+                or_insert(0);
+            *kmer_count += 1;
+        }
 
-                /* testing revcomp on each kmer instead of
-                 * each sequence instead: it's slower.
-                // kmer count on the revcomp sequence too
-                for idx in 0..my_num_kmers {
-                    let kmer_count = kmer_hash.entry(revcomp(&seq[idx..kmer_length+idx]))
-                        .or_insert(0);
-                    *kmer_count += 1;
-                }
-                continue;
-                */
-
-                // kmer count on the revcomp sequence too
-                let revcomp = revcomp(&seq);
-                for idx in 0..my_num_kmers {
-                    let kmer_count = kmer_hash.entry(String::from(&revcomp[idx..kmer_length+idx]))
-                        .or_insert(0);
-                    *kmer_count += 1;
-                }
-
-            }
-            _ => { }
-        };
+        // kmer count on the revcomp sequence too
+        let revcomp = revcomp(&seq);
+        for idx in 0..my_num_kmers {
+            let kmer_count = kmer_hash.entry(String::from(&revcomp[idx..kmer_length+idx]))
+                .or_insert(0);
+            *kmer_count += 1;
+        }
     }
 
+
+    // TODO in the future: somehow efficiently remove reverse
+    // complement kmers before printing because it is basically
+    // double the information needed.
     for (kmer,count) in kmer_hash.iter() {
         println!("{}\t{}",kmer,count);
     }
 }
+
 
 /// reverse-complement a dna sequence
 // Thanks Henk for supplying these functions.
