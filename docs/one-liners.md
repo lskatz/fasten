@@ -87,12 +87,11 @@ Or why not just try many kmer lengths?
     ...
        ATCGGAAGAGCACACGTCTGAACTCCAGTCACGTGGCCTTATCTCGTATGCCGTCTTCTGCTTGA       24
 
-Want it to go faster by subsampling?  Use `friends_phoebe | head` to get 1,000 random reads.
+Want it to go faster by subsampling?  Use `friends_ursula --frequency 0.1` to go 10x faster.
 
     for length in $(seq 6 65); do 
       zcat file.fastq.gz | \
-        friends_phoebe |\
-        head -n 8000 \
+        friends_ursula --frequency 0.1 |\
         friends_trimmer --last-base $length | \
         friends_chandler --kmer-length $length | \
         sort -k2,2nr | \
