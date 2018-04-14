@@ -36,7 +36,7 @@ All scripts accept the parameters, read uncompressed fastq format from stdin, an
 |`friends_emma`    | Combines identical reads. Did you know that Emma was played by twins, Cali and Noelle Sheldon? Just like Michelle Tanner from Full House! | ![UNG](/images/emma.png) |
 |`friends_chandler`| Kmer counting. No outside dependencies. Chandler's job is rarely discussed but he does... I want to say, something in accounting?| ![Chandler](/images/chander.png) |
 |`friends_marcel`  | Rescores reads based on kmer abundance. Marcel monkeys around with your data. | ![Marcel](/images/marcel.png) | 
-|`friends_ursula`  | Removes duplicate reads and/or downsamples reads. Ursula is a twin but played by the same actress!| ![Ursula](/images/ursula.png) | 
+|`friends_ursula`  | Downsamples reads. Ursula is a twin but played by the same actress!| ![Ursula](/images/ursula.png) | 
 |`friends_joey`    | Shuffles or deshuffles paired end reads. Joey can socialize!| ![Joey](/images/joey.png) |
 |`friends_barry`   | Joins overlapping paired ends together. They might not always like it, but Barry can be a connection between friends of friends. | ![Barry](/images/barry.png) |
 |`friends_gunther` | Validates your reads ... and *you* | ![Gunther](/images/gunther.png) |
