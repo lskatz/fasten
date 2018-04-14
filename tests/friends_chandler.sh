@@ -1,7 +1,6 @@
 #!/bin/bash
 
 set -e
-set -x
 
 INPUT=testdata/four_reads.pe.fastq
 
