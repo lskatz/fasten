@@ -88,6 +88,8 @@ fn main() {
         }
     }
 
-    logmsg("The fastq input seems to be interleaved paired-end");
+    if matches.opt_present("verbose") {
+        logmsg("The fastq input seems to be interleaved paired-end");
+    }
 }
 
