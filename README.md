@@ -15,7 +15,7 @@ All executables will be in the directory `ROSS.rs/target/release`.
 
 ## General usage
 
-All scripts accept the parameters, read uncompressed fastq format from stdin, and print uncompressed fastq format to stdout.
+All scripts accept the parameters, read uncompressed fastq format from stdin, and print uncompressed fastq format to stdout.  All paired end fastq files must be in interleaved format, and they are written in [interleaved format](./docs/file-formats.md), except when deshuffling with `friends_joey`.
 
 * `--help`
 * `--numcpus` Not all scripts will take advantage of numcpus.
