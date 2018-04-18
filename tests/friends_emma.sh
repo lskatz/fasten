@@ -22,4 +22,16 @@ if [ "$total_quals" != "259.31" ]; then
   exit 1
 fi
 
+pe_collapsed=$(cat $INPUT $INPUT $INPUT | ./target/debug/friends_emma --paired-end | ./target/debug/friends_rachel --each-read)
+IDs=$(echo "$pe_collapsed" | cut -f 1 | tail -n +2 | paste -sd+)
+pe_quals=$(echo "$pe_collapsed" | cut -f 3 | tail -n +2 | paste -sd+ | bc -l)
+if [ "$IDs" != "1/1+1/2+2/1+2/2+3/1+3/2+4/1+4/2" ]; then
+  echo "Test failed for total expected quality when collapsing three sets of reads using --paired-end"
+  exit 1
+fi
+if [ "$total_quals" != "$pe_quals" ]; then
+  echo "Test failed for having the same quality scores in SE mode as PE mode"
+  exit 1
+fi
+
 echo "$0 passed";

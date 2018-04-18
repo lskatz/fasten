@@ -142,7 +142,18 @@ fn main(){
             qual_cigar.push(qual_recalc_char);
         }
 
-        println!("@{}\n{}\n+\n{}",seq_counter,seq,qual_cigar);
+        if paired_end {
+            // split the seq and qual for paired end
+            let separator_pos = seq.find(READ_SEPARATOR).expect("ERROR finding read separator");
+            let r1_seq = seq[0..separator_pos].to_string();
+            let r2_seq = seq[separator_pos+1..].to_string();
+            let r1_qual= qual_cigar[0..separator_pos].to_string();
+            let r2_qual= qual_cigar[separator_pos+1..].to_string();
+            println!("@{}/1\n{}\n+\n{}",seq_counter,r1_seq,r1_qual);
+            println!("@{}/2\n{}\n+\n{}",seq_counter,r2_seq,r2_qual);
+        } else {
+            println!("@{}\n{}\n+\n{}",seq_counter,seq,qual_cigar);
+        }
     }
 }
 
