@@ -12,4 +12,5 @@ script:
   - bash tests/friends_gunther.sh
   - bash tests/friends_joey.sh
   - bash tests/friends_phoebe.sh
+  - bash tests/friends_ursula.sh
   - bash tests/friends_quality_filter.sh
