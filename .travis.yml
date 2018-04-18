@@ -14,3 +14,4 @@ script:
   - bash tests/friends_phoebe.sh
   - bash tests/friends_ursula.sh
   - bash tests/friends_quality_filter.sh
+  - bash tests/friends_regex.sh
