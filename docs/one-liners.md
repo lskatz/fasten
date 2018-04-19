@@ -1,4 +1,16 @@
 # One-liners
+<!-- vim-markdown-toc GFM -->
+
+* [Generate interleaved reads](#generate-interleaved-reads)
+  * [Interleave split reads and feed directly to the cleaning script](#interleave-split-reads-and-feed-directly-to-the-cleaning-script)
+  * [Interleave split reads, feed directly to the cleaning script, and then see how well it cleaned the reads](#interleave-split-reads-feed-directly-to-the-cleaning-script-and-then-see-how-well-it-cleaned-the-reads)
+* [read cleaning](#read-cleaning)
+* [In-place fastq compression](#in-place-fastq-compression)
+* [Adapter discovery](#adapter-discovery)
+* [Translation to RNA](#translation-to-rna)
+* [Extract a certain motif, keeping paired end reads intact](#extract-a-certain-motif-keeping-paired-end-reads-intact)
+
+<!-- vim-markdown-toc -->
 
 These are random one-liners or similar that make use of ROSS.
 Some or many of them are large and so they will be displayed on multiple lines for readability.
@@ -98,5 +110,21 @@ Want it to go faster by subsampling?  Use `friends_ursula --frequency 0.1` to go
         head -n 2; 
       done;
     
+## Translation to RNA
 
+    zcat dna.fastq.gz | friends_replace --find 'T' --replace 'U' | \
+      gzip -c > rna.fastq.gz
+
+## Extract a certain motif, keeping paired end reads intact
+
+    zcat file.fastq.gz | friends_regex --regex 'ATG' --paired-end | \
+      gzip -c > start-sites.fastq.gz
+
+Choose a few different motifs with regex magic
+
+    zcat file.fastq.gz | friends_regex --regex 'ATG|GTG|TTG' --paired-end | \
+      gzip -c > start-sites.fastq.gz
+    
+    zcat file.fastq.gz | friends_regex --regex '[AGT]TG' --paired-end | \
+      gzip -c > start-sites.fastq.gz
 

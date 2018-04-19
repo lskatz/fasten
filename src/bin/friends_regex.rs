@@ -52,6 +52,10 @@ fn main(){
     let regex = Regex::new(&regex_param)
         .expect("malformed seq regex given by --regex");
 
+    if matches.opt_present("verbose") {
+        eprintln!("Regular expression: {}",regex_param);
+    }
+
     let mut buffer_iter = my_buffer.lines();
 
     while let Some(line) = buffer_iter.next() {
