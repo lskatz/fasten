@@ -4,7 +4,7 @@ version = "0.1.6"
 authors = ["Lee Katz <gzu2@cdc.gov>"]
 license = "LICENSE"
 description = "A set of scripts to run basic analysis on fastq files"
-documentation = "README.md"
+documentation = "https://github.com/lskatz/ROSS.rs/blob/master/README.md"
 repository = "https://github.com/lskatz/ROSS.rs"
 
 [[bin]]
