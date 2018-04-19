@@ -1,8 +1,8 @@
+[![Build Status](https://travis-ci.org/lskatz/ROSS.rs.svg?branch=master)](https://travis-ci.org/lskatz/ROSS.rs)
+
 # Random Operations on Sequences Suite - ROSS
 
 Perform random operations on fastq files, using unix streaming.
-
-[![Build Status](https://travis-ci.org/lskatz/ROSS.rs.svg?branch=master)](https://travis-ci.org/lskatz/ROSS.rs)
 
 ## Installation
 
