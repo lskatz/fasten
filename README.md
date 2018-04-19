@@ -42,6 +42,8 @@ All scripts accept the parameters, read uncompressed fastq format from stdin, an
 |`friends_gunther` | Validates your reads ... and *you* | ![Gunther](/images/gunther.png) |
 |`friends_quality_filter` | Transforms nucleotides to "N" if the quality is low | |
 |`friends_trimmer` | Blunt-end trims reads | |
+|`friends_replace` | Find and replace using regex | |
+|`friends_regex`   | Filter for reads using regex | |
 
 [![Build Status](https://travis-ci.org/lskatz/ROSS.rs.svg?branch=master)](https://travis-ci.org/lskatz/ROSS.rs)
 
