@@ -2,6 +2,12 @@
 
 NUMCPUS=1
 
+if [ "$@" == "" ]; then
+  echo "Determines read metrics on a set of fastq files."
+  echo "Usage: $0 *.fastq[.gz]" >&2
+  exit 1
+fi
+
 which friends_rachel >& /dev/null
 if [ $? -gt 0 ]; then
   echo "ERROR: could not find friends_rachel in the path" >&2

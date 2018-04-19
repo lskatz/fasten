@@ -2,6 +2,8 @@
 
 Perform random operations on fastq files, using unix streaming.
 
+[![Build Status](https://travis-ci.org/lskatz/ROSS.rs.svg?branch=master)](https://travis-ci.org/lskatz/ROSS.rs)
+
 ## Installation
 
 ROSS.rs is programmed in the Rust programming language.  More information about Rust, including installation and the executable `cargo`, can be found at [rust-lang.org](https://www.rust-lang.org).
@@ -45,5 +47,8 @@ All scripts accept the parameters, read uncompressed fastq format from stdin, an
 |`friends_replace` | Find and replace using regex | |
 |`friends_regex`   | Filter for reads using regex | |
 
-[![Build Status](https://travis-ci.org/lskatz/ROSS.rs.svg?branch=master)](https://travis-ci.org/lskatz/ROSS.rs)
+## Documentation
+
+* Some workflows are shown in the [one-liners](./docs/one-liners.md) page.
+* Some wrapper scripts are noted in the [scripts](./docs/scripts.md) page.
 
