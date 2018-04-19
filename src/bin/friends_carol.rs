@@ -6,6 +6,7 @@ use std::io::BufReader;
 use ross::ross_base_options;
 use ross::io::fastq;
 use ross::io::seq::Cleanable;
+use ross::logmsg;
 
 use std::env;
 
@@ -41,6 +42,9 @@ fn main(){
     if matches.opt_present("help") {
         println!("Convert a fastq file to a standard 4-lines-per-entry format\n{}", opts.usage(&opts.short_usage(&args[0])));
         std::process::exit(0);
+    }
+    if matches.opt_present("paired-end") {
+        logmsg("WARNING: --paired-end is not utilized in this script");
     }
 
     let my_file = File::open("/dev/stdin").expect("Could not open file");

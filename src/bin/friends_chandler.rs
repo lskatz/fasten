@@ -8,6 +8,7 @@ use std::io::BufRead;
 use std::env;
 
 use ross::ross_base_options;
+use ross::logmsg;
 
 use std::collections::HashMap;
 
@@ -23,6 +24,9 @@ fn main(){
     if matches.opt_present("help") {
         println!("Counts kmers. Doesn't anyone remember that Chander is an analyst?\n{}", opts.usage(&opts.short_usage(&args[0])));
         std::process::exit(0);
+    }
+    if matches.opt_present("paired-end") {
+        logmsg("WARNING: --paired-end is not utilized in this script");
     }
 
     let kmer_length={

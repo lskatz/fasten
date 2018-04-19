@@ -9,6 +9,7 @@ use std::env;
 use regex::Regex;
 
 use ross::ross_base_options;
+use ross::logmsg;
 
 fn main(){
     let args: Vec<String> = env::args().collect();
@@ -22,6 +23,10 @@ fn main(){
     if matches.opt_present("help") {
         println!("Streaming editor for fastq data using a find/replace.\n{}", opts.usage(&opts.short_usage(&args[0])));
         std::process::exit(0);
+    }
+
+    if matches.opt_present("paired-end") {
+        logmsg("WARNING: --paired-end is not utilized in this script");
     }
 
     //which field does the user want to find and replace?

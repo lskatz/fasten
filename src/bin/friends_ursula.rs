@@ -18,11 +18,10 @@ fn main(){
     let mut opts = ross_base_options();
 
     opts.optopt("f","frequency","Frequency of sequences to print, 0 to 1. Default: 1","FLOAT");
-    opts.optflag("p", "paired-end", "Reads are interleaved");
 
     let matches = opts.parse(&args[1..]).expect("ERROR: could not parse parameters");
 
-    if matches.opt_present("h") {
+    if matches.opt_present("help") {
         println!("Ursula: downsample your reads\n{}", opts.usage(&opts.short_usage(&args[0])));
         std::process::exit(0);
     }

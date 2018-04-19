@@ -24,6 +24,9 @@ fn main() {
                 );
         std::process::exit(0);
     }
+    if matches.opt_present("paired-end") {
+        logmsg("WARNING: --paired-end is not utilized in this script because it tells you whether it thinks a fastq file is paired end.");
+    }
 
     let check_first = { 
         if matches.opt_present("check-first") {

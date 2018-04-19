@@ -10,6 +10,7 @@ use std::f32;
 use std::env;
 
 use ross::ross_base_options;
+use ross::logmsg;
 
 fn main(){
     let args: Vec<String> = env::args().collect();
@@ -24,6 +25,9 @@ fn main(){
     if matches.opt_present("help") {
         println!("Gives read metrics on a read set.  Rachel lets you know if you look good!\n{}", opts.usage(&opts.short_usage(&args[0])));
         std::process::exit(0);
+    }
+    if matches.opt_present("paired-end") {
+        logmsg("WARNING: --paired-end is not utilized in this script");
     }
 
     let each_read :bool=matches.opt_present("each-read");
