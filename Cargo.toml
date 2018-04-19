@@ -2,7 +2,7 @@
 name    = "ross"
 version = "0.1.6"
 authors = ["Lee Katz <gzu2@cdc.gov>"]
-license = "https://github.com/lskatz/ROSS.rs/blob/master/LICENSE"
+license-file  = "https://github.com/lskatz/ROSS.rs/blob/master/LICENSE"
 description   = "A set of scripts to run basic analysis on fastq files"
 documentation = "https://github.com/lskatz/ROSS.rs/blob/master/README.md"
 repository    = "https://github.com/lskatz/ROSS.rs"
