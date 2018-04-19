@@ -24,9 +24,12 @@ All scripts accept the parameters, read uncompressed fastq format from stdin, an
 * `--paired-end` Input reads are interleaved paired end
 * `--verbose` Print more status messages
 
-## Ross script descriptions
+## Other documentation
 
-*Not all scripts have been created at this time.*
+* Some workflows are shown in the [one-liners](./docs/one-liners.md) page.
+* Some wrapper scripts are noted in the [scripts](./docs/scripts.md) page.
+
+## Ross script descriptions
 
 |script               |Description|    |
 |---------------------|-----------|----|
@@ -37,7 +40,6 @@ All scripts accept the parameters, read uncompressed fastq format from stdin, an
 |`friends_phoebe`  | Randomizes reads. Phoebe is like, totally random.| ![Phoebe](/images/phoebe.png) |
 |`friends_emma`    | Combines identical reads. Did you know that Emma was played by twins, Cali and Noelle Sheldon? Just like Michelle Tanner from Full House! | ![UNG](/images/emma.png) |
 |`friends_chandler`| Kmer counting. No outside dependencies. Chandler's job is rarely discussed but he does... I want to say, something in accounting?| ![Chandler](/images/chander.png) |
-|`friends_marcel`  | Rescores reads based on kmer abundance. Marcel monkeys around with your data. | ![Marcel](/images/marcel.png) | 
 |`friends_ursula`  | Downsamples reads. Ursula is a twin but played by the same actress!| ![Ursula](/images/ursula.png) | 
 |`friends_joey`    | Shuffles or deshuffles paired end reads. Joey can socialize!| ![Joey](/images/joey.png) |
 |`friends_barry`   | Joins overlapping paired ends together. They might not always like it, but Barry can be a connection between friends of friends. | ![Barry](/images/barry.png) |
@@ -47,8 +49,4 @@ All scripts accept the parameters, read uncompressed fastq format from stdin, an
 |`friends_replace` | Find and replace using regex | |
 |`friends_regex`   | Filter for reads using regex | |
 
-## Documentation
-
-* Some workflows are shown in the [one-liners](./docs/one-liners.md) page.
-* Some wrapper scripts are noted in the [scripts](./docs/scripts.md) page.
 
