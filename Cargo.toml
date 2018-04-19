@@ -1,7 +1,11 @@
 [package]
 name = "ross"
-version = "0.1.5"
+version = "0.1.6"
 authors = ["Lee Katz <gzu2@cdc.gov>"]
+
+[[bin]]
+name = "friends_replace"
+path = "src/bin/friends_replace.rs"
 
 [[bin]]
 name = "friends_regex"
@@ -56,8 +60,7 @@ name = "friends_gunther"
 path = "src/bin/friends_gunther.rs"
 
 [dependencies]
-#bio = "0.15"
-regex = "0.2"
+regex = "0.2.10"
 getopts = "0.2"
 statistical = "0.1.1"
 multiqueue = "0.3.2"

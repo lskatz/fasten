@@ -15,3 +15,4 @@ script:
   - bash tests/friends_ursula.sh
   - bash tests/friends_quality_filter.sh
   - bash tests/friends_regex.sh
+  - bash tests/friends_replace.sh
