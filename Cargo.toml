@@ -1,11 +1,15 @@
 [package]
 name    = "ross"
-version = "0.1.6"
+version = "0.1.7"
 authors = ["Lee Katz <gzu2@cdc.gov>"]
 license-file  = "LICENSE"
+license       = "MIT"
 description   = "A set of scripts to run basic analysis on fastq files"
 documentation = "https://github.com/lskatz/ROSS.rs/blob/master/README.md"
 repository    = "https://github.com/lskatz/ROSS.rs"
+categories    = ["command-line-utilities", "science"]
+keywords      = ["bioinformatics","friends","fastq"]
+readme        = "./README.md"
 
 [[bin]]
 name = "friends_replace"
