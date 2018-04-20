@@ -12,64 +12,56 @@
 
 <!-- vim-markdown-toc -->
 
-These are random one-liners or similar that make use of ROSS.
+These are random one-liners or similar that make use of Fasten.
 Some or many of them are large and so they will be displayed on multiple lines for readability.
 
-First, it might make sense to change your path, for readability.  Choose either 'debug' or 'release' at the end of the path, depending on how you compiled ROSS.rs.
+First, it might make sense to change your path, for readability.  Choose either 'debug' or 'release' at the end of the path, depending on how you compiled Fasten.rs.
 
-    export PATH=$PATH:~/src/ROSS.rs/target/debug
+    export PATH=$PATH:~/src/Fasten.rs/target/debug
 
 ## Generate interleaved reads 
 
-![Joey](/images/joey.png)
-
-Most scripts in ROSS require interleaved reads, and so you should use `friends_joey` to shuffle them.  The following example goes a step further with `grep` to help show you that the reads are interleaved.
+Most scripts in Fasten require interleaved reads, and so you should use `fasten_shuffle` to shuffle them.  The following example goes a step further with `grep` to help show you that the reads are interleaved.
 
     cat testdata/R1.fastq testdata/R2.fastq | \
-      friends_joey | \
+      fasten_shuffle | \
       grep '^@read'
 
 ### Interleave split reads and feed directly to the cleaning script 
 
-![Joey](/images/joey.png) => ![Monica](/images/monica.jpg)
-
     cat testdata/R1.fastq testdata/R2.fastq | \
-      friends_joey | \
-      friends_monica --min-trim-quality 30
+      fasten_shuffle | \
+      fasten_clean --min-trim-quality 30
 
 ### Interleave split reads, feed directly to the cleaning script, and then see how well it cleaned the reads
 
-![Joey](/images/joey.png) => ![Monica](/images/monica.jpg) => ![Rachel](/images/rachel.jpg)
-
     cat testdata/R1.fastq testdata/R2.fastq | \
-      friends_joey | \
-      friends_monica --min-trim-quality 30 | \
-      friends_rachel --each-read
+      fasten_shuffle | \
+      fasten_clean --min-trim-quality 30 | \
+      fasten_metrics --each-read
 
 ## read cleaning
 
-![Monica](/images/monica.jpg)
-
-ROSS cleans reads by trimming and filtering.  View those options by running `friends_monica --help`
+Fasten cleans reads by trimming and filtering.  View those options by running `fasten_clean --help`
 
     zcat some_file.fastq.gz | \
-      friends_monica --min-trim-quality 30 --min-avg-quality 20 --min-length 50 | \
+      fasten_clean --min-trim-quality 30 --min-avg-quality 20 --min-length 50 | \
       gzip -c > cleaned.fastq.gz
 
 ## In-place fastq compression
 
 This works by sorting by GC content, which plays into how the gzip algorithm works.
-`friends_joey.pl` is used to shuffle the forward and reverse reads and then used to
+`fasten_shuffle.pl` is used to shuffle the forward and reverse reads and then used to
 deshuffle them.  The actual reads remain the same but are sorted differently, yielding
 an estimated 10-30% compression gain.  Please see this blog for more details.  http://thegenomefactory.blogspot.com.au/2012/11/sorting-fastq-files-by-sequence-length.html?m=1
 
-    cat testdata/R1.fastq testdata/R2.fastq | friends_joey | \
+    cat testdata/R1.fastq testdata/R2.fastq | fasten_shuffle | \
       paste - - - - - - - - | \
       perl -F'\t' -lane '@GC=("$F[1]$F[5]"=~/[GCgc]/g); print join("\t",scalar(@GC)/length("$F[1]$F[5]"), @F);' | \
       sort -k1,1n | \
       cut -f2- | \
       tr '\t' '\n' | \
-      friends_joey --deshuffle -1 1.fastq -2 2.fastq
+      fasten_shuffle --deshuffle -1 1.fastq -2 2.fastq
     gzip 1.fastq 2.fastq
 
 Next, run `ls -lhS` on the original and sorted reads to check their size.
@@ -79,8 +71,8 @@ Next, run `ls -lhS` on the original and sorted reads to check their size.
 What adapters are being used for your reads?  Maybe you should trim them!  Many adapters are 19mers but they can be different lengths.
 
     zcat file.fastq.gz | \
-      friends_trimmer --last-base 19 | \
-      friends_chandler --kmer-length 19 | \
+      fasten_trimmer --last-base 19 | \
+      fasten_kmer --kmer-length 19 | \
       sort -k2,2nr | head -n 1
 
     => ATCGGAAGAGCACACGTCT	146
@@ -89,8 +81,8 @@ Or why not just try many kmer lengths?
 
     for length in $(seq 6 65); do 
       zcat file.fastq.gz | \
-        friends_trimmer --last-base $length | \
-        friends_chandler --kmer-length $length | \
+        fasten_trimmer --last-base $length | \
+        fasten_kmer --kmer-length $length | \
         sort -k2,2nr | \
         head -n 2; 
       done;
@@ -99,32 +91,32 @@ Or why not just try many kmer lengths?
     ...
        ATCGGAAGAGCACACGTCTGAACTCCAGTCACGTGGCCTTATCTCGTATGCCGTCTTCTGCTTGA       24
 
-Want it to go faster by subsampling?  Use `friends_ursula --frequency 0.1` to go 10x faster.
+Want it to go faster by subsampling?  Use `fasten_sample --frequency 0.1` to go 10x faster.
 
     for length in $(seq 6 65); do 
       zcat file.fastq.gz | \
-        friends_ursula --frequency 0.1 |\
-        friends_trimmer --last-base $length | \
-        friends_chandler --kmer-length $length | \
+        fasten_sample --frequency 0.1 |\
+        fasten_trimmer --last-base $length | \
+        fasten_kmer --kmer-length $length | \
         sort -k2,2nr | \
         head -n 2; 
       done;
     
 ## Translation to RNA
 
-    zcat dna.fastq.gz | friends_replace --find 'T' --replace 'U' | \
+    zcat dna.fastq.gz | fasten_replace --find 'T' --replace 'U' | \
       gzip -c > rna.fastq.gz
 
 ## Extract a certain motif, keeping paired end reads intact
 
-    zcat file.fastq.gz | friends_regex --regex 'ATG' --paired-end | \
+    zcat file.fastq.gz | fasten_regex --regex 'ATG' --paired-end | \
       gzip -c > start-sites.fastq.gz
 
 Choose a few different motifs with regex magic
 
-    zcat file.fastq.gz | friends_regex --regex 'ATG|GTG|TTG' --paired-end | \
+    zcat file.fastq.gz | fasten_regex --regex 'ATG|GTG|TTG' --paired-end | \
       gzip -c > start-sites.fastq.gz
     
-    zcat file.fastq.gz | friends_regex --regex '[AGT]TG' --paired-end | \
+    zcat file.fastq.gz | fasten_regex --regex '[AGT]TG' --paired-end | \
       gzip -c > start-sites.fastq.gz
 
