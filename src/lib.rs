@@ -8,7 +8,7 @@ use getopts::Options;
 
 pub mod io;
 
-/// a function that reads an options object and adds ROSS default options.
+/// a function that reads an options object and adds fasten default options.
 pub fn fasten_base_options() -> Options{
     let mut opts = Options::new();
     opts.optflag("h", "help", "Print this help menu.");
