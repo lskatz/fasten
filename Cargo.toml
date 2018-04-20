@@ -24,8 +24,8 @@ name = "fasten_quality_filter"
 path = "src/bin/fasten_quality_filter.rs"
 
 [[bin]]
-name = "fasten_trimmer"
-path = "src/bin/fasten_trimmer.rs"
+name = "fasten_trim"
+path = "src/bin/fasten_trim.rs"
 
 [[bin]]
 name = "fasten_combine"
