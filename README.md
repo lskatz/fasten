@@ -17,7 +17,7 @@ All executables will be in the directory `fasten/target/release`.
 
 ## General usage
 
-All scripts accept the parameters, read uncompressed fastq format from stdin, and print uncompressed fastq format to stdout.  All paired end fastq files must be in interleaved format, and they are written in [interleaved format](./docs/file-formats.md), except when deshuffling with `fasten_joey`.
+All scripts accept the parameters, read uncompressed fastq format from stdin, and print uncompressed fastq format to stdout.  All paired end fastq files must be in interleaved format, and they are written in [interleaved format](./docs/file-formats.md), except when deshuffling with `fasten_shuffle`.
 
 * `--help`
 * `--numcpus` Not all scripts will take advantage of numcpus.
