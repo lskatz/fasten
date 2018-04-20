@@ -1,5 +1,5 @@
 extern crate getopts;
-extern crate ross;
+extern crate fasten;
 extern crate regex;
 use std::fs::File;
 use std::io::BufReader;
@@ -8,11 +8,11 @@ use std::env;
 
 use regex::Regex;
 
-use ross::ross_base_options;
+use fasten::fasten_base_options;
 
 fn main(){
     let args: Vec<String> = env::args().collect();
-    let mut opts = ross_base_options();
+    let mut opts = fasten_base_options();
     // Options specific to this script
     opts.optopt("r","regex","Regular expression (default: '.')","STRING");
     opts.optopt("w","which","Which field to match on? ID, SEQ, QUAL. Default: SEQ","String");

@@ -1,20 +1,20 @@
 extern crate getopts;
-extern crate ross;
+extern crate fasten;
 use std::fs::File;
 use std::io::Write;
 use std::io::BufReader;
 
-use ross::ross_base_options;
-use ross::io::fastq;
-use ross::io::seq::Cleanable;
-use ross::io::seq::Seq;
-use ross::logmsg;
+use fasten::fasten_base_options;
+use fasten::io::fastq;
+use fasten::io::seq::Cleanable;
+use fasten::io::seq::Seq;
+use fasten::logmsg;
 
 use std::env;
 
 fn main(){
     let args: Vec<String> = env::args().collect();
-    let mut opts = ross_base_options();
+    let mut opts = fasten_base_options();
     //script-specific flags
     opts.optflag("d","deshuffle","Deshuffle reads from stdin");
     opts.optopt("1","","Forward reads. If deshuffling, reads are written to this file.","1.fastq");

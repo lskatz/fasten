@@ -9,7 +9,7 @@ use getopts::Options;
 pub mod io;
 
 /// a function that reads an options object and adds ROSS default options.
-pub fn ross_base_options() -> Options{
+pub fn fasten_base_options() -> Options{
     let mut opts = Options::new();
     opts.optflag("h", "help", "Print this help menu.");
     opts.optopt("n","numcpus","Number of CPUs (default: 1)","INT");

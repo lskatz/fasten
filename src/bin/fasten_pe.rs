@@ -1,8 +1,8 @@
-extern crate ross;
+extern crate fasten;
 extern crate regex;
 
-use ross::ross_base_options;
-use ross::logmsg;
+use fasten::fasten_base_options;
+use fasten::logmsg;
 use regex::Regex;
 
 use std::fs::File;
@@ -12,7 +12,7 @@ use std::env;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
-    let mut opts = ross_base_options();
+    let mut opts = fasten_base_options();
     opts.optopt("c","check-first","How many deflines to check to make sure the input is paired-end","INT");
     let matches = opts.parse(&args[1..]).expect("ERROR: could not parse parameters");
     

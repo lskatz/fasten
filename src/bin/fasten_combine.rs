@@ -1,4 +1,4 @@
-extern crate ross;
+extern crate fasten;
 extern crate getopts;
 extern crate rand;
 
@@ -10,8 +10,8 @@ use std::collections::HashMap;
 use std::env;
 use std::f32;
 
-use ross::ross_base_options;
-//use ross::logmsg;
+use fasten::fasten_base_options;
+//use fasten::logmsg;
 
 // need this constant because the compiler had a problem
 // with the syntax 10.0.pow()
@@ -20,7 +20,7 @@ const READ_SEPARATOR :char = '~';
 
 fn main(){
     let args: Vec<String> = env::args().collect();
-    let opts = ross_base_options();
+    let opts = fasten_base_options();
 
     let matches = opts.parse(&args[1..]).expect("ERROR: could not parse parameters");
 

@@ -1,4 +1,4 @@
-extern crate ross;
+extern crate fasten;
 extern crate statistical;
 extern crate getopts;
 
@@ -9,12 +9,12 @@ use std::f32;
 
 use std::env;
 
-use ross::ross_base_options;
-use ross::logmsg;
+use fasten::fasten_base_options;
+use fasten::logmsg;
 
 fn main(){
     let args: Vec<String> = env::args().collect();
-    let mut opts = ross_base_options();
+    let mut opts = fasten_base_options();
 
     // script-specific options
     opts.optflag("","each-read","Print the metrics for each read. This creates very large output");

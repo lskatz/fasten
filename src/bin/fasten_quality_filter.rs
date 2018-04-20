@@ -1,4 +1,4 @@
-extern crate ross;
+extern crate fasten;
 extern crate statistical;
 extern crate getopts;
 
@@ -7,12 +7,12 @@ use std::io::BufReader;
 use std::io::BufRead;
 use std::env;
 
-use ross::ross_base_options;
-use ross::logmsg;
+use fasten::fasten_base_options;
+use fasten::logmsg;
 
 fn main(){
     let args: Vec<String> = env::args().collect();
-    let mut opts = ross_base_options();
+    let mut opts = fasten_base_options();
 
     // script-specific options
     opts.optopt("m","max-quality","The maximum quality at which a base will be transformed to 'N'","INT");

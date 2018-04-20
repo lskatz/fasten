@@ -1,18 +1,18 @@
 extern crate getopts;
-extern crate ross;
+extern crate fasten;
 extern crate multiqueue;
 
 use std::fs::File;
 use std::io::BufReader;
 use std::io::BufRead;
 
-use ross::ross_base_options;
+use fasten::fasten_base_options;
 
 use std::env;
 
 fn main(){
     let args: Vec<String> = env::args().collect();
-    let mut opts = ross_base_options();
+    let mut opts = fasten_base_options();
 
     // script-specific options
     opts.optopt("","min-length","Minimum length for each read in bp","INT");
