@@ -16,4 +16,3 @@ script:
   - bash tests/fasten_quality_filter.sh
   - bash tests/fasten_regex.sh
   - bash tests/fasten_replace.sh
-  - bash tests/fasten_collapse.sh
