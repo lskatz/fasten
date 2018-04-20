@@ -8,10 +8,10 @@ hundredX=$(printf 'X%.0s' {1..100})
 
 
 reads=$(cat testdata/four_reads.pe.fastq)
-default=$(echo "$reads" | target/debug/friends_replace --replace $replace)
-replace_ids=$(echo "$reads" | target/debug/friends_replace --which ID --find r --replace $replace)
-replace_seqs=$(echo "$reads" | target/debug/friends_replace --which SEQ --find TTTT --replace $replace)
-replace_quals=$(echo "$reads" | target/debug/friends_replace --which QUAL --find '\*4' --replace $replace)
+default=$(echo "$reads" | target/debug/fasten_replace --replace $replace)
+replace_ids=$(echo "$reads" | target/debug/fasten_replace --which ID --find r --replace $replace)
+replace_seqs=$(echo "$reads" | target/debug/fasten_replace --which SEQ --find TTTT --replace $replace)
+replace_quals=$(echo "$reads" | target/debug/fasten_replace --which QUAL --find '\*4' --replace $replace)
 
 # Count how many times X appears which is the thing with which we replaced
 if [ "$(grep -c $hundredX <<< "$default")" -ne 8 ]; then
