@@ -60,16 +60,6 @@ fn main() {
         }
 
         pairs_counter+=1;
-        if pairs_counter >= check_first {
-            break;
-        }
-
-        let mut is_paired_end = 0;
-        if !is_pairedSra(&id1,&id2) {
-        } else if !is_pairedCasava18(&id1,&id2) {
-        } else {
-            panic!("This file is not interleaved");
-        }
 
                 let caps1 = slash_r1r2_regex.captures(&id1).expect("ERROR: could not regex against id1");
                 let caps2 = slash_r1r2_regex.captures(&id2).expect("ERROR: could not regex against id2");
@@ -97,6 +87,9 @@ fn main() {
                     std::process::exit(1);
                 }
 
+                if pairs_counter >= check_first {
+                    break;
+                }
 
             }
             // We can safely ignore the seq, plus, and qual lines
