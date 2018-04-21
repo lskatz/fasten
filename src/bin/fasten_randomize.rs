@@ -1,5 +1,5 @@
 extern crate getopts;
-extern crate ross;
+extern crate fasten;
 extern crate rand;
 use std::fs::File;
 use std::io::BufReader;
@@ -8,11 +8,11 @@ use std::env;
 
 use rand::{Rng,thread_rng};
 
-use ross::ross_base_options;
+use fasten::fasten_base_options;
 
 fn main(){
     let args: Vec<String> = env::args().collect();
-    let opts = ross_base_options();
+    let opts = fasten_base_options();
     //script-specific flags
 
     let matches = opts.parse(&args[1..]).expect("Error: could not parse parameters");

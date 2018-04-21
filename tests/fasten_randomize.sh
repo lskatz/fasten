@@ -7,8 +7,8 @@ INPUT=testdata/four_reads.pe.fastq;
 lots_of_reads=$(for i in $(seq 1 100); do cat $INPUT; done;);
 
 # Randomize reads
-random_reads=$(echo "$lots_of_reads" | ./target/debug/friends_phoebe)
-random_pe_reads=$(echo "$lots_of_reads" | ./target/debug/friends_phoebe --paired-end)
+random_reads=$(echo "$lots_of_reads" | ./target/debug/fasten_sample)
+random_pe_reads=$(echo "$lots_of_reads" | ./target/debug/fasten_sample --paired-end)
 
 # Test sorted output
 random_sorted=$(echo "$random_reads" | sort)
@@ -36,7 +36,7 @@ if [ "$random" == "$(cat $INPUT)" ]; then
 fi
 
 # Test to see if PE reads stayed PE
-echo "$random_pe_reads" | ./target/debug/friends_ung
+echo "$random_pe_reads" | ./target/debug/fasten_pe
 
 echo "$0 passed!"
 

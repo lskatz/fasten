@@ -1,4 +1,4 @@
-extern crate ross;
+extern crate fasten;
 extern crate statistical;
 extern crate getopts;
 
@@ -9,11 +9,12 @@ use std::f32;
 
 use std::env;
 
-use ross::ross_base_options;
+use fasten::fasten_base_options;
+use fasten::logmsg;
 
 fn main(){
     let args: Vec<String> = env::args().collect();
-    let mut opts = ross_base_options();
+    let mut opts = fasten_base_options();
 
     // script-specific options
     opts.optflag("","each-read","Print the metrics for each read. This creates very large output");
@@ -24,6 +25,9 @@ fn main(){
     if matches.opt_present("help") {
         println!("Gives read metrics on a read set.  Rachel lets you know if you look good!\n{}", opts.usage(&opts.short_usage(&args[0])));
         std::process::exit(0);
+    }
+    if matches.opt_present("paired-end") {
+        logmsg("WARNING: --paired-end is not utilized in this script");
     }
 
     let each_read :bool=matches.opt_present("each-read");

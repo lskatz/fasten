@@ -5,10 +5,10 @@ set -e
 INPUT=testdata/four_reads.pe.fastq
 
 reads=$(for i in $(seq 1 1000); do cat $INPUT; done;)
-not_downsampled=$(echo "$reads" | ./target/debug/friends_ursula)
-ten_percent=$(echo "$reads" | ./target/debug/friends_ursula --frequency 0.1)
-fifty_percent=$(echo "$reads" | ./target/debug/friends_ursula --frequency 0.5)
-ninty_percent=$(echo "$reads" | ./target/debug/friends_ursula --frequency 0.9)
+not_downsampled=$(echo "$reads" | ./target/debug/fasten_sample)
+ten_percent=$(echo "$reads" | ./target/debug/fasten_sample --frequency 0.1)
+fifty_percent=$(echo "$reads" | ./target/debug/fasten_sample --frequency 0.5)
+ninty_percent=$(echo "$reads" | ./target/debug/fasten_sample --frequency 0.9)
 
 if [ "$reads" != "$not_downsampled" ]; then
   echo "Test failed for not downsampling"

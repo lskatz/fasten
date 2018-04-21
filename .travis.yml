@@ -3,14 +3,16 @@ rust:
   - stable
 script:
   - cargo build --verbose
-  - bash tests/friends_rachel.sh
-  - bash tests/friends_monica.sh
-  - bash tests/friends_carol.sh
-  - bash tests/friends_chandler.sh
-  - bash tests/friends_emma.sh
-  - bash tests/friends_trimmer.sh
-  - bash tests/friends_gunther.sh
-  - bash tests/friends_joey.sh
-  - bash tests/friends_phoebe.sh
-  - bash tests/friends_ursula.sh
-  - bash tests/friends_quality_filter.sh
+  - bash tests/fasten_metrics.sh
+  - bash tests/fasten_clean.sh
+  - bash tests/fasten_straighten.sh
+  - bash tests/fasten_kmer.sh
+  - bash tests/fasten_combine.sh
+  - bash tests/fasten_trim.sh
+  - bash tests/fasten_validate.sh
+  - bash tests/fasten_shuffle.sh
+  - bash tests/fasten_randomize.sh
+  - bash tests/fasten_sample.sh
+  - bash tests/fasten_quality_filter.sh
+  - bash tests/fasten_regex.sh
+  - bash tests/fasten_replace.sh

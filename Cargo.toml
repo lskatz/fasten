@@ -1,64 +1,77 @@
 [package]
-name = "ross"
-version = "0.1.5"
+name    = "fasten"
+version = "0.1.11"
 authors = ["Lee Katz <gzu2@cdc.gov>"]
+#license-file  = "LICENSE"
+license       = "MIT"
+description   = "A set of scripts to run basic analysis on fastq files"
+documentation = "https://github.com/lskatz/fasten/blob/master/README.md"
+repository    = "https://github.com/lskatz/fasten"
+categories    = ["command-line-utilities", "science"]
+keywords      = ["bioinformatics","fastq","streaming"]
+readme        = "./README.md"
 
 [[bin]]
-name = "friends_regex"
-path = "src/bin/friends_regex.rs"
+name = "fasten_replace"
+path = "src/bin/fasten_replace.rs"
 
 [[bin]]
-name = "friends_quality_filter"
-path = "src/bin/friends_quality_filter.rs"
+name = "fasten_regex"
+path = "src/bin/fasten_regex.rs"
 
 [[bin]]
-name = "friends_trimmer"
-path = "src/bin/friends_trimmer.rs"
+name = "fasten_quality_filter"
+path = "src/bin/fasten_quality_filter.rs"
 
 [[bin]]
-name = "friends_emma"
-path = "src/bin/friends_emma.rs"
+name = "fasten_trim"
+path = "src/bin/fasten_trim.rs"
 
 [[bin]]
-name = "friends_chandler"
-path = "src/bin/friends_chandler.rs"
+name = "fasten_combine"
+path = "src/bin/fasten_combine.rs"
 
 [[bin]]
-name = "friends_ung"
-path = "src/bin/friends_ung.rs"
+name = "fasten_kmer"
+path = "src/bin/fasten_kmer.rs"
 
 [[bin]]
-name = "friends_carol"
-path = "src/bin/friends_carol.rs"
+name = "fasten_pe"
+path = "src/bin/fasten_pe.rs"
 
 [[bin]]
-name = "friends_rachel"
-path = "src/bin/friends_rachel.rs"
+name = "fasten_straighten"
+path = "src/bin/fasten_straighten.rs"
 
 [[bin]]
-name = "friends_monica"
-path = "src/bin/friends_monica.rs"
+name = "fasten_metrics"
+path = "src/bin/fasten_metrics.rs"
 
 [[bin]]
-name = "friends_joey"
-path = "src/bin/friends_joey.rs"
+name = "fasten_clean"
+path = "src/bin/fasten_clean.rs"
 
 [[bin]]
-name = "friends_phoebe"
-path = "src/bin/friends_phoebe.rs"
+name = "fasten_shuffle"
+path = "src/bin/fasten_shuffle.rs"
 
 [[bin]]
-name = "friends_ursula"
-path = "src/bin/friends_ursula.rs"
+name = "fasten_randomize"
+path = "src/bin/fasten_randomize.rs"
 
 [[bin]]
-name = "friends_gunther"
-path = "src/bin/friends_gunther.rs"
+name = "fasten_sample"
+path = "src/bin/fasten_sample.rs"
+
+[[bin]]
+name = "fasten_validate"
+path = "src/bin/fasten_validate.rs"
 
 [dependencies]
-#bio = "0.15"
-regex = "0.2"
+regex = "0.2.10"
 getopts = "0.2"
 statistical = "0.1.1"
 multiqueue = "0.3.2"
 rand = "0.4"
+
+

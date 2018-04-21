@@ -1,11 +1,12 @@
 extern crate getopts;
-extern crate ross;
+extern crate fasten;
 use std::fs::File;
 use std::io::BufReader;
 
-use ross::ross_base_options;
-use ross::io::fastq;
-use ross::io::seq::Cleanable;
+use fasten::fasten_base_options;
+use fasten::io::fastq;
+use fasten::io::seq::Cleanable;
+use fasten::logmsg;
 
 use std::env;
 
@@ -36,11 +37,14 @@ fn challenge_dataset () {
 
 fn main(){
     let args: Vec<String> = env::args().collect();
-    let opts = ross_base_options();
+    let opts = fasten_base_options();
     let matches = opts.parse(&args[1..]).expect("ERROR: could not parse parameters");
     if matches.opt_present("help") {
         println!("Convert a fastq file to a standard 4-lines-per-entry format\n{}", opts.usage(&opts.short_usage(&args[0])));
         std::process::exit(0);
+    }
+    if matches.opt_present("paired-end") {
+        logmsg("WARNING: --paired-end is not utilized in this script");
     }
 
     let my_file = File::open("/dev/stdin").expect("Could not open file");

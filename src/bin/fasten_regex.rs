@@ -1,5 +1,5 @@
 extern crate getopts;
-extern crate ross;
+extern crate fasten;
 extern crate regex;
 use std::fs::File;
 use std::io::BufReader;
@@ -8,15 +8,15 @@ use std::env;
 
 use regex::Regex;
 
-use ross::ross_base_options;
+use fasten::fasten_base_options;
 
 fn main(){
     let args: Vec<String> = env::args().collect();
-    let mut opts = ross_base_options();
+    let mut opts = fasten_base_options();
     // Options specific to this script
-    opts.optopt("r","regex","Regular expression","STRING");
+    opts.optopt("r","regex","Regular expression (default: '.')","STRING");
     opts.optopt("w","which","Which field to match on? ID, SEQ, QUAL. Default: SEQ","String");
-    opts.optflag("e","exclude","Exclude these reads instead of including them");
+    //opts.optflag("e","exclude","Exclude these reads instead of including them");
 
     let matches = opts.parse(&args[1..]).expect("ERROR: could not parse parameters");
     if matches.opt_present("help") {
@@ -39,9 +39,22 @@ fn main(){
         }
     };
 
-    let regex = Regex::new(&matches.opt_str("regex")
-                               .expect("ERROR: could not parse regex parameter"))
-        .expect("malformed seq regex");
+    // by default the regex parameter will be "." for "everything"
+    let regex_param={
+        if matches.opt_present("regex") {
+            matches.opt_str("regex")
+                .expect("ERROR: could not parse regex parameter")
+        } else {
+            String::from(".")
+        }
+    };
+
+    let regex = Regex::new(&regex_param)
+        .expect("malformed seq regex given by --regex");
+
+    if matches.opt_present("verbose") {
+        eprintln!("Regular expression: {}",regex_param);
+    }
 
     let mut buffer_iter = my_buffer.lines();
 

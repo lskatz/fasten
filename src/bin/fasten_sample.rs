@@ -1,4 +1,4 @@
-extern crate ross;
+extern crate fasten;
 extern crate getopts;
 extern crate rand;
 
@@ -11,18 +11,17 @@ use std::env;
 use rand::thread_rng;
 use rand::Rng;
 
-use ross::ross_base_options;
+use fasten::fasten_base_options;
 
 fn main(){
     let args: Vec<String> = env::args().collect();
-    let mut opts = ross_base_options();
+    let mut opts = fasten_base_options();
 
     opts.optopt("f","frequency","Frequency of sequences to print, 0 to 1. Default: 1","FLOAT");
-    opts.optflag("p", "paired-end", "Reads are interleaved");
 
     let matches = opts.parse(&args[1..]).expect("ERROR: could not parse parameters");
 
-    if matches.opt_present("h") {
+    if matches.opt_present("help") {
         println!("Ursula: downsample your reads\n{}", opts.usage(&opts.short_usage(&args[0])));
         std::process::exit(0);
     }
