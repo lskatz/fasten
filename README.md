@@ -33,7 +33,7 @@ All scripts accept the parameters, read uncompressed fastq format from stdin, an
 
 |script             |Description|
 |-------------------|-----------|
-|`fasten_clean`     | Trims and cleans a fastq file. She likes to clean.|
+|`fasten_clean`     | Trims and cleans a fastq file.|
 |`fasten_straighten`| Convert any fastq file to a standard four-line-per-entry format.|
 |`fasten_metrics`   | Prints basic read metrics.|
 |`fasten_pe`        | Determines paired-endedness based on read IDs.|
@@ -48,4 +48,13 @@ All scripts accept the parameters, read uncompressed fastq format from stdin, an
 |`fasten_replace`   | Find and replace using regex | |
 |`fasten_regex`     | Filter for reads using regex | |
 
+## Etymology
+
+Many of these scripts have inspiration from the fastx toolkit, and I wanted to make a `fasty` which was already the name of a bioinformatics program.
+Therefore I cycled through other letters of the alphabet and came across "N."  So it is possible to pronounce this project like "Fast-N" or in a way
+that indicates that you are securing your analysis by "fasten"ing it (with a silent T).
+
+## Acknowledgements
+
+Thank you Henk Den Bakker for many helpful discussions around Rust, helping me name this software, and many other things.
 
