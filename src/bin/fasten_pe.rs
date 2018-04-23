@@ -16,6 +16,7 @@ fn main() {
     opts.optopt("c","check-first","How many deflines to check to make sure the input is paired-end","INT");
     let matches = opts.parse(&args[1..]).expect("ERROR: could not parse parameters");
     
+    // @.../1
     let slash_r1r2_regex = Regex::new(r"(.+)/([12])$").expect("malformed qual regex");
 
     if matches.opt_present("help") {
@@ -23,9 +24,6 @@ fn main() {
                  opts.usage(&opts.short_usage(&args[0]))
                 );
         std::process::exit(0);
-    }
-    if matches.opt_present("paired-end") {
-        logmsg("WARNING: --paired-end is not utilized in this script because it tells you whether it thinks a fastq file is paired end.");
     }
 
     let check_first = { 
@@ -39,56 +37,65 @@ fn main() {
         }
     };
 
-    let mut id1=String::new();
-    let mut id2 :String;
     let mut pairs_counter=0;
 
+    // TODO instead, save the top X ID pairs in a vector
+    // and compare them in several functions that test for
+    // IDs. If any test returns true, then we can say that
+    // it is paired-end input.
     let my_file = File::open("/dev/stdin").expect("Could not open file");
     let my_buffer=BufReader::new(my_file);
-    for (i,line) in my_buffer.lines().enumerate() {
-        let line = line.expect("ERROR: could not read the next line in the input");
-        match i%8 {
-            0=>{
-                id1=line;
-            }
-            4=>{
-                id2=line;
-                pairs_counter+=1;
-
-                let caps1 = slash_r1r2_regex.captures(&id1).expect("ERROR: could not regex against id1");
-                let caps2 = slash_r1r2_regex.captures(&id2).expect("ERROR: could not regex against id2");
-
-                // Make sure the base name matches
-                if caps1[1] != caps2[1] {
-                    let mut msg = "ID1 does not match ID2 on line ".to_string();
-                    msg.push_str(&i.to_string());
-                    msg.push_str("\n");
-                    msg.push_str(&id1);
-                    msg.push_str(" vs ");
-                    msg.push_str(&id2);
-                    logmsg(&msg);
-                    std::process::exit(1);
-                }
-                // Make sure there is a 1/2 combo
-                if &caps1[2] != "1" || &caps2[2] != "2" {
-                    let mut msg = "/1 is not followed by /2 on line ".to_string();
-                    msg.push_str(&i.to_string());
-                    msg.push_str("\n");
-                    msg.push_str(&id1);
-                    msg.push_str(" vs ");
-                    msg.push_str(&id2);
-                    logmsg(&msg);
-                    std::process::exit(1);
-                }
-
-                if pairs_counter >= check_first {
-                    break;
-                }
-
-            }
-            // We can safely ignore the seq, plus, and qual lines
-            _=>{ }
+    let mut lines = my_buffer.lines();
+    while let Some(line) = lines.next() {
+        let id1 = line.expect("ERROR parsing id line in R1");
+        for _ in 1..3 {
+            lines.next()
+                .expect("ERROR getting next line")
+                .expect("ERROR parsing next line");
         }
+        let id2 = lines.next()
+            .expect("ERROR getting R2. This is not a paired end file.")
+            .expect("ERROR parsing next line in R2");
+        for _ in 1..3 {
+            lines.next()
+                .expect("ERROR getting next line in R2. This is not a paired end file.")
+                .expect("ERROR parsing next line in R2");
+        }
+
+        pairs_counter+=1;
+
+        let caps1 = slash_r1r2_regex.captures(&id1)
+            .expect("ERROR: could not regex against id1");
+        let caps2 = slash_r1r2_regex.captures(&id2).
+            expect("ERROR: could not regex against id2");
+
+        // Make sure the base name matches
+        if caps1[1] != caps2[1] {
+            let mut msg = "ID1 does not match ID2 on pair ".to_string();
+            msg.push_str(&pairs_counter.to_string());
+            msg.push_str("\n");
+            msg.push_str(&id1);
+            msg.push_str(" vs ");
+            msg.push_str(&id2);
+            logmsg(&msg);
+            std::process::exit(1);
+        }
+        // Make sure there is a 1/2 combo
+        if &caps1[2] != "1" || &caps2[2] != "2" {
+            let mut msg = "/1 is not followed by /2 on pair ".to_string();
+            msg.push_str(&pairs_counter.to_string());
+            msg.push_str("\n");
+            msg.push_str(&id1);
+            msg.push_str(" vs ");
+            msg.push_str(&id2);
+            logmsg(&msg);
+            std::process::exit(1);
+        }
+
+        if pairs_counter >= check_first {
+            break;
+        }
+
     }
 
     if matches.opt_present("verbose") {
