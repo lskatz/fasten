@@ -25,6 +25,9 @@ fn main() {
                 );
         std::process::exit(0);
     }
+    if matches.opt_present("paired-end") {
+        logmsg("WARNING: --paired-end was supplied but it is assumed for this script anyway");
+    }
 
     let check_first = { 
         if matches.opt_present("check-first") {
@@ -33,7 +36,7 @@ fn main() {
                 .parse()
                 .expect("ERROR converting the check-first parameter to an integer")
         } else {
-            200
+            500
         }
     };
 
