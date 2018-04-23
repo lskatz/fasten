@@ -48,7 +48,7 @@ fn main() {
     let mut lines = my_buffer.lines();
     while let Some(line) = lines.next() {
         let id1 = line.expect("ERROR parsing id line in R1");
-        for _ in 1..3 {
+        for _ in 1..4 { // move ahead three lines
             lines.next()
                 .expect("ERROR getting next line")
                 .expect("ERROR parsing next line");
@@ -56,7 +56,7 @@ fn main() {
         let id2 = lines.next()
             .expect("ERROR getting R2. This is not a paired end file.")
             .expect("ERROR parsing next line in R2");
-        for _ in 1..3 {
+        for _ in 1..4 { // move ahead three lines
             lines.next()
                 .expect("ERROR getting next line in R2. This is not a paired end file.")
                 .expect("ERROR parsing next line in R2");
