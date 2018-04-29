@@ -13,7 +13,8 @@ use std::env;
 fn main() {
     let args: Vec<String> = env::args().collect();
     let mut opts = fasten_base_options();
-    opts.optopt("c","check-first","How many deflines to check to make sure the input is paired-end","INT");
+    //opts.optopt("c","check-first","How many deflines to check to make sure the input is paired-end","INT");
+    opts.optflag("","print-reads","Print each read. Useful for Unix pipes.");
     let matches = opts.parse(&args[1..]).expect("ERROR: could not parse parameters");
     
     if matches.opt_present("help") {
@@ -26,16 +27,7 @@ fn main() {
         logmsg("WARNING: --paired-end was supplied but this script is supposed to determine whether the input is paired-end.");
     }
 
-    let check_first = { 
-        if matches.opt_present("check-first") {
-            matches.opt_str("check-first")
-                .expect("Error reading the check-first option")
-                .parse()
-                .expect("ERROR converting the check-first parameter to an integer")
-        } else {
-            500
-        }
-    };
+    let should_print = matches.opt_present("print-reads");
 
     let mut pairs_counter=0;
 
@@ -50,25 +42,33 @@ fn main() {
     let mut lines = my_buffer.lines();
     while let Some(line) = lines.next() {
         let id1 = line.expect("ERROR parsing id line in R1");
+        let mut entry=id1.clone();
+        entry.push('\n');
         for _ in 1..4 { // move ahead three lines
-            lines.next()
+            let other_line = lines.next()
                 .expect("ERROR getting next line")
                 .expect("ERROR parsing next line");
+            entry.push_str(&other_line);
+            entry.push('\n');
         }
         let id2 = lines.next()
             .expect("ERROR getting R2. This is not a paired end file.")
             .expect("ERROR parsing next line in R2");
+        entry.push_str(&id2);
+        entry.push('\n');
         for _ in 1..4 { // move ahead three lines
-            lines.next()
+            let other_line = lines.next()
                 .expect("ERROR getting next line in R2. This is not a paired end file.")
                 .expect("ERROR parsing next line in R2");
+            entry.push_str(&other_line);
+            entry.push('\n');
         }
         id1_vec.push(id1);
         id2_vec.push(id2);
 
         pairs_counter+=1;
-        if pairs_counter >= check_first {
-            break;
+        if should_print {
+            print!("{}",entry);
         }
     }
 
