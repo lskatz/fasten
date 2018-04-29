@@ -60,7 +60,7 @@ fn main(){
 
     // save this option to avoid the overhead of calling
     // opt_present many times in a loop
-    let should_print=matches.opt_present("print");
+    let should_print=matches.opt_present("print-reads");
 
     // If there is a match on these, then mark invalid.
     // In other words, we are looking for a pattern that
