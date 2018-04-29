@@ -17,7 +17,7 @@ fn main(){
     opts.optopt("","min-length","Minimum read length allowed","INT");
     opts.optopt("","min-quality","Minimum quality allowed","FLOAT");
     opts.optflag("","paired-end","The reads are interleaved paired-end");
-    opts.optflag("","print","Print the reads as they are being validated (useful for unix pipes)");
+    opts.optflag("","print-reads","Print the reads as they are being validated (useful for unix pipes)");
     opts.optflag("v","verbose","");
 
     let matches = opts.parse(&args[1..]).expect("ERROR: could not parse parameters");
