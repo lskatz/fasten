@@ -8,6 +8,24 @@ use getopts::Options;
 
 pub mod io;
 
+/// Have some strings that can be printed which could be
+/// used to propagate errors between piped scripts.
+
+/// Invalid fastq ID (no @)
+static INVALID_ID  :&'static str= "invalid_id";
+/// Invalid sequence (underscore)
+static INVALID_SEQ :&'static str= "invalid_seq";
+/// Invalid plus line (no +)
+static INVALID_PLUS:&'static str= "invalid_plus";
+/// Invalid qual line (~ is chr 126 when the normal max number is 40)
+static INVALID_QUAL:&'static str= "invalid_plus";
+
+/// Propagate an error by printing invalid read(s)
+pub fn eexit() -> () {
+    println!("{}\n{}\n{}\n{}",INVALID_ID,INVALID_SEQ,INVALID_PLUS,INVALID_QUAL);
+    std::process::exit(1);
+}
+
 /// a function that reads an options object and adds fasten default options.
 pub fn fasten_base_options() -> Options{
     let mut opts = Options::new();
@@ -26,3 +44,4 @@ pub fn logmsg(msg: &str) {
     let program = Path::file_name(Path::new(&args[0])).unwrap().to_str().unwrap();
     eprintln!("{}: {}", &program, &msg);
 }
+
