@@ -29,8 +29,6 @@ fn main() {
 
     let should_print = matches.opt_present("print-reads");
 
-    let mut pairs_counter=0;
-
     // Save the top X ID pairs in a vector
     // and compare them in several functions that test for
     // IDs. If any test returns true, then we can say that
@@ -66,7 +64,6 @@ fn main() {
         id1_vec.push(id1);
         id2_vec.push(id2);
 
-        pairs_counter+=1;
         if should_print {
             print!("{}",entry);
         }
