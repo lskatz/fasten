@@ -3,6 +3,7 @@ rust:
   - stable
 script:
   - cargo build --verbose
+  - bash tests/fasten_pe.sh
   - bash tests/fasten_metrics.sh
   - bash tests/fasten_clean.sh
   - bash tests/fasten_straighten.sh
