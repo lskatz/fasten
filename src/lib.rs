@@ -26,6 +26,23 @@ pub fn eexit() -> () {
     std::process::exit(1);
 }
 
+/// Rewrite print!() so that it doesn't panic on broken
+/// pipe.
+#[macro_export]
+macro_rules! print (
+    // The extra scope is necessary so we don't leak imports
+    ($($arg:tt)*) => ({
+        // The `write!()` macro is written so it can use `std::io::Write`
+        // or `std::fmt::Write`, this import sets which to use
+        use std::io::{self, Write};
+        if let Err(_) = write!(io::stdout(), $($arg)*) {
+            // Optionally write the error to stderr
+            ::std::process::exit(0);
+        }
+        
+    })
+);
+
 /// a function that reads an options object and adds fasten default options.
 pub fn fasten_base_options() -> Options{
     let mut opts = Options::new();
