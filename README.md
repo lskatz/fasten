@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/lskatz/fasten.svg?branch=master)](https://travis-ci.org/lskatz/fasten)
+[![Crates.io](https://img.shields.io/badge/crates.io-v0.1-green.svg)](https://crates.io/crates/fasten)
 
 # Fasten
 
