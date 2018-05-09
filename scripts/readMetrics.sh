@@ -2,15 +2,15 @@
 
 NUMCPUS=1
 
-if [ "$@" == "" ]; then
+if [ "$1" == "" ]; then
   echo "Determines read metrics on a set of fastq files."
   echo "Usage: $0 *.fastq[.gz]" >&2
   exit 1
 fi
 
-which friends_rachel >& /dev/null
+which fasten_metrics >& /dev/null
 if [ $? -gt 0 ]; then
-  echo "ERROR: could not find friends_rachel in the path" >&2
+  echo "ERROR: could not find fasten_metrics in the path" >&2
   exit 1
 fi
 
@@ -26,9 +26,9 @@ echo "$@" | xargs -P $NUMCPUS -n 1 bash -c '
   extension="${0##*.}"
   metrics="\n"
   if [ "$extension" == "gz" ]; then
-    metrics=$(zcat $0 | friends_rachel | tail -n +2)
+    metrics=$(zcat $0 | fasten_metrics | tail -n +2)
   else
-    metrics=$(friends_rachel < $0)
+    metrics=$(fasten_metrics < $0)
   fi
   echo -e "$0\t$metrics"
 '
