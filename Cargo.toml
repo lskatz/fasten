@@ -1,6 +1,6 @@
 [package]
 name    = "fasten"
-version = "0.1.13"
+version = "0.1.14"
 authors = ["Lee Katz <gzu2@cdc.gov>"]
 #license-file  = "LICENSE"
 license       = "MIT"
