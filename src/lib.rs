@@ -18,7 +18,7 @@ static INVALID_SEQ :&'static str= "invalid_seq";
 /// Invalid plus line (no +)
 static INVALID_PLUS:&'static str= "invalid_plus";
 /// Invalid qual line (~ is chr 126 when the normal max number is 40)
-static INVALID_QUAL:&'static str= "invalid_plus";
+static INVALID_QUAL:&'static str= "invalid_qual";
 
 /// Propagate an error by printing invalid read(s)
 pub fn eexit() -> () {

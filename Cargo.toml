@@ -67,9 +67,13 @@ path = "src/bin/fasten_sample.rs"
 name = "fasten_validate"
 path = "src/bin/fasten_validate.rs"
 
+[[bin]]
+name = "fasten_progress"
+path = "src/bin/fasten_progress.rs"
+
 [dependencies]
 regex = "0.2.10"
-getopts = "0.2"
+getopts = "0.2.21"
 statistical = "0.1.1"
 multiqueue = "0.3.2"
 rand = "0.4"
