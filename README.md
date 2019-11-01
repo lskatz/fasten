@@ -48,6 +48,7 @@ All scripts accept the parameters, read uncompressed fastq format from stdin, an
 |`fasten_trim`      | Blunt-end trims reads | |
 |`fasten_replace`   | Find and replace using regex | |
 |`fasten_regex`     | Filter for reads using regex | |
+|`fasten_progress`  | Add progress to any place in the pipeline | |
 
 ## Etymology
 
