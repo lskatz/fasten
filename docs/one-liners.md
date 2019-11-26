@@ -24,7 +24,7 @@ First, it might make sense to change your path, for readability.  Choose either 
     for i in *.fastq.gz; do
       echo -ne "$i\t";
       zcat $i | fasten_metrics
-    done | column -t
+    done | sort | uniq | column -t
 
 ## Generate interleaved reads 
 
