@@ -19,6 +19,13 @@ First, it might make sense to change your path, for readability.  Choose either 
 
     export PATH=$PATH:~/src/Fasten.rs/target/debug
 
+## Read metrics for a set of files
+
+    for i in *.fastq.gz; do
+      echo -ne "$i\t";
+      zcat $i | fasten_metrics
+    done | column -t
+
 ## Generate interleaved reads 
 
 Most scripts in Fasten require interleaved reads, and so you should use `fasten_shuffle` to shuffle them.  The following example goes a step further with `grep` to help show you that the reads are interleaved.
