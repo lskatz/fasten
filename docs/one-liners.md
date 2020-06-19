@@ -1,9 +1,11 @@
 # One-liners
 <!-- vim-markdown-toc GFM -->
 
+* [Read metrics for a set of files](#read-metrics-for-a-set-of-files)
 * [Generate interleaved reads](#generate-interleaved-reads)
   * [Interleave split reads and feed directly to the cleaning script](#interleave-split-reads-and-feed-directly-to-the-cleaning-script)
   * [Interleave split reads, feed directly to the cleaning script, and then see how well it cleaned the reads](#interleave-split-reads-feed-directly-to-the-cleaning-script-and-then-see-how-well-it-cleaned-the-reads)
+  * [Interleave split reads, randomly print 40% of the reads](#interleave-split-reads-randomly-print-40-of-the-reads)
 * [read cleaning](#read-cleaning)
 * [In-place fastq compression](#in-place-fastq-compression)
 * [Adapter discovery](#adapter-discovery)
@@ -46,6 +48,12 @@ Most scripts in Fasten require interleaved reads, and so you should use `fasten_
       fasten_shuffle | \
       fasten_clean --min-trim-quality 30 | \
       fasten_metrics --each-read
+
+### Interleave split reads, randomly print 40% of the reads
+
+    cat testdata/R1.fastq testdata/R2.fastq | \
+      fasten_shuffle | \
+      fasten_sample --paired-end --frequency 0.4
 
 ## read cleaning
 
