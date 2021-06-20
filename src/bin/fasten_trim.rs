@@ -1,11 +1,14 @@
 extern crate fasten;
 extern crate statistical;
 extern crate getopts;
+extern crate threadpool;
 
 use std::fs::File;
 use std::io::BufReader;
 use std::io::BufRead;
 use std::env;
+use std::thread;
+use threadpool::ThreadPool;
 
 use fasten::fasten_base_options;
 use fasten::logmsg;
@@ -28,7 +31,7 @@ fn main(){
         logmsg("WARNING: --paired-end is not utilized in this script");
     }
 
-    let first_base ={
+    let first_base:usize ={
         if matches.opt_present("first-base") {
             matches.opt_str("first-base")
                 .expect("ERROR: could not understand parameter --first-base")
@@ -39,7 +42,7 @@ fn main(){
         }
     };
 
-    let mut last_base ={
+    let last_base:usize ={
         if matches.opt_present("last-base") {
             matches.opt_str("last-base")
                 .expect("ERROR: could not understand parameter --last-base")
@@ -50,31 +53,79 @@ fn main(){
         }
     };
 
+    let num_cpus:usize = {
+      if matches.opt_present("numcpus") {
+        matches.opt_str("numcpus")
+            .expect("ERROR: could not understand parameter --numcpus")
+            .parse()
+            .expect("ERROR: --numcpus is not an INT")
+      } else {
+          1
+      }
+    };
+    
+    /*
+     * Set up multithreading. Each thread will get 100k
+     * reads at a time.
+     */
+    let pool = ThreadPool::with_name("worker".into(), num_cpus);
 
+    // Read from stdin
     let filename = "/dev/stdin";
     
     // read the file
     let my_file = File::open(&filename).expect("Could not open file");
     let my_buffer=BufReader::new(my_file);
     let mut num_lines=0;
-    for line in my_buffer.lines() {
+    let mut lines_buffer:Vec<String> = vec![];
+
+    for line_result in my_buffer.lines() {
         num_lines+=1;
 
-        // Every other line gets trimmed
-        match num_lines % 2 {
-            0 => {
-                let seq_or_qual = line.expect("ERROR reading line");
-                let length = seq_or_qual.len();
-                if last_base == 0 || last_base > length {
-                    last_base = length;
-                }
-                println!("{}",&seq_or_qual[first_base..last_base]);
-            }
-            _ => {
-                println!("{}",&line.expect("ERROR reading id or plus line")); 
-            }
-        };
-    }
+        let line = line_result.expect("Error reading line");
+        &lines_buffer.push(line);
 
+        if num_lines % 8888888 == 0 {
+          eprintln!("{} lines queued", &num_lines);
+          // grab the buffer into a buffer for the thread
+          // and then empty the main buffer
+          let sub_lines_buffer = lines_buffer.clone();
+          lines_buffer = vec![];
+          pool.execute(move|| {
+            trim_worker(sub_lines_buffer, first_base, last_base);
+          });
+        }
+    }
+    // one last time with the remaining buffer
+    trim_worker(lines_buffer, first_base, last_base);
+
+    pool.join();
+
+}
+
+fn trim_worker(sub_lines_buffer:Vec<String>, first_base:usize, mut last_base:usize ){
+  let this_thread = thread::current();
+  let _tid = this_thread.id(); // for debugging
+  let mut num_lines:u32 = 0;
+  for subline in sub_lines_buffer {
+    num_lines+=1;
+
+    // Every other line gets trimmed
+    match num_lines % 2 {
+        0 => {
+            let seq_or_qual = &subline;
+            let length = seq_or_qual.len();
+            if last_base == 0 || last_base > length {
+                last_base = length;
+            }
+            println!("{}",&seq_or_qual[first_base..last_base]);
+        }
+        _ => {
+            //println!("{} {:?}",&subline, tid);
+            println!("{}",&subline);
+        }
+    };
+  }
+  //eprintln!("{:?} finished {}", &_tid, &num_lines);
 }
 

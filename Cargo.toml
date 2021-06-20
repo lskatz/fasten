@@ -1,6 +1,6 @@
 [package]
 name    = "fasten"
-version = "0.1.14"
+version = "0.2.0"
 authors = ["Lee Katz <gzu2@cdc.gov>"]
 #license-file  = "LICENSE"
 license       = "MIT"
@@ -77,5 +77,6 @@ getopts = "0.2.21"
 statistical = "0.1.1"
 multiqueue = "0.3.2"
 rand = "0.4"
+threadpool = "1.8"
 
 
