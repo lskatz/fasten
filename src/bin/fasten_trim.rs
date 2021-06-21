@@ -8,6 +8,7 @@ use std::io::BufReader;
 use std::io::BufRead;
 use std::env;
 use std::thread;
+use std::cmp::min;
 use threadpool::ThreadPool;
 
 use fasten::fasten_base_options;
@@ -85,28 +86,34 @@ fn main(){
         let line = line_result.expect("Error reading line");
         &lines_buffer.push(line);
 
-        if num_lines % 8888888 == 0 {
+        if num_lines % 888888 == 0 {
           eprintln!("{} lines queued", &num_lines);
           // grab the buffer into a buffer for the thread
           // and then empty the main buffer
           let sub_lines_buffer = lines_buffer.clone();
           lines_buffer = vec![];
           pool.execute(move|| {
-            trim_worker(sub_lines_buffer, first_base, last_base);
+            logmsg("enqueuing");
+            trim_worker(&sub_lines_buffer, first_base, last_base);
           });
         }
     }
-    // one last time with the remaining buffer
-    trim_worker(lines_buffer, first_base, last_base);
+    // One last time with the remaining buffer.
+    // Need to queue it so that it doesn't make the main 
+    // thread do extra work.
+    pool.execute(move|| {
+      trim_worker(&lines_buffer, first_base, last_base);
+    });
 
     pool.join();
-
 }
 
-fn trim_worker(sub_lines_buffer:Vec<String>, first_base:usize, mut last_base:usize ){
+fn trim_worker(sub_lines_buffer:&Vec<String>, first_base:usize, last_base:usize ){
   let this_thread = thread::current();
   let _tid = this_thread.id(); // for debugging
   let mut num_lines:u32 = 0;
+
+  //sub_lines_buffer.into_inter().map(|x|{
   for subline in sub_lines_buffer {
     num_lines+=1;
 
@@ -114,11 +121,8 @@ fn trim_worker(sub_lines_buffer:Vec<String>, first_base:usize, mut last_base:usi
     match num_lines % 2 {
         0 => {
             let seq_or_qual = &subline;
-            let length = seq_or_qual.len();
-            if last_base == 0 || last_base > length {
-                last_base = length;
-            }
-            println!("{}",&seq_or_qual[first_base..last_base]);
+            let last_base_tmp = min(seq_or_qual.len(), last_base);
+            println!("{}",&seq_or_qual[first_base..last_base_tmp]);
         }
         _ => {
             //println!("{} {:?}",&subline, tid);
@@ -128,4 +132,5 @@ fn trim_worker(sub_lines_buffer:Vec<String>, first_base:usize, mut last_base:usi
   }
   //eprintln!("{:?} finished {}", &_tid, &num_lines);
 }
+
 
