@@ -90,11 +90,11 @@ fn main(){
           eprintln!("{} lines queued", &num_lines);
           // grab the buffer into a buffer for the thread
           // and then empty the main buffer
-          let sub_lines_buffer = lines_buffer.clone();
+          let mut sub_lines_buffer = lines_buffer.clone();
           lines_buffer = vec![];
           pool.execute(move|| {
             logmsg("enqueuing");
-            trim_worker(&sub_lines_buffer, first_base, last_base);
+            trim_worker(&mut sub_lines_buffer, first_base, last_base);
           });
         }
     }
@@ -102,33 +102,34 @@ fn main(){
     // Need to queue it so that it doesn't make the main 
     // thread do extra work.
     pool.execute(move|| {
-      trim_worker(&lines_buffer, first_base, last_base);
+      trim_worker(&mut lines_buffer, first_base, last_base);
     });
 
     pool.join();
 }
 
-fn trim_worker(sub_lines_buffer:&Vec<String>, first_base:usize, last_base:usize ){
+fn trim_worker(sub_lines_buffer:&mut Vec<String>, first_base:usize, last_base:usize ){
   let this_thread = thread::current();
   let _tid = this_thread.id(); // for debugging
-  let mut num_lines:u32 = 0;
 
-  //sub_lines_buffer.into_inter().map(|x|{
-  for subline in sub_lines_buffer {
-    num_lines+=1;
+  sub_lines_buffer.reverse();
+  
+  while sub_lines_buffer.len() > 0 {
+    //let mut entry_splice = &sub_lines_buffer.splice(0..4, vec![]);
+    //let entry = vec![entry_splice];
+    let id       = sub_lines_buffer.pop().unwrap();
+    let mut seq  = sub_lines_buffer.pop().unwrap();
+    let plus     = sub_lines_buffer.pop().unwrap();
+    let mut qual = sub_lines_buffer.pop().unwrap();
 
-    // Every other line gets trimmed
-    match num_lines % 2 {
-        0 => {
-            let seq_or_qual = &subline;
-            let last_base_tmp = min(seq_or_qual.len(), last_base);
-            println!("{}",&seq_or_qual[first_base..last_base_tmp]);
-        }
-        _ => {
-            //println!("{} {:?}",&subline, tid);
-            println!("{}",&subline);
-        }
-    };
+    let last_base_tmp = min(seq.len(), last_base);
+    seq  = String::from(seq);
+    qual = String::from(qual);
+
+    println!("{}\n{}\n{}\n{}",
+      id, &seq[first_base..last_base_tmp], plus, &qual[first_base..last_base_tmp]
+    );
+
   }
   //eprintln!("{:?} finished {}", &_tid, &num_lines);
 }
