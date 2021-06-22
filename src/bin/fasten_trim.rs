@@ -56,6 +56,7 @@ fn main(){
 
     let num_cpus:usize = {
       if matches.opt_present("numcpus") {
+        logmsg("Warning: multithreading this script currently slows it down");
         matches.opt_str("numcpus")
             .expect("ERROR: could not understand parameter --numcpus")
             .parse()
