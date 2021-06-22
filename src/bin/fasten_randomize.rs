@@ -17,7 +17,7 @@ fn main(){
 
     let matches = opts.parse(&args[1..]).expect("Error: could not parse parameters");
     if matches.opt_present("help") {
-        println!("Create random reads from stdin. Phoebe is totally random!\n{}", opts.usage(&opts.short_usage(&args[0])));
+        println!("Create random reads from stdin.\n{}", opts.usage(&opts.short_usage(&args[0])));
         std::process::exit(0);
     }
 
