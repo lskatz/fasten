@@ -1,12 +1,15 @@
 extern crate getopts;
 extern crate fasten;
 extern crate regex;
+extern crate threadpool;
 use std::fs::File;
 use std::io::BufReader;
 use std::io::BufRead;
 use std::env;
 
 use regex::Regex;
+use threadpool::ThreadPool;
+//use std::sync::mpsc;
 
 use fasten::fasten_base_options;
 
@@ -29,13 +32,22 @@ fn main(){
 
     let is_paired_end=matches.opt_present("paired-end");
 
-    // TODO convert to uppercase?
-    let which_field={
+    let which_field:String={
         if matches.opt_present("which") {
             matches.opt_str("which").expect("ERROR parsing --which")
                 .to_uppercase()
         } else {
             "SEQ".to_string()
+        }
+    };
+
+    let num_cpus:usize = {
+        if matches.opt_present("numcpus") {
+            matches.opt_str("numcpus").expect("ERROR parsing --numcpus")
+                .parse()
+                .expect("ERROR: numcpus is not an integer")
+        } else {
+            1
         }
     };
 
@@ -49,12 +61,15 @@ fn main(){
         }
     };
 
-    let regex = Regex::new(&regex_param)
+    // Error checking the regex in the main thread
+    let _regex = Regex::new(&regex_param)
         .expect("malformed seq regex given by --regex");
 
     if matches.opt_present("verbose") {
         eprintln!("Regular expression: {}",regex_param);
     }
+
+    let pool = ThreadPool::new(num_cpus);
 
     let mut buffer_iter = my_buffer.lines();
 
@@ -92,14 +107,21 @@ fn main(){
             all_qual.push_str(&qual2);
         }
 
-        // Print if it's a match
-        if (&which_field == "SEQ"  && regex.is_match(&all_seq))
-         ||(&which_field == "ID"   && regex.is_match(&all_id))
-         ||(&which_field == "QUAL" && regex.is_match(&all_qual)) {
-            println!("{}\n{}\n+\n{}",id,seq,qual);
-            if is_paired_end { 
-                println!("{}\n{}\n+\n{}",id2,seq2,qual2);
-            }
-         }
+        // Copy some things to the threads
+        let the_field    = String::from(&which_field);
+        let regex_param2 = regex_param.clone();
+        pool.execute(move|| {
+          let regex = Regex::new(&regex_param2)
+              .expect("malformed seq regex within thread, given by --regex");
+          // Print if it's a match
+          if (&the_field == "SEQ"  && regex.is_match(&all_seq))
+           ||(&the_field == "ID"   && regex.is_match(&all_id))
+           ||(&the_field == "QUAL" && regex.is_match(&all_qual)) {
+              println!("{}\n{}\n+\n{}",id,seq,qual);
+              if is_paired_end { 
+                  println!("{}\n{}\n+\n{}",id2,seq2,qual2);
+              }
+          }
+        });
     }
 }
