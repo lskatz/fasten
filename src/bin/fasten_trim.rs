@@ -14,7 +14,7 @@ use std::sync::mpsc::channel;
 use fasten::fasten_base_options;
 use fasten::logmsg;
 use fasten::io::fastq;
-//use fasten::io::seq::Cleanable;
+use fasten::io::seq::Cleanable;
 use fasten::io::seq::Seq;
 
 fn main(){
@@ -34,7 +34,7 @@ fn main(){
 
     let (tx, rx):(std::sync::mpsc::Sender<String>,std::sync::mpsc::Receiver<String>) = channel();
 
-    let paired_end:bool = matches.opt_present("paired-end");
+    //let paired_end:bool = matches.opt_present("paired-end");
 
     let first_base:usize ={
         if matches.opt_present("first-base") {
@@ -60,13 +60,16 @@ fn main(){
 
     let num_cpus:usize = {
       if matches.opt_present("numcpus") {
-        logmsg("Warning: multithreading this script currently slows it down");
+        /*
         matches.opt_str("numcpus")
             .expect("ERROR: could not understand parameter --numcpus")
             .parse()
-            .expect("ERROR: --numcpus is not an INT")
+            .expect("ERROR: --numcpus is not an INT");
+        */
+        logmsg("Warning: multithreading this script currently slows it down. Resetting to 1 cpu.  Avoid this warning by not using --numcpus");
+        1 as usize
       } else {
-          1
+        1 as usize
       }
     };
     
@@ -80,15 +83,24 @@ fn main(){
     let my_file = File::open("/dev/stdin").expect("Could not open file");
     let my_buffer=BufReader::new(my_file);
     let fastq_reader = fastq::FastqReader::new(my_buffer);
-    let mut fastq_iter   = fastq_reader.into_iter();
+    let mut fastq_iter  = fastq_reader.into_iter();
     while let Some(seq) = fastq_iter.next() {
-        // start off an array of seq objects that will 
-        // contain R1 (and R2).
-        let mut seqs:Vec<Seq> = vec![seq];
-        if paired_end {
+        let mut seqs:Vec<Seq> = Vec::with_capacity(10000);
+        seqs.push(seq);
+
+        // Get an odd number to push onto the vector
+        // so that it is eventually an even number
+        // and we sidestep any paired end nuances.
+        for _ in 0..9999 { // 9999 + 1 => 10k seqs
+          // if the iterator returns nothing, then use
+          // a blank sequence.  In the worker thread,
+          // it will check for a blank sequence and if
+          // it is blank, it will skip it.
+          let next_seq = fastq_iter.next()
+            .or(Some(Seq::blank())).unwrap();
           seqs.push(
-            fastq_iter.next()
-              .expect("Tried to get the second sequence in a pair but ran into an error")
+            next_seq
+            //.expect("Tried to get the second sequence in a pair but ran into an error")
           );
         }
 
@@ -111,7 +123,12 @@ fn main(){
 
 fn trim_worker(seqs:Vec<Seq>, first_base:usize, last_base:usize, tx:std::sync::mpsc::Sender<String> ){
 
+  let blank_seq = Seq::blank();
+
   for seq in seqs{
+    if seq.id == blank_seq.id && seq.seq == blank_seq.seq && seq.qual == blank_seq.qual {
+      continue;
+    }
     // The last position is either the last_base parameter
     // or the last position in the string, whichever is less.
     let last_base_tmp = min(seq.seq.len(), last_base);
@@ -120,7 +137,10 @@ fn trim_worker(seqs:Vec<Seq>, first_base:usize, last_base:usize, tx:std::sync::m
     let quality  = &seq.qual[first_base..last_base_tmp];
 
     let trimmed = format!("{}\n{}\n+\n{}", seq.id, sequence, quality);
-    tx.send(trimmed).unwrap();
+    match tx.send(trimmed){
+      Ok(_seq_obj) => {},
+      Err(_error)  => {}
+    };
   }
 }
   
