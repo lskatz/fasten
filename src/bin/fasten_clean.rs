@@ -1,18 +1,26 @@
 extern crate getopts;
 extern crate fasten;
 extern crate multiqueue;
+extern crate threadpool;
 
 use std::fs::File;
 use std::io::BufReader;
 use std::io::BufRead;
+use std::env;
+
+use threadpool::ThreadPool;
+use std::sync::mpsc::channel;
 
 use fasten::fasten_base_options;
-
-use std::env;
+//use fasten::logmsg;
 
 fn main(){
     let args: Vec<String> = env::args().collect();
     let mut opts = fasten_base_options();
+
+    // invisible option but maybe we can expose it:
+    // how many reads to queue at once to the threads.
+    let num_reads_per_buffer:usize = 1000;
 
     // script-specific options
     opts.optopt("","min-length","Minimum length for each read in bp","INT");
@@ -50,96 +58,163 @@ fn main(){
             .expect("ERROR: min-trim-qual is not an integer");
     }
 
-    let lines_per_read={
+    let lines_per_read :u8={
         if matches.opt_present("paired-end") {
             8
         }else{
             4
         }
     };
+    let num_cpus:usize = {
+        if matches.opt_present("numcpus") {
+            matches.opt_str("numcpus").expect("ERROR parsing --numcpus")
+                .parse()
+                .expect("ERROR: numcpus is not an integer")
+        } else {
+            1
+        }
+    };
 
+    let (tx, rx):(std::sync::mpsc::Sender<String>,std::sync::mpsc::Receiver<String>) = channel();
+    let pool = ThreadPool::new(num_cpus);
 
     // Read the file and send seqs to threads
     let my_file = File::open("/dev/stdin").expect("Could not open file");
     let my_buffer=BufReader::new(my_file);
     
-    let mut id1   :String = String::new();
-    let mut id2   :String = String::new();
-    let mut seq1  :String = String::new();
-    let mut seq2  :String = String::new();
-    let mut qual1 :String;
-    let mut qual2 :String;
-    let mut seq1_trimmed  = String::new();
-    let mut seq2_trimmed :String;
-    let mut qual1_trimmed = String::new();
-    let mut qual2_trimmed :String;
+    let mut buffer_iter = my_buffer.lines();
+    let num_lines_per_buffer = num_reads_per_buffer * lines_per_read as usize;
+    while let Some(line_res) = buffer_iter.next(){
+        // get 4 or 8 lines of the fastq into the vector
+        let mut lines:Vec<String> = Vec::with_capacity(num_lines_per_buffer);
 
-    for (i,wrapped_line) in my_buffer.lines().enumerate() {
-        let line = wrapped_line.expect("ERROR: could not read line");
-        match i % lines_per_read {
-            // read ID
-            0=>{
-                id1 = line;
-            }
-            4=>{
-                id2 = line;
-            }
-
-            // Sequence
-            1=>{
-                seq1 = line;
-            }
-            5=>{
-                seq2 = line;
-            }
-
-            // Qual line. If we've gotten here, then we can also trim/filter/print
-            // First qual line
-            3=>{
-                qual1 = line;
-
-                // Trim
-                let tuple=trim(&seq1,&qual1,min_trim_qual);
-                seq1_trimmed=tuple.0;
-                qual1_trimmed=tuple.1;
-
-                // If this is single end, go ahead and filter/print
-                if lines_per_read==4 {
-                    if seq1_trimmed.len() >= min_length && avg_quality(&qual1_trimmed) >= min_avg_qual {
-                        println!("{}\n{}\n+\n{}",
-                             id1,seq1_trimmed,qual1_trimmed,
-                             );
-                    }
-                }
-
-            }
-            // Second qual line
-            7=>{
-                qual2 = line;
-
-                // Trim
-                let tuple=trim(&seq2,&qual2,min_trim_qual);
-                seq2_trimmed=tuple.0;
-                qual2_trimmed=tuple.1;
-
-                // Since we are at the second qual line, this is PE and we can
-                // go ahead with filter/print and not check for the PE param.
-
-                if seq1_trimmed.len() >= min_length && seq2_trimmed.len() >= min_length 
-                    && avg_quality(&qual1_trimmed) >= min_avg_qual 
-                    && avg_quality(&qual2_trimmed) >= min_avg_qual {
-
-                    println!("{}\n{}\n+\n{}\n{}\n{}\n+\n{}",
-                         id1,seq1_trimmed,qual1_trimmed,
-                         id2,seq2_trimmed,qual2_trimmed
-                         );
-                }
-            }
-            _=>{}
+        let line = line_res.expect("ERROR reading the first line of the next fastq entry");
+        lines.push(line);
+        for _ in 0..(num_lines_per_buffer-1) {
+          if let Some(line_res) = buffer_iter.next() {
+            let line =  line_res.expect("ERROR reading the first line of the next fastq entry");
+            lines.push(line);
+          //} else {
+          //  panic!("Expected another line in this fastq entry but got {} out of {}", i+1, lines_per_read);
+          }
         }
+
+        // Pass the 4 or 8 lines to a thread
+        let tx2 = tx.clone();
+        pool.execute(move|| {
+          clean_entry(lines, min_length, min_avg_qual, min_trim_qual, lines_per_read, tx2);
+        });
+    }
+
+    pool.join();
+    drop(tx); // signal the end of the transmitting to the channel
+
+    for entry in rx.iter(){
+      println!("{}", entry);
+    }
+}
+
+/// Cleans a SE or PE read
+fn clean_entry(lines:Vec<String>, min_length:usize, min_avg_qual:f32, min_trim_qual:u8, lines_per_read:u8, tx:std::sync::mpsc::Sender<String>) {
+  let mut id1   :String = String::new();
+  let mut id2   :String = String::new();
+  let mut seq1  :String = String::new();
+  let mut seq2  :String = String::new();
+  let mut qual1 :String = String::new();
+  let mut qual2 :String = String::new();
+
+  let mut i = 0;
+  for line in lines {
+
+    //let line = wrapped_line.expect("ERROR: could not read line");
+    match i % lines_per_read {
+        // read ID
+        0=>{
+            // On the zeroth line, set the first ID...
+            id1 = line;
+            // ...but then reset all other fields
+            id2   = String::new();
+            seq1  = String::new();
+            seq2  = String::new();
+            qual1 = String::new();
+            qual2 = String::new();
+        }
+        4=>{
+            id2 = line;
+        }
+
+        // Sequence
+        1=>{
+            seq1 = line;
+        }
+        5=>{
+            seq2 = line;
+        }
+
+        // Qual line. If we've gotten here, then we can also trim/filter/print
+        // First qual line
+        3=>{
+            qual1 = line;
+
+        }
+        // Second qual line
+        7=>{
+            qual2 = line;
+
+        }
+        2=>{} // + line
+        6=>{} // + line
+        _=>{
+          panic!("Internal error: somehow there are more than 8 lines per entry. The last line was line {} and contents were {}", i, line);
+        }
+
 
     }
 
+    // moment of truth: see trim the reads and then see
+    // if they pass the filter.
+    if (lines_per_read==4 && !qual1.is_empty())
+     ||(lines_per_read==8 && !qual2.is_empty()) {
+        
+        // Trim
+        let (seq1_trimmed, qual1_trimmed) = 
+              trim(&seq1,&qual1,min_trim_qual);
+
+        // If this is single end, go ahead and filter/print
+        if lines_per_read==4 {
+            if seq1_trimmed.len() >= min_length && avg_quality(&qual1_trimmed) >= min_avg_qual {
+                tx.send(format!("{}\n{}\n+\n{}",
+                     id1,seq1_trimmed,qual1_trimmed,
+                     ))
+                   .unwrap();
+            }
+        } 
+
+        else if lines_per_read==8 {
+
+          // trim second read
+          let (seq2_trimmed, qual2_trimmed) = 
+                trim(&seq2,&qual2,min_trim_qual);
+
+
+          // Since we are at the second qual line, this is PE and we can
+          // go ahead with filter/print and not check for the PE param.
+
+          if seq2_trimmed.len() >= min_length && seq2_trimmed.len() >= min_length 
+              && avg_quality(&qual1_trimmed) >= min_avg_qual 
+              && avg_quality(&qual2_trimmed) >= min_avg_qual {
+
+              tx.send(format!("{}\n{}\n+\n{}\n{}\n{}\n+\n{}",
+                   id1,seq1_trimmed,qual1_trimmed,
+                   id2,seq2_trimmed,qual2_trimmed
+                   ))
+               .unwrap();
+          }
+        }
+    }
+    
+    i += 1;
+  }
 }
 
 /// determine average quality of a qual cigar string
