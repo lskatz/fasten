@@ -116,12 +116,15 @@ fn main(){
 
 /// Cleans a SE or PE read
 fn clean_entry(lines:Vec<String>, min_length:usize, min_avg_qual:f32, min_trim_qual:u8, lines_per_read:u8, tx:std::sync::mpsc::Sender<String>) {
-  let mut id1   :String = String::new();
-  let mut id2   :String = String::new();
-  let mut seq1  :String = String::new();
-  let mut seq2  :String = String::new();
-  let mut qual1 :String = String::new();
-  let mut qual2 :String = String::new();
+  let short_blank_string:String = String::with_capacity(100);
+  let  long_blank_string:String = String::with_capacity(10000);
+
+  let mut id1   :String = short_blank_string.clone();
+  let mut id2   :String = short_blank_string.clone();
+  let mut seq1  :String = long_blank_string.clone();
+  let mut seq2  :String = long_blank_string.clone();
+  let mut qual1 :String = long_blank_string.clone();
+  let mut qual2 :String = long_blank_string.clone();
 
   let mut i = 0;
   for line in lines {
@@ -133,11 +136,11 @@ fn clean_entry(lines:Vec<String>, min_length:usize, min_avg_qual:f32, min_trim_q
             // On the zeroth line, set the first ID...
             id1 = line;
             // ...but then reset all other fields
-            id2   = String::new();
-            seq1  = String::new();
-            seq2  = String::new();
-            qual1 = String::new();
-            qual2 = String::new();
+            id2   = short_blank_string.clone();
+            seq1  = long_blank_string.clone();
+            seq2  = long_blank_string.clone();
+            qual1 = long_blank_string.clone();
+            qual2 = long_blank_string.clone();
         }
         4=>{
             id2 = line;
@@ -211,6 +214,10 @@ fn clean_entry(lines:Vec<String>, min_length:usize, min_avg_qual:f32, min_trim_q
                .unwrap();
           }
         }
+        else {
+          panic!("I do not understand {} lines per fastq entry", lines_per_read);
+        }
+
     }
     
     i += 1;
