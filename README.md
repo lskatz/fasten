@@ -5,6 +5,29 @@
 
 Perform random operations on fastq files, using unix streaming.  Secure your analysis with Fasten!
 
+## Synopsis
+
+### read metrics
+ 
+    $ cat testdata/R1.fastq testdata/R2.fastq | \
+        fasten_shuffle | fasten_metrics | column -t
+    totalLength  numReads  avgReadLength  avgQual
+    800          8         100            19.53875
+
+### read cleaning
+
+    $ cat testdata/R1.fastq testdata/R2.fastq | \
+        fasten_shuffle | \
+        fasten_clean --paired-end --min-length 2 | \
+        gzip -c > cleaned.shuffled.fastq.gz
+
+    $ zcat cleaned.shuffled.fastq.gz | fasten_metrics | column -t
+    totalLength  numReads  avgReadLength  avgQual
+    800          8         100            19.53875
+    # No reads were actually filtered with cleaning, with --min-length=2
+
+_etc_
+
 ## Installation
 
 Fasten is programmed in the Rust programming language.  More information about Rust, including installation and the executable `cargo`, can be found at [rust-lang.org](https://www.rust-lang.org).
@@ -13,6 +36,7 @@ After downloading, use the Rust executable `cargo` like so:
 
     cd fasten
     cargo build --release
+    export PATH=$PATH:$(pwd)/fasten/target/release
 
 All executables will be in the directory `fasten/target/release`.
 

@@ -25,7 +25,7 @@ fn main(){
     let matches = opts.parse(&args[1..]).expect("ERROR: could not parse parameters");
 
     if matches.opt_present("h") {
-        println!("Emma: collapse identical reads into single reads, recalculating quality values. If paired end, then each set of reads must be identical to be collapsed. Rachel's daughter Emma was played by twins, essentially collapsing two individuals into one character!");
+        println!("Collapse identical reads into single reads, recalculating quality values. If paired end, then each set of reads must be identical to be collapsed.");
         println!("{}",opts.usage(&opts.short_usage(&args[0])));
         std::process::exit(0);
     }
