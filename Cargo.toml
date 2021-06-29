@@ -72,10 +72,11 @@ name = "fasten_progress"
 path = "src/bin/fasten_progress.rs"
 
 [dependencies]
-regex = "0.2.10"
-getopts = "0.2.21"
-statistical = "0.1.1"
-multiqueue = "0.3.2"
-rand = "0.4"
+regex        = "0.2.10"
+getopts      = "0.2.21"
+statistical  = "0.1.1"
+multiqueue   = "0.3.2"
+rand         = "0.4"
+fastq        = "0.6"
 
 
