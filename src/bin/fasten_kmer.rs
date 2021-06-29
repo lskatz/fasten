@@ -22,7 +22,7 @@ fn main(){
     let matches = opts.parse(&args[1..]).expect("ERROR: could not parse parameters");
 
     if matches.opt_present("help") {
-        println!("Counts kmers. Doesn't anyone remember that Chander is an analyst?\n{}", opts.usage(&opts.short_usage(&args[0])));
+        println!("Counts kmers.\n{}", opts.usage(&opts.short_usage(&args[0])));
         std::process::exit(0);
     }
     if matches.opt_present("paired-end") {

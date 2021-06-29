@@ -78,5 +78,3 @@ statistical  = "0.1.1"
 multiqueue   = "0.3.2"
 rand         = "0.4"
 fastq        = "0.6"
-
-

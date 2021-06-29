@@ -22,7 +22,7 @@ fn main(){
 
     let matches = opts.parse(&args[1..]).expect("Error: could not parse parameters");
     if matches.opt_present("help") {
-        println!("Interleaves reads from either stdin or file parameters. Joey interleaves his friends!\n{}", opts.usage(&opts.short_usage(&args[0])));
+        println!("Interleaves reads from either stdin or file parameters.\n{}", opts.usage(&opts.short_usage(&args[0])));
         std::process::exit(0);
     }
     if matches.opt_present("paired-end") {
