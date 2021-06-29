@@ -1,16 +1,19 @@
 extern crate fasten;
+extern crate fastq;
 extern crate getopts;
 extern crate rand;
 
-use std::fs::File;
-use std::io::BufReader;
-use std::io::BufRead;
+use std::io::stdin;
+//use std::fs::File;
+//use std::io::BufReader;
+//use std::io::BufRead;
 use std::collections::HashMap;
 
 use std::env;
 use std::f32;
 
 use fasten::fasten_base_options;
+use fastq::{Parser, Record};
 //use fasten::logmsg;
 
 // need this constant because the compiler had a problem
@@ -25,27 +28,32 @@ fn main(){
     let matches = opts.parse(&args[1..]).expect("ERROR: could not parse parameters");
 
     if matches.opt_present("h") {
-        println!("Emma: collapse identical reads into single reads, recalculating quality values. If paired end, then each set of reads must be identical to be collapsed. Rachel's daughter Emma was played by twins, essentially collapsing two individuals into one character!");
+        println!("Collapse identical reads into single reads, recalculating quality values. If paired end, then each set of reads must be identical to be collapsed.");
         println!("{}",opts.usage(&opts.short_usage(&args[0])));
         std::process::exit(0);
     }
 
     let paired_end = matches.opt_present("paired-end");
+    //let num_cpus   = matches.opt_present("paired-end");
+    let num_cpus = 1;
 
     // seq => {seq2 => count}
     let mut seq_count :HashMap<String, u32>   =HashMap::new();
     // seq => {seq2 => vec![sequence of prob of errors]}
     let mut seq_error_rate :HashMap<String, Vec<f32>> = HashMap::new();
 
-    /*
-    let mut current_seq1 = String::new();
-    let mut current_seq2 = String::new();
-    //let mut current_key  = String::new();
-    let mut current_qual1= String::new();
-    let mut current_qual2= String::new();
-    //let mut combined_qual= String::new();
-    */
+    let mut parser = Parser::new(stdin());
+    let result: Result<Vec<_>,_> = parser.parallel_each(num_cpus, |record_sets| {
+      for record_set in record_sets {
+        for record in record_set.iter() {
+          let id = std::str::from_utf8(record.head()).expect("ERROR: could not get defline for a sequence entry");
+          println!("{:?}", &id);
+        }
+      }
+    });
+      
 
+    /*
     let my_file = File::open("/dev/stdin").expect("Could not open file");
     let my_buffer=BufReader::new(my_file);
     let mut lines = my_buffer.lines();
@@ -109,6 +117,7 @@ fn main(){
             *qual_vec = new_qual;
         }
     }
+    */
 
     let max_qual_char = 'I';
     let min_qual_char = '!';
