@@ -23,7 +23,7 @@ fn main(){
     let matches = opts.parse(&args[1..]).expect("ERROR: could not parse parameters");
 
     if matches.opt_present("help") {
-        println!("Gives read metrics on a read set.  Rachel lets you know if you look good!\n{}", opts.usage(&opts.short_usage(&args[0])));
+        println!("Gives read metrics on a read set.\n{}", opts.usage(&opts.short_usage(&args[0])));
         std::process::exit(0);
     }
     if matches.opt_present("paired-end") {

@@ -46,7 +46,7 @@ pub trait Cleanable{
     /// Make a seq object from a String.
     fn from_string (seq_str: &String) -> Seq;
     /// sanitize an identifier string
-    fn sanitize_id(id: &String) -> (String);
+    fn sanitize_id(id: &String) -> String;
     /// lower any low quality base to a zero and "N"
     fn lower_ambiguity_q(&mut self) -> ();
     /// Trim sequences based on quality
@@ -113,7 +113,7 @@ impl Cleanable for Seq {
 
     /// Read an identifier and return a cleaned version,
     /// e.g., removing @ in a fastq identifier.
-    fn sanitize_id(id: &String) -> (String) {
+    fn sanitize_id(id: &String) -> String {
         if id.len() == 0 {
             return String::new();
         }

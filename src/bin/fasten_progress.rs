@@ -11,18 +11,23 @@ fn main(){
     let args: Vec<String> = env::args().collect();
     let mut opts = fasten_base_options();
     // Options specific to this script
-    //opts.optopt("","min-length","Minimum read length allowed","INT");
-    //opts.optopt("","min-quality","Minimum quality allowed","FLOAT");
-    opts.optopt("","id","Progress identifier","STRING");
+    opts.optopt("","id","Progress identifier. Default: unnamed","STRING");
     opts.optopt("","update-every","Update progress every n reads.","INT");
-    //opts.optflag("","print-reads","Print the reads as they are being validated (useful for unix pipes)");
-    //opts.optflag("v","verbose","");
 
     let matches = opts.parse(&args[1..]).expect("ERROR: could not parse parameters");
     if matches.opt_present("help") {
         println!("Prints a progress meter for number of fastq entries.\n{}", opts.usage(&opts.short_usage(&args[0])));
         std::process::exit(0);
     }
+
+    let progress_id:String = {
+      if matches.opt_present("id") {
+        matches.opt_str("id")
+          .expect("ERROR parsing --id")
+      } else {
+        String::from("unnamed")
+      }
+    };
 
     let my_file = File::open("/dev/stdin").expect("Could not open file");
     let my_buffer=BufReader::new(my_file);
@@ -43,6 +48,7 @@ fn main(){
     };
 
     let mut line_counter = 0;
+    eprint!("\r{} progress: {}", progress_id, line_counter/lines_per_read);
     for _line in my_buffer.lines() {
         //let _line=line.expect("ERROR: did not get a line");
         line_counter += 1;
@@ -52,7 +58,7 @@ fn main(){
         match line_counter % update_every {
             0=>{
                 //println!("UPDATE: {}", line_counter);
-                eprint!("\r{}", line_counter/lines_per_read);
+                eprint!("\r{} progress: {}", progress_id, line_counter/lines_per_read);
                 //eprint!(".");
             }
             _=>{
@@ -62,10 +68,8 @@ fn main(){
     }
     eprint!("\n");
 
-    if matches.opt_present("verbose") {
-        let msg = format!("Finished progress on {} reads", line_counter);
-        fasten::logmsg(&msg);
-    }
+    let msg = format!("{}: Finished progress on {} reads", progress_id, line_counter);
+    fasten::logmsg(&msg);
 }
 
 
