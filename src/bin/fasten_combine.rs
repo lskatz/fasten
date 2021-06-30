@@ -14,7 +14,7 @@ use std::f32;
 
 use fasten::fasten_base_options;
 use fastq::{Parser, Record};
-//use fasten::logmsg;
+use fasten::logmsg;
 
 // need this constant because the compiler had a problem
 // with the syntax 10.0.pow()
@@ -28,87 +28,106 @@ fn main(){
     let matches = opts.parse(&args[1..]).expect("ERROR: could not parse parameters");
 
     if matches.opt_present("h") {
-        println!("Collapse identical reads into single reads, recalculating quality values. If paired end, then each set of reads must be identical to be collapsed.");
+        println!("Collapse identical reads into single reads, recalculating quality values. If paired end, then each set of reads must be identical to be collapsed. Warning: due to multiple reads collapsing into one, read identifiers will be reconstituted.");
         println!("{}",opts.usage(&opts.short_usage(&args[0])));
         std::process::exit(0);
     }
 
     let paired_end = matches.opt_present("paired-end");
-    //let num_cpus   = matches.opt_present("paired-end");
-    let num_cpus = 1;
+    let _num_cpus:usize = {
+      if matches.opt_present("numcpus") {
+        logmsg("Warning: This script does not make use of --numcpus");
+        1 as usize
+      } else {
+        1 as usize
+      }
+    };
 
-    // seq => {seq2 => count}
+    // seq => count
     let mut seq_count :HashMap<String, u32>   =HashMap::new();
-    // seq => {seq2 => vec![sequence of prob of errors]}
+    // seq => vec![sequence of prob of errors]
     let mut seq_error_rate :HashMap<String, Vec<f32>> = HashMap::new();
 
-    let mut parser = Parser::new(stdin());
-    let result: Result<Vec<_>,_> = parser.parallel_each(num_cpus, |record_sets| {
-      for record_set in record_sets {
-        for record in record_set.iter() {
-          let id = std::str::from_utf8(record.head()).expect("ERROR: could not get defline for a sequence entry");
-          println!("{:?}", &id);
-        }
-      }
-    });
-      
-
-    /*
-    let my_file = File::open("/dev/stdin").expect("Could not open file");
-    let my_buffer=BufReader::new(my_file);
-    let mut lines = my_buffer.lines();
-    while let Some(_) = lines.next() {
-        // TODO transform current_seq1 to its minimum
-        let current_seq1 = lines.next()
-            .expect("ERROR getting seq line")
-            .expect("ERROR parsing seq line");
-        lines.next()
-            .expect("ERROR getting plus line")
-            .expect("ERROR parsing plus line");
-        let current_qual1= lines.next()
-            .expect("ERROR getting qual line")
-            .expect("ERROR parsing qual line");
-        let mut seq_key = current_seq1.clone();
-        let mut combined_qual = current_qual1.clone();
+    let parser = Parser::new(stdin());
+    let mut parser_getter = parser.ref_iter();
+    parser_getter.advance().expect("Could not read the first fastq entry");
+    while let Some(record1) = parser_getter.get() {
+        let mut id:Vec<u8>     = record1.head().to_vec();
+        let mut seq:Vec<u8>    = record1.seq().to_vec(); 
+        let mut qual:Vec<u8>   = record1.qual().to_vec();
         if paired_end {
-            lines.next()
-                .expect("ERROR getting id line")
-                .expect("ERROR parsing id line");
-            // TODO transform current_seq2 to its minimum
-            let current_seq2 = lines.next()
-                .expect("ERROR getting seq line")
-                .expect("ERROR parsing seq line");
-            lines.next()
-                .expect("ERROR getting plus line")
-                .expect("ERROR parsing plus line");
-            let current_qual2= lines.next()
-                .expect("ERROR getting qual line")
-                .expect("ERROR parsing qual line");
-            seq_key.push(READ_SEPARATOR); 
-            seq_key.push_str(&current_seq2);
-            combined_qual.push(READ_SEPARATOR);
-            combined_qual.push_str(&current_qual2);
+          // get the next entry with advance() and then get()
+          match parser_getter.advance() {
+            Ok(_) => {},
+            Err(err) => {
+              panic!("ERROR: could not read the second entry in a paired end read: {}", err);
+            }
+          };
+          let record2 = &parser_getter.get().expect("ERROR parsing second pair in a paired end read");
+          let id2:&[u8]  = record2.head();
+          let seq2:&[u8] = record2.seq();
+          let qual2:&[u8]= record2.qual();
+
+          // Add on the separator
+          id.push(READ_SEPARATOR as u8);
+          seq.push(READ_SEPARATOR as u8);
+          qual.push(READ_SEPARATOR as u8);
+          
+          // Add on the second read
+          id.extend_from_slice(id2);
+          seq.extend_from_slice(seq2);
+          qual.extend_from_slice(qual2);
         }
-        let count = seq_count.entry(seq_key.clone()).or_insert(0);
-        *count += 1;
+        //println!("{:?}", qual);
+
+        match &parser_getter.advance() {
+          Ok(_) => {},
+          Err(_) => {break;}
+        };
+
+        // Keep track of the counts of identical sequence
+        let seq_string:String = String::from(
+                                   std::str::from_utf8(&seq[..])
+                                   .expect("ERROR converting slice to str")
+                                );
+        /*
+        let id_string:String = String::from(
+                                  std::str::from_utf8(&id[..])
+                                 .expect("ERROR converting slice to str")
+                               );
+        */
+        let count = seq_count.entry(seq_string.clone()).or_insert(0);
+        *count += 1 as u32;
 
         // If this sequence hasn't been seen yet,
         // then instantiate the probabilities.
-        if !seq_error_rate.contains_key(&seq_key) {
-            let mut qual_vec :Vec<f32> = Vec::new();
-            for qual_char in combined_qual.chars() {
-                let qual_int = qual_char as u8 as f32 - 33.0;
+        if !seq_error_rate.contains_key(&seq_string) {
+            let mut qual_vec:Vec<f32> = vec![];
+            for q in qual {
+                // Don't mess with the read separator character
+                if q == READ_SEPARATOR as u8 {
+                  qual_vec.push(q as u8 as f32);
+                  continue;
+                }
+                let qual_int = q as u8 as f32 - 33.0;
                 let p :f32 = TEN.powf((-1.0 * qual_int)/TEN);
                 qual_vec.push(p);
             }
-            seq_error_rate.insert(seq_key.clone(), qual_vec);
+            seq_error_rate.insert(seq_string.clone(), qual_vec);
         }
+        //println!("{:?}", seq_error_rate.entry(seq_string));
+        
         // If this sequence has been seen yet, then
         // start combining the error rates.
         else {
-            let qual_vec = seq_error_rate.entry(seq_key.clone()).or_insert(Vec::new());
+            // get the base error rate vector
+            let qual_vec = seq_error_rate.entry(seq_string.clone()).or_insert(Vec::new());
 
-            let these_errors = combined_qual.chars().map(|qual_char|{
+            let these_errors = qual.into_iter().map(|qual_char|{
+                // Don't mess with the read separator character
+                if qual_char == READ_SEPARATOR as u8 {
+                  return qual_char as u8 as f32;
+                }
                 let qual_int = qual_char as u8 as f32 - 33.0;
                 let p :f32 = TEN.powf((-1.0 * qual_int)/TEN);
                 return p;
@@ -117,7 +136,6 @@ fn main(){
             *qual_vec = new_qual;
         }
     }
-    */
 
     let max_qual_char = 'I';
     let min_qual_char = '!';
@@ -127,6 +145,7 @@ fn main(){
     let mut seq_counter=0;
     for (seq,combined_qual) in seq_error_rate {
         seq_counter += 1;
+        //println!("{:?}", seq);continue;
 
         // TODO take care of PE reads
 
