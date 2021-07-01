@@ -23,15 +23,53 @@ const READ_SEPARATOR :char = '~';
 
 fn main(){
     let args: Vec<String> = env::args().collect();
-    let opts = fasten_base_options();
+    let mut opts = fasten_base_options();
 
-    let matches = opts.parse(&args[1..]).expect("ERROR: could not parse parameters");
+    // make a string of characters like !"#...GHI to represent all quals
+    let default_phred_min_char:char = '!';
+    let default_phred_max_char:char = 'I';
+    let default_phred_min:u8 = default_phred_min_char as u8 - 33;
+    let default_phred_max:u8 = default_phred_max_char as u8 - 33;
+    let mut qual_range_string = String::with_capacity((default_phred_max - default_phred_min + 1) as usize);
+    for phred in default_phred_min..default_phred_max+1 {
+      qual_range_string.push((phred+33) as char);
+    }
+
+
+    opts.optopt("","max-qual-char",
+      format!("Maximum quality character (default: {})", default_phred_max_char).as_str(),
+      "CHAR");
+    opts.optopt("","min-qual-char",
+      format!("Minimum quality character (default: {})", default_phred_min_char).as_str(),
+      "CHAR");
+
+    let matches = opts.parse(&args[1..]).expect("Parsing parameters");
 
     if matches.opt_present("h") {
         println!("Collapse identical reads into single reads, recalculating quality values. If paired end, then each set of reads must be identical to be collapsed. Warning: due to multiple reads collapsing into one, read identifiers will be reconstituted.");
         println!("{}",opts.usage(&opts.short_usage(&args[0])));
+        println!("NOTE: range of quality scores is {}", qual_range_string);
         std::process::exit(0);
     }
+    
+    let max_qual_char:char = matches.opt_default("max-qual-char", &default_phred_max_char.to_string())
+                     .unwrap_or(String::from(default_phred_max_char))
+                     .parse()
+                     .expect("ERROR converting --max-qual-int value to integer");
+
+    let mut min_qual_char:char =
+          matches.opt_default("min-qual-char", &default_phred_min_char.to_string())
+                     .unwrap_or(String::from(default_phred_min_char))
+                     .parse()
+                     .expect("ERROR converting --min-qual-int value to integer");
+    if min_qual_char < default_phred_min_char {
+      logmsg("--min-qual-char was less than the default minimum and so it will be set to the default");
+      min_qual_char = default_phred_min_char;
+    }
+
+    // Finally turn the choice of qual into an integer
+    let min_qual:u8 = min_qual_char as u8;
+    let max_qual:u8 = max_qual_char as u8;
 
     let paired_end = matches.opt_present("paired-end");
     let _num_cpus:usize = {
@@ -79,11 +117,6 @@ fn main(){
           qual.extend_from_slice(qual2);
         }
         //println!("{:?}", qual);
-
-        match &parser_getter.advance() {
-          Ok(_) => {},
-          Err(_) => {break;}
-        };
 
         // Keep track of the counts of identical sequence
         let seq_string:String = String::from(
@@ -135,12 +168,12 @@ fn main(){
             let new_qual = combine_error_vectors(&qual_vec,&these_errors);
             *qual_vec = new_qual;
         }
-    }
 
-    let max_qual_char = 'I';
-    let min_qual_char = '!';
-    let max_qual = max_qual_char as u8;
-    let min_qual = min_qual_char as u8;
+        match &parser_getter.advance() {
+          Ok(_) => {},
+          Err(_) => {break;}
+        };
+    }
 
     let mut seq_counter=0;
     for (seq,combined_qual) in seq_error_rate {
