@@ -1,13 +1,17 @@
 extern crate getopts;
 extern crate fasten;
 extern crate fastq;
+extern crate bam;
+
+use bam::RecordReader;
+//use bio::io::fasta;
 //use std::fs::File;
 //use std::io::BufReader;
 
 use fasten::fasten_base_options;
 //use fasten::io::fastq;
 //use fasten::io::seq::Cleanable;
-//use fasten::logmsg;
+use fasten::logmsg;
 
 use std::io::stdin;
 use fastq::{Parser, Record};
@@ -76,31 +80,6 @@ impl FastenSeq{
   }
 }
       
-#[test]
-/// Test to see whether we read the challenge dataset correctly
-fn challenge_dataset () {
-    // Open the difficult file
-    let challenge_file = File::open("testdata/four_reads.gt_16_lines.fastq").expect("Could not open testdata/four_reads.gt_16_lines.fastq");
-    let challenge_buffer=BufReader::new(challenge_file);
-    let challenge_reader=fastq::FastqReader::new_careful(challenge_buffer);
-    let mut challenge_string = String::new();
-    for seq_obj in challenge_reader {
-        challenge_string.push_str(&seq_obj.to_string());
-    }
-
-    // Open the easy file
-    let easy_file  = File::open("testdata/four_reads.fastq").expect("Could not open testdata/four_reads.fastq");
-    let easy_buffer= BufReader::new(easy_file);
-    let easy_reader=fastq::FastqReader::new(easy_buffer);
-    let mut easy_string = String::new();
-    for seq_obj in easy_reader {
-        easy_string.push_str(&seq_obj.to_string());
-    }
-    
-    assert_eq!(challenge_string,easy_string);
-}
-
-
 fn main(){
     let args: Vec<String> = env::args().collect();
     let mut opts = fasten_base_options();
@@ -125,6 +104,8 @@ fn main(){
     //TODO (?) multithread this 
     match in_format.as_str() {
       "fastq" => {read_fastq(tx, &matches);}
+      "sam"   => {read_sam(tx, &matches);}
+      "fasta" => {panic!("reading fasta not implemented yet");}
       _ => {panic!("Unknown input format {}", in_format);}
     };
 
@@ -135,6 +116,47 @@ fn main(){
       _ => {panic!("Unknown output format {}", out_format);}
     };
 
+}
+
+//fn read_fasta(tx:std::sync::mpsc::Sender<FastenSeq>, matches:&getopts::Matches){
+  
+
+fn read_sam(tx:std::sync::mpsc::Sender<FastenSeq>, matches:&getopts::Matches){
+  if matches.opt_present("paired-end") {
+    logmsg("--paired-end given but paired-endedness will be determined by sam format flags");
+  }
+
+  // TODO check if sorted by name so that the pairs are next to each other
+
+  let mut reader = bam::SamReader::from_path("/dev/stdin").unwrap();
+  let mut r      = bam::Record::new();
+
+  loop {
+    let mut seq:FastenSeq = FastenSeq::new();
+
+    match reader.read_into(&mut r) {
+      Ok(false) => break,
+      Ok(true)  => {},
+      Err(e)    => panic!("{}", e),
+    }
+    seq.id1    = String::from(std::str::from_utf8(r.name()).unwrap());
+    seq.seq1   = String::from_utf8(r.sequence().to_vec()).unwrap();
+    seq.qual1  = String::from_utf8(r.qualities().to_readable()).unwrap();
+
+    // Read from the sam itself whether this is paired end
+    if r.flag().is_paired() {
+      match reader.read_into(&mut r) {
+        Ok(false) => break,
+        Ok(true)  => {},
+        Err(e)    => panic!("{}", e),
+      }
+      seq.id2    = String::from(std::str::from_utf8(r.name()).unwrap());
+      seq.seq2   = String::from_utf8(r.sequence().to_vec()).unwrap();
+      seq.qual2  = String::from_utf8(r.qualities().to_readable()).unwrap();
+    }
+
+    tx.send(seq).expect("Sending seq object to writer");
+  }
 }
 
 fn read_fastq(tx:std::sync::mpsc::Sender<FastenSeq>, matches:&getopts::Matches){
