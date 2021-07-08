@@ -13,6 +13,7 @@ use std::io::stdin;
 use fastq::{Parser, Record};
 
 use std::env;
+//use std::fmt;
 
 use std::sync::mpsc::channel;
 
@@ -27,6 +28,7 @@ struct FastenSeq {
   qual2: String,
 }
 impl FastenSeq{
+  /// a blank new object is a set of blank strings for each value
   fn new() -> FastenSeq{
     return FastenSeq{
       id1:   String::new(),
@@ -37,23 +39,43 @@ impl FastenSeq{
       qual2: String::new(),
     };
   }
-}
-      
-/*
-impl Copy for FastenSeq {
-  fn Copy(&self) -> FastenSeq {
-    return FastenSeq{
-      id1:   self.id1.clone(),
-      seq1:  self.seq1.clone(),
-      qual1: self.qual1.clone(),
-      id2:   self.id1.clone(),
-      seq2:  self.seq1.clone(),
-      qual2: self.qual1.clone(),
+  fn as_fastq(&self) -> String {
+    let mut entry:String = format!("@{}\n{}\n+\n{}",
+                             self.id1, self.seq1, self.qual1);
+    if !self.id2.is_empty() {
+      entry = format!("{}\n@{}\n{}\n+\n{}",
+                entry, self.id2, self.seq2, self.qual2);
     }
+    return entry;
+  }
+
+  fn as_fasta(&self) -> String {
+    let mut entry:String = format!(">{}\n{}",
+                             self.id1, self.seq1);
+    if !self.id2.is_empty() {
+      entry = format!("{}\n>{}\n{}",
+                entry, self.id2, self.seq2);
+    }
+    return entry;
+  }
+
+  fn as_sam(&self) -> String {
+    let mut flag = "4"; // unmapped
+
+    if !self.id2.is_empty() {
+      flag = "77"; // unmapped + pair unmapped + has pair + first in pair
+    }
+
+    let mut entry:String = vec![self.id1.as_str(), flag, "*", "0", "0", "*", "*", "0", "0", self.seq1.as_str(), self.qual1.as_str()].join("\t");
+    if !self.id2.is_empty() {
+      let entry2:String  = vec![self.id2.as_str(), "141", "*", "0", "0", "*", "*", "0", "0", self.seq2.as_str(), self.qual2.as_str()].join("\t");
+      entry = format!("{}\n{}", entry, entry2);
+    }
+
+    return entry;
   }
 }
-*/
-
+      
 #[test]
 /// Test to see whether we read the challenge dataset correctly
 fn challenge_dataset () {
@@ -87,7 +109,7 @@ fn main(){
 
     let matches = opts.parse(&args[1..]).expect("ERROR: could not parse parameters");
     if matches.opt_present("help") {
-        println!("Convert a fastq file to a standard 4-lines-per-entry format\n{}", opts.usage(&opts.short_usage(&args[0])));
+        println!("Convert from a format to another format. Possible choices are: fastq, fasta, sam.{}", opts.usage(&opts.short_usage(&args[0])));
         std::process::exit(0);
     }
 
@@ -108,6 +130,8 @@ fn main(){
 
     match out_format.as_str() {
       "fastq" => {write_fastq(rx);}
+      "fasta" => {write_fasta(rx);}
+      "sam"   => {write_sam(rx);}
       _ => {panic!("Unknown output format {}", out_format);}
     };
 
@@ -149,7 +173,23 @@ fn read_fastq(tx:std::sync::mpsc::Sender<FastenSeq>, matches:&getopts::Matches){
 }
 
 fn write_fastq(rx:std::sync::mpsc::Receiver<FastenSeq>){
-  //while let Some(seq) = rx.recv(){
-
-  //}
+  let receiver = rx.iter();
+  for seq in receiver {
+    println!("{}", seq.as_fastq());
+  }
 }
+
+fn write_fasta(rx:std::sync::mpsc::Receiver<FastenSeq>){
+  let receiver = rx.iter();
+  for seq in receiver {
+    println!("{}", seq.as_fasta());
+  }
+}
+
+fn write_sam(rx:std::sync::mpsc::Receiver<FastenSeq>){
+  let receiver = rx.iter();
+  for seq in receiver {
+    println!("{}", seq.as_sam());
+  }
+}
+

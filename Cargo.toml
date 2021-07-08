@@ -40,6 +40,10 @@ name = "fasten_pe"
 path = "src/bin/fasten_pe.rs"
 
 [[bin]]
+name = "fasten_convert"
+path = "src/bin/fasten_convert.rs"
+
+[[bin]]
 name = "fasten_straighten"
 path = "src/bin/fasten_straighten.rs"
 
