@@ -6,17 +6,10 @@ extern crate bio;
 
 use bam::RecordReader;
 use bio::io::fastq::FastqRead;    
-//use bio::io::fasta;
-//use std::fs::File;
-//use std::io::BufReader;
+use bio::io::fasta::FastaRead;    
 
 use fasten::fasten_base_options;
-//use fasten::io::fastq;
-//use fasten::io::seq::Cleanable;
 use fasten::logmsg;
-
-use std::io::stdin;
-use fastq::{Parser, Record};
 
 use std::env;
 //use std::fmt;
@@ -48,6 +41,9 @@ impl FastenSeq{
   fn as_fastq(&self) -> String {
     let mut entry:String = format!("@{}\n{}\n+\n{}",
                              self.id1, self.seq1, self.qual1);
+    if self.qual1.is_empty() {
+      panic!("Empty qual for\n{}", entry);
+    }
     if !self.id2.is_empty() {
       entry = format!("{}\n@{}\n{}\n+\n{}",
                 entry, self.id2, self.seq2, self.qual2);
@@ -107,7 +103,7 @@ fn main(){
     match in_format.as_str() {
       "fastq" => {read_fastq(tx, &matches);}
       "sam"   => {read_sam(tx, &matches);}
-      "fasta" => {panic!("reading fasta not implemented yet");}
+      "fasta" => {read_fasta(tx, &matches);}
       _ => {panic!("Unknown input format {}", in_format);}
     };
 
@@ -120,8 +116,32 @@ fn main(){
 
 }
 
-//fn read_fasta(tx:std::sync::mpsc::Sender<FastenSeq>, matches:&getopts::Matches){
-  
+fn read_fasta(tx:std::sync::mpsc::Sender<FastenSeq>, matches:&getopts::Matches){
+  if matches.opt_present("paired-end") {
+    logmsg("Warning: paired end is not implemented for input fasta");
+  }
+
+  let mut reader = bio::io::fasta::Reader::new(std::io::stdin());
+  let mut record = bio::io::fasta::Record::new();
+
+  loop{
+    match reader.read(&mut record) {
+      Ok(()) => {
+        if record.is_empty() {
+          break;
+        }
+      },
+      Err(e)   => {panic!("{}",e);},
+    };
+
+    let mut seq:FastenSeq = FastenSeq::new();
+    seq.id1   = record.id().to_string();
+    seq.seq1  = std::str::from_utf8(record.seq()).unwrap().to_string();
+    //seq.qual1 = std::str::from_utf8(record.qual()).unwrap().to_string();
+
+    tx.send(seq).expect("Sending seq object to writer");
+  }
+}
 
 fn read_sam(tx:std::sync::mpsc::Sender<FastenSeq>, matches:&getopts::Matches){
   if matches.opt_present("paired-end") {
