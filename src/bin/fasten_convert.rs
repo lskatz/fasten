@@ -2,8 +2,10 @@ extern crate getopts;
 extern crate fasten;
 extern crate fastq;
 extern crate bam;
+extern crate bio;
 
 use bam::RecordReader;
+use bio::io::fastq::FastqRead;    
 //use bio::io::fasta;
 //use std::fs::File;
 //use std::io::BufReader;
@@ -162,36 +164,42 @@ fn read_sam(tx:std::sync::mpsc::Sender<FastenSeq>, matches:&getopts::Matches){
 fn read_fastq(tx:std::sync::mpsc::Sender<FastenSeq>, matches:&getopts::Matches){
   let paired_end = matches.opt_present("paired-end");
 
-  let parser = Parser::new(stdin());
+  let mut reader = bio::io::fastq::Reader::new(std::io::stdin());
+  let mut record = bio::io::fastq::Record::new();
 
-  let mut parser_getter = parser.ref_iter();
-  parser_getter.advance().expect("Could not read the first fastq entry");
-  while let Some(record1) = parser_getter.get() {
-    let mut seq:FastenSeq = FastenSeq::new();
-    seq.id1   = std::str::from_utf8(record1.head()).unwrap().to_string();
-    seq.seq1  = std::str::from_utf8(record1.seq()).unwrap().to_string();
-    seq.qual1 = std::str::from_utf8(record1.qual()).unwrap().to_string();
-    if paired_end {
-      // get the next entry with advance() and then get()
-      match &parser_getter.advance() {
-        Ok(_) => {},
-        Err(err) => {
-          panic!("ERROR: could not read the second entry in a paired end read: {}", err);
+  loop{
+    match reader.read(&mut record) {
+      Ok(()) => {
+        if record.is_empty() {
+          break;
         }
+      },
+      Err(e)   => {panic!("{}",e);},
+    };
+
+    let mut seq:FastenSeq = FastenSeq::new();
+    seq.id1   = record.id().to_string();
+    seq.seq1  = std::str::from_utf8(record.seq()).unwrap().to_string();
+    seq.qual1 = std::str::from_utf8(record.qual()).unwrap().to_string();
+
+    if paired_end {
+      match reader.read(&mut record) {
+        Ok(()) => {
+          if record.is_empty() {
+            panic!("Specified paired end reads but there wasn't a pair for read {}", &seq.id1);
+          }
+        },
+        Err(e)   => {panic!("{}",e);},
       };
-      let record2 = &parser_getter.get().expect("ERROR parsing second pair in a paired end read");
-      seq.id2   = std::str::from_utf8(record2.head()).unwrap().to_string();
-      seq.seq2  = std::str::from_utf8(record2.seq()).unwrap().to_string();
-      seq.qual2 = std::str::from_utf8(record2.qual()).unwrap().to_string();
+      seq.id2   = record.id().to_string();
+      seq.seq2  = std::str::from_utf8(record.seq()).unwrap().to_string();
+      seq.qual2 = std::str::from_utf8(record.qual()).unwrap().to_string();
     }
 
     tx.send(seq).expect("Sending seq object to writer");
 
-    match &parser_getter.advance() {
-      Ok(_) => {},
-      Err(_) => {break;}
-    };
   }
+
 }
 
 fn write_fastq(rx:std::sync::mpsc::Receiver<FastenSeq>){
