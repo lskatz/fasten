@@ -1,6 +1,6 @@
 [package]
 name    = "fasten"
-version = "0.2.2"
+version = "0.3.1"
 authors = ["Lee Katz <gzu2@cdc.gov>"]
 #license-file  = "LICENSE"
 license       = "MIT"
@@ -40,6 +40,10 @@ name = "fasten_pe"
 path = "src/bin/fasten_pe.rs"
 
 [[bin]]
+name = "fasten_convert"
+path = "src/bin/fasten_convert.rs"
+
+[[bin]]
 name = "fasten_straighten"
 path = "src/bin/fasten_straighten.rs"
 
@@ -72,10 +76,11 @@ name = "fasten_progress"
 path = "src/bin/fasten_progress.rs"
 
 [dependencies]
-regex = "0.2.10"
-getopts = "0.2.21"
-statistical = "0.1.1"
-multiqueue = "0.3.2"
-rand = "0.4"
-threadpool = "1.8.1"
-
+regex        = "0.2.10"
+getopts      = "0.2.21"
+statistical  = "0.1.1"
+multiqueue   = "0.3.2"
+rand         = "0.4"
+fastq        = "0.6"
+threadpool   = "1.8.1"
+bam          = "0.1.4"
