@@ -39,14 +39,25 @@ impl FastenSeq{
     };
   }
   fn as_fastq(&self) -> String {
+    let qual1:String = {
+      if self.qual1.is_empty() {
+        String::from_utf8(vec![b'I'; self.seq1.len()]).unwrap()
+      } else {
+        String::from(&self.qual1)
+      }
+    };
     let mut entry:String = format!("@{}\n{}\n+\n{}",
-                             self.id1, self.seq1, self.qual1);
-    if self.qual1.is_empty() {
-      panic!("Empty qual for\n{}", entry);
-    }
+                             self.id1, self.seq1, &qual1);
     if !self.id2.is_empty() {
+      let qual2:String = {
+        if self.qual2.is_empty() {
+          String::from_utf8(vec![b'I'; self.seq2.len()]).unwrap()
+        } else {
+          String::from(&self.qual2)
+        }
+      };
       entry = format!("{}\n@{}\n{}\n+\n{}",
-                entry, self.id2, self.seq2, self.qual2);
+                entry, self.id2, self.seq2, &qual2);
     }
     return entry;
   }
