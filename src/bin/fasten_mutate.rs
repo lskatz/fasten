@@ -40,6 +40,13 @@ fn main(){
 
     // Not sure if I should expose NTs to a flag if someone
     // wants more nucleotide codes like N.
+    let mark:bool = if matches.opt_present("mark"){
+        true
+    } else {
+        false
+    };
+
+
     let nts = vec!['A', 'C', 'G', 'T'];
     //let nts = vec!['a', 'c', 'g', 't'];
 
@@ -58,15 +65,18 @@ fn main(){
         let qual= buffer_iter.next().expect("ERROR reading a qual line")
             .expect("ERROR reading a qual line");
 
-        let new_seq = mutate(&seq, &nts, num_snps);
+        let new_seq = mutate(&seq, &nts, num_snps, mark);
 
         println!("{}\n{}\n+\n{}",id,new_seq,qual);
 
     }
 }
 
-fn mutate(seq: &str, nts: &Vec<char>, num_snps: u8) -> String {
+fn mutate(seq: &str, nts: &Vec<char>, num_snps: u8, mark:bool) -> String {
     let mut sequence:Vec<u8> = seq.as_bytes().to_vec();
+    if mark {
+        sequence.make_ascii_lowercase();
+    }
     let length = sequence.len();
     let between = Range::new(0, length);
     let nt_range= Range::new(0, nts.len());
