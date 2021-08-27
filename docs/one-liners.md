@@ -11,6 +11,7 @@
 * [Adapter discovery](#adapter-discovery)
 * [Translation to RNA](#translation-to-rna)
 * [Extract a certain motif, keeping paired end reads intact](#extract-a-certain-motif-keeping-paired-end-reads-intact)
+* [Mutate a genome](#mutate-a-genome)
 
 <!-- vim-markdown-toc -->
 
@@ -134,4 +135,32 @@ Choose a few different motifs with regex magic
     
     zcat file.fastq.gz | fasten_regex --regex '[AGT]TG' --paired-end | \
       gzip -c > start-sites.fastq.gz
+
+## Mutate a genome
+
+Although you could mutate a fastq file randomly with `fasten_mutate --snps`,
+it would be too random and would only cause a messy pileup or assembly
+downstream.
+
+Also, you might want to mutate a genome assembly. However, that is not why
+you are browsing the fasten package. This package is for raw reads
+and not assemblies.
+
+For raw reads, it might be smarter to mutate certain loci, represented by kmers in the genome.
+In this case, we use `fasten_replace` in a loop.
+This example is mostly untested and so please test it before using it in production.
+
+    k=15
+    read_len=250-1;
+    NTs="ATCG"
+    for kmer in $kmer_array; do 
+      echo -ne . >&2 # progress bar
+      pos=$(shuf -i 1-$read_len -n 1)
+      nt=${NT:$(shuf -i 0-3 -n 1):1} 
+      replace_str=${kmer:0:$pos}$nt${kmer:$(($pos+1))}
+      zcat $interleaved | \
+        fasten_replace --paired-end --find $kmer --replace $replace_str --which SEQ |\
+        gzip -c > $interleaved.tmp && mv $interleaved.tmp $interleaved;
+    done  
+    echo >&2 # finish the progress bar
 
