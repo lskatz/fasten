@@ -16,6 +16,10 @@ name = "fasten_replace"
 path = "src/bin/fasten_replace.rs"
 
 [[bin]]
+name = "fasten_mutate"
+path = "src/bin/fasten_mutate.rs"
+
+[[bin]]
 name = "fasten_regex"
 path = "src/bin/fasten_regex.rs"
 

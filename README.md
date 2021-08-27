@@ -71,6 +71,7 @@ All scripts accept the parameters, read uncompressed fastq format from stdin, an
 |`fasten_quality_filter` | Transforms nucleotides to "N" if the quality is low | |
 |`fasten_trim`      | Blunt-end trims reads | |
 |`fasten_replace`   | Find and replace using regex | |
+|`fasten_mutate`    | introduce random mutations | |
 |`fasten_regex`     | Filter for reads using regex | |
 |`fasten_progress`  | Add progress to any place in the pipeline | |
 
