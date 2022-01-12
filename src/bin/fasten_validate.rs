@@ -66,7 +66,8 @@ fn main(){
     // In other words, we are looking for a pattern that
     // is NOT the target seq or qual
     let seq_regex = Regex::new(r"[^a-zA-Z]").expect("malformed seq regex");
-    let qual_regex= Regex::new(r"[^!-Z]").expect("malformed qual regex");
+    //let qual_regex= Regex::new(r"[^!-Za-z]").expect("malformed qual regex");
+    let qual_regex= Regex::new(r"\s").expect("malformed qual regex");
 
     // TODO have a print buffer, something like 4096 bytes
 
@@ -100,6 +101,9 @@ fn main(){
             }
             3=>{
                 if qual_regex.is_match(&line) {
+                    for cap in qual_regex.captures_iter(&line) {
+                        eprintln!("Illegal qual character found: {}", &cap[0]);
+                    }
                     panic!("ERROR: there are characters that are not qual characters in line {}. Contents are:\n  {}",i,line);
                 }
                 // only calculate read quality if we are testing for it
