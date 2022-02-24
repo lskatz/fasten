@@ -83,12 +83,12 @@ impl FastenSeq{
 fn main(){
     let args: Vec<String> = env::args().collect();
     let mut opts = fasten_base_options();
-    opts.optopt("i", "in-format",  "The input format for stdin",  "STR");
-    opts.optopt("o", "out-format", "The output format for stdin", "STR");
+    opts.optopt("i", "in-format",  "The input format for stdin",  "FORMAT");
+    opts.optopt("o", "out-format", "The output format for stdin", "FORMAT");
 
     let matches = opts.parse(&args[1..]).expect("ERROR: could not parse parameters");
     if matches.opt_present("help") {
-        println!("Convert from a format to another format. Possible choices are: fastq, fasta, sam.{}", opts.usage(&opts.short_usage(&args[0])));
+        println!("{}  FORMAT can be: fastq, fasta, sam\n", opts.usage(&opts.short_usage(&args[0])));
         std::process::exit(0);
     }
 
@@ -105,7 +105,8 @@ fn main(){
     match in_format.as_str() {
       "fastq" => {read_fastq(tx, &matches);}
       "sam"   => {read_sam(tx, &matches);}
-      "fasta" => {panic!("reading fasta not implemented yet");}
+      //"fasta" => {panic!("reading fasta not implemented yet");}
+      "fasta" => {read_fasta(tx, &matches);}
       _ => {panic!("Unknown input format {}", in_format);}
     };
 
@@ -118,8 +119,66 @@ fn main(){
 
 }
 
-//fn read_fasta(tx:std::sync::mpsc::Sender<FastenSeq>, matches:&getopts::Matches){
-  
+// I wasn't satisfied with the existing fasta parsers and how they might
+// read stdin and so I rolled out my own
+fn read_fasta(tx:std::sync::mpsc::Sender<FastenSeq>, matches:&getopts::Matches){
+    let paired_end = matches.opt_present("paired-end");
+    if paired_end {
+        logmsg("--paired-end was given but it is ignored in a fasta context");
+    }
+
+    // Read the fasta through stdin
+    let stdin = stdin();
+    //let mut iterator = stdin.lock().lines();
+
+    // Get the first line, ie the first defline, right away
+    let mut seq:FastenSeq = FastenSeq::new();
+    let bytes = stdin.read_line(&mut seq.id1).unwrap();
+    seq.id1 = seq.id1.trim().to_string();
+    if bytes == 0 {
+        panic!("Zero byte stdin");
+    }
+    // remove ">"
+    let gt_sign = seq.id1.remove(0);
+    if gt_sign != '>' {
+        panic!("ERROR: first character of first line of stdin is not '>' as expected. Found {}", gt_sign);
+    }
+
+    loop{
+        let mut buffer = String::new();
+        let bytes = stdin.read_line(&mut buffer).unwrap();
+        buffer = buffer.trim().to_string();
+        // If this is EOF, send the last sequence and break
+        if bytes == 0 {
+            // Send the last sequence
+            // The quality line will be fake and as long as the sequence length
+            seq.qual1 = (0..seq.seq1.len()).map(|_| "I").collect::<String>();
+            tx.send(seq).expect("Sending seq object to writer");
+            break;
+        }
+        // if we're looking at the next sequence identifier,
+        // send off the current sequence and start fresh with
+        // the new identifier.
+        else if &buffer[0..1]==">" {
+            // The quality line will be fake and as long as the sequence length
+            seq.qual1 = (0..seq.seq1.len()).map(|_| "I").collect::<String>();
+            // Send off the sequence
+            tx.send(seq).expect("Sending seq object to writer");
+
+            seq = FastenSeq::new();
+            seq.id1 = buffer;
+            // remove ">"
+            let gt_sign = seq.id1.remove(0);
+            if gt_sign != '>' {
+                panic!("ERROR: first character of first line of stdin is not '>' as expected. Found {}", gt_sign);
+            }
+        }
+        else {
+            seq.seq1 = format!("{}{}", seq.seq1, buffer);
+        }
+    }
+
+}
 
 fn read_sam(tx:std::sync::mpsc::Sender<FastenSeq>, matches:&getopts::Matches){
   if matches.opt_present("paired-end") {
