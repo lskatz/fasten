@@ -76,6 +76,7 @@ fn main(){
     };
 
     let (tx, rx):(std::sync::mpsc::Sender<String>,std::sync::mpsc::Receiver<String>) = channel();
+    let (tx_trash, _rx_trash):(std::sync::mpsc::Sender<String>,std::sync::mpsc::Receiver<String>) = channel();
     let pool = ThreadPool::new(num_cpus);
 
     // Read the file and send seqs to threads
@@ -101,8 +102,9 @@ fn main(){
 
         // Pass the 4 or 8 lines to a thread
         let tx2 = tx.clone();
+        let tx2_trash = tx_trash.clone();
         pool.execute(move|| {
-          clean_entry(lines, min_length, min_avg_qual, min_trim_qual, lines_per_read, tx2);
+          clean_entry(lines, min_length, min_avg_qual, min_trim_qual, lines_per_read, tx2, tx2_trash);
         });
     }
 
@@ -115,7 +117,7 @@ fn main(){
 }
 
 /// Cleans a SE or PE read
-fn clean_entry(lines:Vec<String>, min_length:usize, min_avg_qual:f32, min_trim_qual:u8, lines_per_read:u8, tx:std::sync::mpsc::Sender<String>) {
+fn clean_entry(lines:Vec<String>, min_length:usize, min_avg_qual:f32, min_trim_qual:u8, lines_per_read:u8, tx:std::sync::mpsc::Sender<String>, _tx_trash:std::sync::mpsc::Sender<String>) {
   let short_blank_string:String = String::with_capacity(100);
   let  long_blank_string:String = String::with_capacity(10000);
 
