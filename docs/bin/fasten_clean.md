@@ -1,5 +1,13 @@
 # fasten_clean
 
+Trim and filter reads
+
+## Examples
+
+```
+cat file.fastq | fasten_clean --min-avg-quality 25 --min-trim-quality 25 > out.fastq
+```
+
 ## Usage
 
 

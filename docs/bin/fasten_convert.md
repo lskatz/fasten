@@ -1,5 +1,19 @@
 # fasten_convert
 
+Converts file formats to/from different formats.
+
+## Examples
+
+```
+# Simple conversion
+cat file.fastq | fasten_convert -i fastq -o fasta > out.fasta
+# Convert to sam and then to bam
+cat file.fastq | fasten_convert -i fastq -o sam   | samtools view -bS > file.bam
+# Convert to fastq and then clean
+cat file.fasta | fasten_convert -i fasta -o fastq | fasten_clean > cleaned.fastq
+```
+
+
 ## Usage
 
 

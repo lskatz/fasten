@@ -1,9 +1,17 @@
 # fasten_kmer
 
+Counts kmers.
+Each line is a kmer with two columns separated by tab: kmer, count
+
+## Example
+
+```
+cat file.fastq | fasten_kmer -k 15 > 15mers.tsv
+```
+
 ## Usage
 
 
-    Counts kmers.
     Usage: ../../target/release/fasten_kmer [-h] [-n INT] [-p] [-v] [-k INT]
     
     Options:

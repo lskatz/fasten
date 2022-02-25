@@ -1,9 +1,18 @@
 # fasten_combine
 
+Collapse identical reads into single reads, recalculating quality values.
+If paired end, then each set of reads must be identical to be collapsed.
+_Warning_: due to multiple reads collapsing into one, read identifiers will be reconstituted.
+
+## Examples
+
+```
+cat file.fastq | fasten_combine > combined.fastq
+```
+
 ## Usage
 
 
-    Collapse identical reads into single reads, recalculating quality values. If paired end, then each set of reads must be identical to be collapsed. Warning: due to multiple reads collapsing into one, read identifiers will be reconstituted.
     Usage: ../../target/release/fasten_combine [-h] [-n INT] [-p] [-v] [--max-qual-char CHAR] [--min-qual-char CHAR]
     
     Options:
