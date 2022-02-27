@@ -1,9 +1,15 @@
 # fasten_quality_filter
 
+Transforms any low-quality base to 'N'
+
+## Examples
+
+```
+cat file.fastq | fasten_quality_filter > file_with_Ns.fastq
+```
+
 ## Usage
 
-
-    Transforms any low-quality base to 'N'
     Usage: ../../target/release/fasten_quality_filter [-h] [-n INT] [-p] [-v] [-m INT]
     
     Options:

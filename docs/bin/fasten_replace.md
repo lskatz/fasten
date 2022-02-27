@@ -1,9 +1,16 @@
 # fasten_replace
 
+Streaming editor for fastq data using a find/replace.
+
+## Examples
+
+```
+# Force a motif to be lowercase
+cat file.fastq | fasten_replace --which SEQ --find ATAT --replace atat > file.fastq
+```
+
 ## Usage
 
-
-    Streaming editor for fastq data using a find/replace.
     Usage: ../../target/release/fasten_replace [-h] [-n INT] [-p] [-v] [-f STRING] [-r STRING] [-w STRING]
     
     Options:

@@ -1,9 +1,19 @@
 # fasten_progress
 
+Prints a progress meter for number of fastq entries to stderr.
+
+## Examples
+
+```
+# While getting read metrics for a large fastq file, print the progress
+# to make the wait a little easier
+cat large.fastq | fasten_progress | fasten_metrics
+# While shuffling a large fastq file, print the progress
+cat large_1.fastq large_2.fastq | fasten_progress | fasten_shuffle > interleaved.fastq
+```
+
 ## Usage
 
-
-    Prints a progress meter for number of fastq entries.
     Usage: ../../target/release/fasten_progress [-h] [-n INT] [-p] [-v] [--id STRING] [--update-every INT]
     
     Options:

@@ -1,9 +1,20 @@
 # fasten_regex
 
+Filter reads based on a regular expression.
+
+## Examples
+
+```
+# Find a specific read
+cat file.fastq | fasten_regex --which ID --regex 'my-specific-read-id-1234' > my_read.fastq
+# Find a specific read but also keep its pair
+cat file.fastq | fasten_regex --which ID --regex 'my-specific-read-id-1234' --paired-end > my_pairs.fastq
+# Find a specific motif
+cat file.fastq | fasten_regex --which SEQ --regex ATAT > atat-motif.fastq
+```
+
 ## Usage
 
-
-    Filter reads based on a regular expression.
     Usage: ../../target/release/fasten_regex [-h] [-n INT] [-p] [-v] [-r STRING] [-w String]
     
     Options:

@@ -1,9 +1,16 @@
 # fasten_metrics
 
+Gives read metrics on a read set.
+Values are given in a column delimited stdout.
+
+## Example
+
+```
+cat file.fastq | fasten_metrics | column -t
+```
+
 ## Usage
 
-
-    Gives read metrics on a read set.
     Usage: ../../target/release/fasten_metrics [-h] [-n INT] [-p] [-v] [--each-read] [--distribution STRING]
     
     Options:

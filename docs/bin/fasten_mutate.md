@@ -1,9 +1,15 @@
 # fasten_mutate
 
+Mutates reads. There is no mutation model; only randomness.
+
+## Example
+
+```
+cat file.fastq | fasten_mutate > out.fastq
+```
+
 ## Usage
 
-
-    Mutates reads. There is no mutation model; only randomness.
     Usage: ../../target/release/fasten_mutate [-h] [-n INT] [-p] [-v] [-s INT] [-m]
     
     Options:
