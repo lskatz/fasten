@@ -1,9 +1,16 @@
 # fasten_sample
 
+downsample your reads
+
+## Examples
+
+```
+# Get 10% of the reads
+cat file.fastq | fasten_sample --frequency 0.1 > out.fastq
+```
+
 ## Usage
 
-
-    Ursula: downsample your reads
     Usage: ../../target/release/fasten_sample [-h] [-n INT] [-p] [-v] [-f FLOAT]
     
     Options:

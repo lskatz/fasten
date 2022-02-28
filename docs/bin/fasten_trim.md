@@ -1,9 +1,20 @@
 # fasten_trim
 
+Blunt-end trims using 0-based coordinates
+
+## Examples
+
+```
+# Trim five bases from the right side
+cat file.fastq | fasten_trim -l -5 > trimmed.fastq
+# Keep a maximum of 100bp
+cat file.fastq | fasten_trim -l 99 > trimmed.fastq
+# Trim 5bp from the left side
+cat file.fastq | fasten_trim -f 4  > trimmed.fastq
+```
+
 ## Usage
 
-
-    Blunt-end trims using 0-based coordinates
     Usage: ../../target/release/fasten_trim [-h] [-n INT] [-p] [-v] [-f INT] [-l INT]
     
     Options:

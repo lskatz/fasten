@@ -2,7 +2,7 @@
 
 Mutates reads. There is no mutation model; only randomness.
 
-## Example
+## Examples
 
 ```
 cat file.fastq | fasten_mutate > out.fastq

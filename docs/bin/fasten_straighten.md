@@ -1,9 +1,15 @@
 # fasten_straighten
 
+Convert a fastq file to a standard 4-lines-per-entry format
+
+## Examples
+
+```
+cat weird.fastq | fasten_straighten > four-per-entry.fastq
+```
+
 ## Usage
 
-
-    Convert a fastq file to a standard 4-lines-per-entry format
     Usage: ../../target/release/fasten_straighten [-h] [-n INT] [-p] [-v]
     
     Options:

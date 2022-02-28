@@ -1,9 +1,18 @@
 # fasten_validate
 
+Validates your reads and makes you feel good about yourself!
+
+## Examples
+
+```
+# Quick validation with stderr message
+cat file.fastq | fasten_validate --verbose
+# Validate that your reads are paired end
+cat R1.fastq R2.fastq | fasten_shuffle | fasten_validate
+```
+
 ## Usage
 
-
-    Validates your reads and makes you feel good about yourself!
     Usage: ../../target/release/fasten_validate [-h] [-n INT] [-p] [-v] [--min-length INT] [--min-quality FLOAT] [--paired-end] [--print-reads] [-v]
     
     Options:

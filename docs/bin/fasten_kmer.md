@@ -3,7 +3,7 @@
 Counts kmers.
 Each line is a kmer with two columns separated by tab: kmer, count
 
-## Example
+## Examples
 
 ```
 cat file.fastq | fasten_kmer -k 15 > 15mers.tsv

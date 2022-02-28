@@ -3,7 +3,7 @@
 Gives read metrics on a read set.
 Values are given in a column delimited stdout.
 
-## Example
+## Examples
 
 ```
 cat file.fastq | fasten_metrics | column -t
