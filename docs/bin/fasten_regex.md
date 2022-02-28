@@ -15,7 +15,7 @@ cat file.fastq | fasten_regex --which SEQ --regex ATAT > atat-motif.fastq
 
 ## Usage
 
-    Usage: ../../target/release/fasten_regex [-h] [-n INT] [-p] [-v] [-r STRING] [-w String]
+    Usage: fasten_regex [-h] [-n INT] [-p] [-v] [-r STRING] [-w String]
     
     Options:
         -h, --help          Print this help menu.

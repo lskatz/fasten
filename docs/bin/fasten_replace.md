@@ -11,7 +11,7 @@ cat file.fastq | fasten_replace --which SEQ --find ATAT --replace atat > file.fa
 
 ## Usage
 
-    Usage: ../../target/release/fasten_replace [-h] [-n INT] [-p] [-v] [-f STRING] [-r STRING] [-w STRING]
+    Usage: fasten_replace [-h] [-n INT] [-p] [-v] [-f STRING] [-r STRING] [-w STRING]
     
     Options:
         -h, --help          Print this help menu.

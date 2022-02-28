@@ -13,11 +13,9 @@ cat file.fastq | fasten_convert -i fastq -o sam   | samtools view -bS > file.bam
 cat file.fasta | fasten_convert -i fasta -o fastq | fasten_clean > cleaned.fastq
 ```
 
-
 ## Usage
 
-
-    Usage: ../../target/release/fasten_convert [-h] [-n INT] [-p] [-v] [-i FORMAT] [-o FORMAT]
+    Usage: fasten_convert [-h] [-n INT] [-p] [-v] [-i FORMAT] [-o FORMAT]
     
     Options:
         -h, --help          Print this help menu.

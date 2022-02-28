@@ -11,8 +11,7 @@ cat file.fastq | fasten_kmer -k 15 > 15mers.tsv
 
 ## Usage
 
-
-    Usage: ../../target/release/fasten_kmer [-h] [-n INT] [-p] [-v] [-k INT]
+    Usage: fasten_kmer [-h] [-n INT] [-p] [-v] [-k INT]
     
     Options:
         -h, --help          Print this help menu.

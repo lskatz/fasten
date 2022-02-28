@@ -15,7 +15,7 @@ cat R1.fastq R2.fastq | fasten_shuffle | fasten_randomize --paired-end | head -n
 
 ## Usage
 
-    Usage: ../../target/release/fasten_randomize [-h] [-n INT] [-p] [-v]
+    Usage: fasten_randomize [-h] [-n INT] [-p] [-v]
     
     Options:
         -h, --help          Print this help menu.

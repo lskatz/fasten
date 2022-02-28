@@ -14,7 +14,7 @@ cat large_1.fastq large_2.fastq | fasten_progress | fasten_shuffle > interleaved
 
 ## Usage
 
-    Usage: ../../target/release/fasten_progress [-h] [-n INT] [-p] [-v] [--id STRING] [--update-every INT]
+    Usage: fasten_progress [-h] [-n INT] [-p] [-v] [--id STRING] [--update-every INT]
     
     Options:
         -h, --help          Print this help menu.

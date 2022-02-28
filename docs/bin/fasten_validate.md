@@ -13,7 +13,7 @@ cat R1.fastq R2.fastq | fasten_shuffle | fasten_validate
 
 ## Usage
 
-    Usage: ../../target/release/fasten_validate [-h] [-n INT] [-p] [-v] [--min-length INT] [--min-quality FLOAT] [--paired-end] [--print-reads] [-v]
+    Usage: fasten_validate [-h] [-n INT] [-p] [-v] [--min-length INT] [--min-quality FLOAT] [--paired-end] [--print-reads] [-v]
     
     Options:
         -h, --help          Print this help menu.

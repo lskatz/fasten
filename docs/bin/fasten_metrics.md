@@ -11,7 +11,7 @@ cat file.fastq | fasten_metrics | column -t
 
 ## Usage
 
-    Usage: ../../target/release/fasten_metrics [-h] [-n INT] [-p] [-v] [--each-read] [--distribution STRING]
+    Usage: fasten_metrics [-h] [-n INT] [-p] [-v] [--each-read] [--distribution STRING]
     
     Options:
         -h, --help          Print this help menu.

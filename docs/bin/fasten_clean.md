@@ -10,8 +10,7 @@ cat file.fastq | fasten_clean --min-avg-quality 25 --min-trim-quality 25 > out.f
 
 ## Usage
 
-
-    Usage: ../../target/release/fasten_clean [-h] [-n INT] [-p] [-v] [--min-length INT] [--min-avg-quality FLOAT] [--min-trim-quality INT]
+    Usage: fasten_clean [-h] [-n INT] [-p] [-v] [--min-length INT] [--min-avg-quality FLOAT] [--min-trim-quality INT]
     
     Options:
         -h, --help          Print this help menu.

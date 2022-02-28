@@ -15,7 +15,7 @@ cat file.fastq | fasten_trim -f 4  > trimmed.fastq
 
 ## Usage
 
-    Usage: ../../target/release/fasten_trim [-h] [-n INT] [-p] [-v] [-f INT] [-l INT]
+    Usage: fasten_trim [-h] [-n INT] [-p] [-v] [-f INT] [-l INT]
     
     Options:
         -h, --help          Print this help menu.

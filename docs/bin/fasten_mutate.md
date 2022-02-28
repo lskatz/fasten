@@ -10,7 +10,7 @@ cat file.fastq | fasten_mutate > out.fastq
 
 ## Usage
 
-    Usage: ../../target/release/fasten_mutate [-h] [-n INT] [-p] [-v] [-s INT] [-m]
+    Usage: fasten_mutate [-h] [-n INT] [-p] [-v] [-s INT] [-m]
     
     Options:
         -h, --help          Print this help menu.

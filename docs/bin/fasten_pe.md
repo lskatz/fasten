@@ -14,7 +14,7 @@ cat file.fastq | fasten_pe || echo "Reads were paired end.";
 
 ## Usage
 
-    Usage: ../../target/release/fasten_pe [-h] [-n INT] [-p] [-v] [--print-reads]
+    Usage: fasten_pe [-h] [-n INT] [-p] [-v] [--print-reads]
     
     Options:
         -h, --help          Print this help menu.

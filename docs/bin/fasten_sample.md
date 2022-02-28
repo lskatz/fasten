@@ -11,7 +11,7 @@ cat file.fastq | fasten_sample --frequency 0.1 > out.fastq
 
 ## Usage
 
-    Usage: ../../target/release/fasten_sample [-h] [-n INT] [-p] [-v] [-f FLOAT]
+    Usage: fasten_sample [-h] [-n INT] [-p] [-v] [-f FLOAT]
     
     Options:
         -h, --help          Print this help menu.

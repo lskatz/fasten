@@ -10,7 +10,7 @@ cat weird.fastq | fasten_straighten > four-per-entry.fastq
 
 ## Usage
 
-    Usage: ../../target/release/fasten_straighten [-h] [-n INT] [-p] [-v]
+    Usage: fasten_straighten [-h] [-n INT] [-p] [-v]
     
     Options:
         -h, --help          Print this help menu.

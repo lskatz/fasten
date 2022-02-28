@@ -10,7 +10,7 @@ cat file.fastq | fasten_quality_filter > file_with_Ns.fastq
 
 ## Usage
 
-    Usage: ../../target/release/fasten_quality_filter [-h] [-n INT] [-p] [-v] [-m INT]
+    Usage: fasten_quality_filter [-h] [-n INT] [-p] [-v] [-m INT]
     
     Options:
         -h, --help          Print this help menu.

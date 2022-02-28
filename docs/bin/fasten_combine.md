@@ -12,8 +12,7 @@ cat file.fastq | fasten_combine > combined.fastq
 
 ## Usage
 
-
-    Usage: ../../target/release/fasten_combine [-h] [-n INT] [-p] [-v] [--max-qual-char CHAR] [--min-qual-char CHAR]
+    Usage: fasten_combine [-h] [-n INT] [-p] [-v] [--max-qual-char CHAR] [--min-qual-char CHAR]
     
     Options:
         -h, --help          Print this help menu.

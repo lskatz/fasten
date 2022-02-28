@@ -28,7 +28,7 @@ cat interleaved.fastq | fasten_shuffle -d -1 1.fastq -2 2.fastq
 
 ## Usage
 
-    Usage: ../../target/release/fasten_shuffle [-h] [-n INT] [-p] [-v] [-d] [-1 1.fastq] [-2 2.fastq]
+    Usage: fasten_shuffle [-h] [-n INT] [-p] [-v] [-d] [-1 1.fastq] [-2 2.fastq]
     
     Options:
         -h, --help          Print this help menu.
