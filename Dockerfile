@@ -3,8 +3,8 @@
 
 FROM rust:1.42.0-alpine3.11 as builder 
 
-RUN apk update \
-    && apk add --no-cache \
+RUN apk update
+RUN apk add --no-cache \
         ca-certificates \
         build-base \
         linux-headers \
