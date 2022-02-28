@@ -11,12 +11,14 @@ RUN apk add --no-cache \
         git \
         openssl-dev \
         util-linux-dev \
-        libseccomp-dev \
-    && mkdir -p /usr/src/app \
+        libseccomp-dev 
+
+RUN mkdir -p /usr/src/app \
     && cd /usr/src/app \
     && git clone https://github.com/lskatz/fasten \
     && cd /usr/src/app/fasten \
-    && cargo build --release
+RUN cargo build --release
+RUN cargo build
 
 
 # build final container
