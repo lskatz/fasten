@@ -1,7 +1,7 @@
 
 # build
 
-FROM rust:1.42.0-alpine3.11 as builder 
+FROM rust:1.42.0-alpine3.15 as builder 
 
 RUN apk update
 RUN apk add --no-cache \
