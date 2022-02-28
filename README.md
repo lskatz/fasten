@@ -58,10 +58,10 @@ All scripts accept the parameters, read uncompressed fastq format from stdin, an
 
 |script             |Description|
 |-------------------|-----------|
-|`fasten_clean`     | Trims and cleans a fastq file.|
-|`fasten_convert`   | Converts between different sequence formats like fastq, sam, fasta.|
-|`fasten_straighten`| Convert any fastq file to a standard four-line-per-entry format.|
-|`fasten_metrics`   | Prints basic read metrics.|
+|[`fasten_clean`](docs/bin/fasten_clean)     | Trims and cleans a fastq file.|
+|[`fasten_convert`](docs/bin/fasten_convert)   | Converts between different sequence formats like fastq, sam, fasta.|
+|[`fasten_straighten`](docs/bin/fasten_straighten)| Convert any fastq file to a standard four-line-per-entry format.|
+|[`fasten_metrics`](docs/bin/fasten_metrics)   | Prints basic read metrics.|
 |`fasten_pe`        | Determines paired-endedness based on read IDs.|
 |`fasten_randomize` | Randomizes reads from input |
 |`fasten_combine`   | Combines identical reads and updates quality scores.|
