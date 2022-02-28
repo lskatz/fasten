@@ -1,6 +1,3 @@
-
-# build
-
 FROM rust:1.59.0-alpine3.14 as builder 
 
 RUN apk update
