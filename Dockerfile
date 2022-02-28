@@ -17,8 +17,8 @@ RUN mkdir -p /usr/src/app \
     && cd /usr/src/app \
     && git clone https://github.com/lskatz/fasten \
     && cd /usr/src/app/fasten \
-RUN cargo build --release
-RUN cargo build
+RUN cd /usr/src/app/fasten && cargo build --release
+RUN cd /usr/src/app/fasten && cargo build
 
 
 # build final container
