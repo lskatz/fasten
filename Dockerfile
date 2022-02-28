@@ -13,19 +13,21 @@ LABEL maintainer="Lee Katz"
 LABEL maintainer.email="gzu2@cdc.gov"
 LABEL maintainer2="John Phan"
 
-RUN apk update && \
-    apk add --no-cache \
+RUN apk update
+RUN apk add --no-cache \
         ca-certificates \
         build-base \
         linux-headers \
         git \
         openssl-dev \
         util-linux-dev \
-        libseccomp-dev \
-    && mkdir -p /usr/src/app \
+        libseccomp-dev 
+
+RUN mkdir -p /usr/src/app \
     && cd /usr/src/app \
     && git clone https://github.com/lskatz/fasten \
-    && cd /usr/src/app/fasten && cargo build --release
+    && cd /usr/src/app/fasten \
+RUN cd /usr/src/app/fasten && cargo build --release
 
 
 # build final container
