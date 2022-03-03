@@ -79,6 +79,18 @@ impl FastenSeq{
     return entry;
   }
 }
+
+/*
+#[test]
+/// Test to see whether we can convert from fastq to everything else
+fn test_fastq_to () {
+    let (tx, rx):(std::sync::mpsc::Sender<FastenSeq>,std::sync::mpsc::Receiver<FastenSeq>) = channel();
+    read_fastq(tx.clone(), 
+    assert_eq!(obs_fasta_string, expected_fasta_string, "Convert fastq=>fasta");
+    //assert_eq!(obs_sam_string, expected_sam_string, "Convert fastq=>sam");
+    //assert_eq!(obs_fastq_string, expected_fastq_string, "Convert fastq=>fastq (self to self)");
+}
+*/
       
 fn main(){
     let args: Vec<String> = env::args().collect();
