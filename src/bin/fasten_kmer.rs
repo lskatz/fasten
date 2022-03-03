@@ -14,14 +14,52 @@ use fasten::logmsg;
 use std::collections::HashMap;
 
 #[test]
-/// Let's count some kmers
-fn test_kmer_counting () {
+/// Let's count some kmers on homopolymers
+fn test_kmer_counting_homopolymers () {
     let k = 4;
+
+    // The first easy test is an AAAA kmer in a Ax10 homopolymer
     let a_homopolymer = (0..10).map(|_| "A").collect::<String>();
     let mut kmer = kmers_in_str(&a_homopolymer, k, false);
-    let obs_a_count = kmer.entry(String::from("A")).or_insert(999);
-    assert_eq!(obs_a_count, 7, "10-mer A yields seven 4-mers");
+    let obs_a_count = *kmer.entry(String::from("AAAA")).or_insert(0);
+    assert_eq!(obs_a_count, 7, "10-mer A yields seven 4-mers of A");
+    let obs_t_count = *kmer.entry(String::from("TTTT")).or_insert(0);
+    assert_eq!(obs_t_count, 0, "10-mer A yields zero 4-mers of T");
+
+    // Ok but what about revcom kmers
+    let mut kmer = kmers_in_str(&a_homopolymer, k, true );
+    let obs_a_count = *kmer.entry(String::from("AAAA")).or_insert(0);
+    assert_eq!(obs_a_count, 7, "10-mer A yields seven 4-mers of A");
+    let obs_t_count = *kmer.entry(String::from("TTTT")).or_insert(0);
+    assert_eq!(obs_t_count, 7, "10-mer A yields seven 4-mers of T");
 }   
+#[test]
+/// Let's count some kmers on something more complicated
+fn test_kmer_counting_4mers () {
+    let k = 4;
+
+    // This is the first seq of the test file four_reads.fastq
+    let seq = "AAAGTGCTCTTAACTTGTCCCGCTCCACATCAGCGCGACATCAATCGACATTAAACCGAGTATCTTGTCAGCCTGGGGTGACGATGCGTCCCATTAAAGT";
+    let my_kmer = "TTAA";
+    let mut kmer = kmers_in_str(&seq, k, false);
+    let obs = *kmer.entry(String::from(my_kmer)).or_insert(0);
+    assert_eq!(obs, 3, "Found {} kmer in seq {} times. Seq is \n{}", my_kmer, obs, seq);
+
+    // But also test for revcom kmers
+    let mut kmer = kmers_in_str(&seq, k, true );
+    let obs = *kmer.entry(String::from(my_kmer)).or_insert(0);
+    assert_eq!(obs, 6, "Found {} kmer in seq {} times. Seq is \n{}", my_kmer, obs, seq);
+
+    // one more kmer
+    let my_kmer = "TGTC";
+    let mut kmer = kmers_in_str(&seq, k, false);
+    let obs = *kmer.entry(String::from(my_kmer)).or_insert(0);
+    assert_eq!(obs, 2, "Found {} kmer in seq {} times. Seq is \n{}", my_kmer, obs, seq);
+    // and revcom
+    let mut kmer = kmers_in_str(&seq, k, true );
+    let obs = *kmer.entry(String::from(my_kmer)).or_insert(0);
+    assert_eq!(obs, 4, "Found {} kmer in seq {} times. Seq is \n{}", my_kmer, obs, seq);
+}
 
 fn main(){
     let args: Vec<String> = env::args().collect();
