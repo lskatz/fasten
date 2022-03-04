@@ -12,6 +12,20 @@ use std::env;
 use fasten::fasten_base_options;
 use fasten::logmsg;
 
+#[test]
+fn test_average_quality () {
+    let easy_qual = "IIIIIIIIIIII";
+    let easy_avg_obs = average_quality(easy_qual);
+    let easy_avg_exp:f32 = 40.0;
+    assert_eq!(easy_avg_obs, easy_avg_exp, "Tried to calculate average quality for {}", easy_qual);
+
+    // a more difficult qual is the one in the first read in four_reads.fastq
+    let hard_qual = "8AB*2D>C1'02C+=I@IEFHC7&-E5',I?E*33E/@3#68B%\"!B-/2%(G=*@D052IA!('7-*$+A6>.$89,-CG71=AGAE3&&#=2B.+I<E";
+    let hard_avg_obs = average_quality(hard_qual);
+    let hard_avg_exp:f32 = 21.40;
+    assert_eq!(hard_avg_obs, hard_avg_exp, "Tried to calculate the average quality for {}", hard_qual);
+}
+
 fn main(){
     let args: Vec<String> = env::args().collect();
     let mut opts = fasten_base_options();
@@ -74,15 +88,12 @@ fn main(){
                 read_length.push(my_read_length);
             }
             0 => {
-                let mut my_read_qual :u32=0;
                 let qual_line=line.expect("Expected a qual line");
-                for qual_char in qual_line.chars() {
-                    my_read_qual += qual_char as u8 as u32 - 33;
-                }
+                let my_avg_qual:f32 = average_quality(&qual_line);
                 if each_read {
-                    println!("{}",my_read_qual as f32/qual_line.len() as f32);
+                    println!("{}",my_avg_qual);
                 }
-                read_qual.push(my_read_qual as f32 / qual_line.len() as f32);
+                read_qual.push(my_avg_qual);
             }
             _ => {
 
@@ -105,7 +116,9 @@ fn main(){
 
         summary_metrics.push(total_length_str);
         summary_metrics.push(total_qual_str);
-    } else if distribution == "nonparametric" {
+    }
+    // TODO median absolute deviation or similar
+    else if distribution == "nonparametric" {
         eprintln!("WARNING: nonparametric distribution not yet supported");
 
     } else if distribution == "" {
@@ -120,6 +133,16 @@ fn main(){
         println!("{}", summary_metrics.join("\t"));
     }
 
+}
+
+/// given a cigar line for quality, return its average
+fn average_quality (qual_line:&str) -> f32 {
+    let mut my_read_qual :u32=0;
+    for qual_char in qual_line.chars() {
+        my_read_qual += qual_char as u8 as u32 - 33;
+    }
+    let my_avg_qual:f32 = my_read_qual as f32 / qual_line.len() as f32;
+    return my_avg_qual;
 }
 
 fn standard_deviation(vec :&Vec<f32>) -> f32{
@@ -137,3 +160,4 @@ fn standard_deviation(vec :&Vec<f32>) -> f32{
     return avg_square_diff.sqrt();
 
 }
+
