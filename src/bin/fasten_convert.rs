@@ -79,6 +79,19 @@ impl FastenSeq{
     return entry;
   }
 }
+
+/*
+#[test]
+/// Test to see whether we can convert from fastq to everything else
+fn test_fastq_to () {
+    let (tx, rx):(std::sync::mpsc::Sender<FastenSeq>,std::sync::mpsc::Receiver<FastenSeq>) = channel();
+    read_fastq(tx.clone(), false);
+
+    //assert_eq!(obs_fasta_string, expected_fasta_string, "Convert fastq=>fasta");
+    //assert_eq!(obs_sam_string, expected_sam_string, "Convert fastq=>sam");
+    //assert_eq!(obs_fastq_string, expected_fastq_string, "Convert fastq=>fastq (self to self)");
+}
+*/
       
 fn main(){
     let args: Vec<String> = env::args().collect();
@@ -92,6 +105,8 @@ fn main(){
         std::process::exit(0);
     }
 
+    let paired_end = matches.opt_present("paired-end");
+
     let in_format  = matches.opt_default("in-format", "fastq")
                        .unwrap_or(String::from("fastq"))
                        .to_lowercase();
@@ -101,12 +116,13 @@ fn main(){
 
     let (tx, rx):(std::sync::mpsc::Sender<FastenSeq>,std::sync::mpsc::Receiver<FastenSeq>) = channel();
 
+    //let infile = stdin();
+
     //TODO (?) multithread this 
     match in_format.as_str() {
-      "fastq" => {read_fastq(tx, &matches);}
-      "sam"   => {read_sam(tx, &matches);}
-      //"fasta" => {panic!("reading fasta not implemented yet");}
-      "fasta" => {read_fasta(tx, &matches);}
+      "fastq" => {read_fastq(tx, paired_end);}
+      "sam"   => {read_sam(tx, paired_end);}
+      "fasta" => {read_fasta(tx, paired_end);}
       _ => {panic!("Unknown input format {}", in_format);}
     };
 
@@ -121,8 +137,7 @@ fn main(){
 
 // I wasn't satisfied with the existing fasta parsers and how they might
 // read stdin and so I rolled out my own
-fn read_fasta(tx:std::sync::mpsc::Sender<FastenSeq>, matches:&getopts::Matches){
-    let paired_end = matches.opt_present("paired-end");
+fn read_fasta(tx:std::sync::mpsc::Sender<FastenSeq>, paired_end:bool){
     if paired_end {
         logmsg("--paired-end was given but it is ignored in a fasta context");
     }
@@ -180,8 +195,8 @@ fn read_fasta(tx:std::sync::mpsc::Sender<FastenSeq>, matches:&getopts::Matches){
 
 }
 
-fn read_sam(tx:std::sync::mpsc::Sender<FastenSeq>, matches:&getopts::Matches){
-  if matches.opt_present("paired-end") {
+fn read_sam(tx:std::sync::mpsc::Sender<FastenSeq>, paired_end:bool){
+  if paired_end {
     logmsg("--paired-end given but paired-endedness will be determined by sam format flags");
   }
 
@@ -218,8 +233,7 @@ fn read_sam(tx:std::sync::mpsc::Sender<FastenSeq>, matches:&getopts::Matches){
   }
 }
 
-fn read_fastq(tx:std::sync::mpsc::Sender<FastenSeq>, matches:&getopts::Matches){
-  let paired_end = matches.opt_present("paired-end");
+fn read_fastq(tx:std::sync::mpsc::Sender<FastenSeq>, paired_end:bool){
 
   let parser = Parser::new(stdin());
 
