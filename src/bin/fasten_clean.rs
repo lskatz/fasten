@@ -14,6 +14,37 @@ use std::sync::mpsc::channel;
 use fasten::fasten_base_options;
 //use fasten::logmsg;
 
+#[test]
+fn test_clean_entry() {
+    let entry:Vec<String> = vec![
+        String::from("@read0"),
+        String::from("AAAGTGCTCTTAACTTGTCCCGCTCCACATCAGCGCGACATCAATCGACATTAAACCGAGTATCTTGTCAGCCTGGGGTGACGATGCGTCCCATTAAAGT"),
+        String::from("+"),
+        String::from("8AB*2D>C1'02C+=I@IEFHC7&-E5',I?E*33E/@3#68B%\"!B-/2%(G=*@D052IA!('7-*$+A6>.$89,-CG71=AGAE3&&#=2B.+I<E")
+    ];
+    let min_length = 10;
+    let min_avg_qual = 20.0;
+    let min_trim_qual = 35;
+    let lines_per_read = 4;
+    let (tx, rx):(std::sync::mpsc::Sender<String>,std::sync::mpsc::Receiver<String>) = channel();
+    let tx_trash = tx.clone(); // cannot for the life of me remember why I required this clone
+
+    // perform the clean
+    clean_entry(entry, min_length, min_avg_qual, min_trim_qual, lines_per_read, tx.clone(), tx_trash);
+
+    drop(tx);
+
+    let cleaned_res = rx.iter().next();
+    let cleaned_read= cleaned_res.unwrap();
+
+    let expected_35_trim = "@read0
+GCTCTTAACTTGTCCCGCTCCACATCAGCGCGACATCAATCGACATTAAACCGAGTATCTTGTCAGCCTGGGGTGACGATGCGTCCCATTAAAGT
++
+D>C1'02C+=I@IEFHC7&-E5',I?E*33E/@3#68B%\"!B-/2%(G=*@D052IA!('7-*$+A6>.$89,-CG71=AGAE3&&#=2B.+I<E";
+
+    assert_eq!(cleaned_read, expected_35_trim);
+}
+
 fn main(){
     let args: Vec<String> = env::args().collect();
     let mut opts = fasten_base_options();
