@@ -15,7 +15,56 @@ use fasten::fasten_base_options;
 //use fasten::logmsg;
 
 #[test]
+// Basically, loop through different trim cutoff scores
+// and expect a length that correlates due to the waxing/waning
+// quality scores.
 fn test_clean_entry() {
+    // // This is an easier-to-look-at entry due to the qual scores
+    let entry:Vec<String> = vec![
+        String::from("@read0"),
+        String::from("AAAGTGCTCTTAACTTGTCCCGCTCCACATCAGCGCGACATCAATCGACATTAAACCGAGTATCTTGTCAGCCTGGGGTGACGA"),
+        String::from("+"),
+        // To create this qual line:
+        // perl -e 'for $int (33..33+40){$chr=chr($int); print $chr;}' && \
+        // perl -e 'for $int (33..33+40){$chr=chr($int); print $chr;}' | rev && \
+        // echo
+        String::from("!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIIHGFEDCBA@?>=<;:9876543210/.-,+*)('&%$#\"!")
+    ];
+    let min_length = 1;
+    let min_avg_qual = 1.0;
+    let lines_per_read = 4;
+    let (tx, rx):(std::sync::mpsc::Sender<String>,std::sync::mpsc::Receiver<String>) = channel();
+
+
+    for min_trim_qual in 1..42 {
+        let tx_trash = tx.clone(); // cannot for the life of me remember why I required this clone
+
+        // perform the clean
+        clean_entry(entry.clone(), min_length, min_avg_qual, min_trim_qual, lines_per_read, tx.clone(), tx_trash);
+    }
+
+    drop(tx);
+
+    let expected:Vec<u8> = (2..82).step_by(2).rev().collect();
+    let mut observed:Vec<u8> = vec![];
+
+    for trimmed_entry in rx.iter(){
+        let mut lines = trimmed_entry.lines();
+        lines.next(); // id line
+        lines.next(); // seq line
+        lines.next(); // + line
+        let qual_line = lines.next().expect("Fourth line as qual line in entry");
+        let length = qual_line.len() as u8;
+        observed.push(length);
+    }
+
+    assert_eq!(observed, expected);
+
+}
+
+#[test]
+fn test_clean_entry_basic() {
+    // this is the four-line fastq entry
     let entry:Vec<String> = vec![
         String::from("@read0"),
         String::from("AAAGTGCTCTTAACTTGTCCCGCTCCACATCAGCGCGACATCAATCGACATTAAACCGAGTATCTTGTCAGCCTGGGGTGACGATGCGTCCCATTAAAGT"),
