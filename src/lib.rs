@@ -55,10 +55,11 @@ pub fn fasten_base_options() -> Options{
 }
 
 /// Print a formatted message to stderr 
-pub fn logmsg(msg: &str) {
+pub fn logmsg<S: AsRef<str>>(stringlike: S) {
     let args: Vec<_> = env::args().collect();
     // is there a better way to get the basename of the program???
     let program = Path::file_name(Path::new(&args[0])).unwrap().to_str().unwrap();
-    eprintln!("{}: {}", &program, &msg);
+    let str_ref = stringlike.as_ref();
+    eprintln!("{}: {}", &program, str_ref);
 }
 
