@@ -75,6 +75,7 @@ All scripts accept the parameters, read uncompressed fastq format from stdin, an
 |[`fasten_mutate`](docs/bin/fasten_mutate.md)    | introduce random mutations | |
 |[`fasten_regex`](docs/bin/fasten_regex.md)     | Filter for reads using regex | |
 |[`fasten_progress`](docs/bin/fasten_progress.md)  | Add progress to any place in the pipeline | |
+|[`fasten_sort`](docs/bin/fasten_sort.md)  | Sort fastq entries | |
 
 ## Etymology
 

@@ -89,7 +89,7 @@ fn main(){
     let args: Vec<String> = env::args().collect();
     let mut opts = fasten_base_options();
     // Options specific to this script
-    opts.optopt("s","sort-by","Sort by either SEQ or ID","STRING");
+    opts.optopt("s","sort-by","Sort by either SEQ, GC, or ID. If GC, then the entries are sorted by GC percentage. SEQ and ID are alphabetically sorted.","STRING");
     opts.optflag("r","reverse","Reverse sort");
 
     let matches = opts.parse(&args[1..]).expect("ERROR: could not parse parameters");
@@ -197,6 +197,17 @@ fn sort_entries (unsorted:Vec<Seq>, which_field:&str, reverse_sort:bool) -> Vec<
                 let a_seq = format!("{}{}", a.seq1, a.seq2);
                 let b_seq = format!("{}{}", b.seq1, b.seq2);
                 a_seq.cmp(&b_seq)
+            });
+        },
+        "GC"  => {
+            sorted.sort_by(|a,b| {
+                let a_seq = format!("{}{}", a.seq1, a.seq2);
+                let b_seq = format!("{}{}", b.seq1, b.seq2);
+
+                let a_gc:f32  = a_seq.matches(&['G','g','C','c']).count() as f32 / a_seq.len() as f32;
+                let b_gc:f32  = b_seq.matches(&['G','g','C','c']).count() as f32 / b_seq.len() as f32;
+                //logmsg(format!("{} ({}) <=> {} ({})", a.id1, a_gc, b.id1, b_gc));
+                a_gc.partial_cmp(&b_gc).unwrap()
             });
         },
         _   => {
