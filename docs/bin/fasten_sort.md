@@ -5,6 +5,11 @@ If the reads are paired end, then the sorted field
 concatenates R1 and R2 before comparisons in the sort.
 R1 and R2 reads will stay together if paired end.
 
+Sorting by GC content will give better compression by magic of gzip
+and other algorithms.
+
+Sorting can also aid in stable hashsums.
+
 ## Examples
 
 ```
