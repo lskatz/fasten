@@ -1,23 +1,45 @@
+//! Convert between different sequence formats
+//! # Examples
+//! 
+//! ```bash
+//! # Simple conversion
+//! cat file.fastq | fasten_convert -i fastq -o fasta > out.fasta
+//! # Convert to sam and then to bam
+//! cat file.fastq | fasten_convert -i fastq -o sam   | samtools view -bS > file.bam
+//! # Convert to fastq and then clean
+//! cat file.fasta | fasten_convert -i fasta -o fastq | fasten_clean > cleaned.fastq
+//!```
+
+//! # Usage
+//!```text
+//!Usage: fasten_convert [-h] [-n INT] [-p] [-v] [-i FORMAT] [-o FORMAT]
+//!
+//!Options:
+//!    -h, --help          Print this help menu.
+//!    -n, --numcpus INT   Number of CPUs (default: 1)
+//!    -p, --paired-end    The input reads are interleaved paired-end
+//!    -v, --verbose       Print more status messages
+//!    -i, --in-format FORMAT
+//!                        The input format for stdin
+//!    -o, --out-format FORMAT
+//!                        The output format for stdin
+//!  FORMAT can be: fastq, fasta, sam
+//!```
+
 extern crate getopts;
 extern crate fasten;
 extern crate fastq;
 extern crate bam;
 
 use bam::RecordReader;
-//use bio::io::fasta;
-//use std::fs::File;
-//use std::io::BufReader;
 
 use fasten::fasten_base_options;
-//use fasten::io::fastq;
-//use fasten::io::seq::Cleanable;
 use fasten::logmsg;
 
 use std::io::stdin;
 use fastq::{Parser, Record};
 
 use std::env;
-//use std::fmt;
 
 use std::sync::mpsc::channel;
 
@@ -43,6 +65,7 @@ impl FastenSeq{
       qual2: String::new(),
     };
   }
+  /// Return a formatted string as a fastq entry
   fn as_fastq(&self) -> String {
     let mut entry:String = format!("@{}\n{}\n+\n{}",
                              self.id1, self.seq1, self.qual1);
@@ -53,6 +76,7 @@ impl FastenSeq{
     return entry;
   }
 
+  /// Return a formatted string as a fasta entry
   fn as_fasta(&self) -> String {
     let mut entry:String = format!(">{}\n{}",
                              self.id1, self.seq1);
@@ -63,6 +87,7 @@ impl FastenSeq{
     return entry;
   }
 
+  /// Return a formatted string as a sam entry
   fn as_sam(&self) -> String {
     let mut flag = "4"; // unmapped
 
@@ -137,6 +162,7 @@ fn main(){
 
 // I wasn't satisfied with the existing fasta parsers and how they might
 // read stdin and so I rolled out my own
+/// Read fasta from stdin and transmit it to a channel
 fn read_fasta(tx:std::sync::mpsc::Sender<FastenSeq>, paired_end:bool){
     if paired_end {
         logmsg("--paired-end was given but it is ignored in a fasta context");
@@ -195,6 +221,7 @@ fn read_fasta(tx:std::sync::mpsc::Sender<FastenSeq>, paired_end:bool){
 
 }
 
+/// Read sam from stdin and transmit it to a channel
 fn read_sam(tx:std::sync::mpsc::Sender<FastenSeq>, paired_end:bool){
   if paired_end {
     logmsg("--paired-end given but paired-endedness will be determined by sam format flags");
@@ -233,6 +260,7 @@ fn read_sam(tx:std::sync::mpsc::Sender<FastenSeq>, paired_end:bool){
   }
 }
 
+/// Read fastq from stdin and transmit it to a channel
 fn read_fastq(tx:std::sync::mpsc::Sender<FastenSeq>, paired_end:bool){
 
   let parser = Parser::new(stdin());
@@ -267,6 +295,7 @@ fn read_fastq(tx:std::sync::mpsc::Sender<FastenSeq>, paired_end:bool){
   }
 }
 
+/// Read from a channel and print as fastq
 fn write_fastq(rx:std::sync::mpsc::Receiver<FastenSeq>){
   let receiver = rx.iter();
   for seq in receiver {
@@ -274,6 +303,7 @@ fn write_fastq(rx:std::sync::mpsc::Receiver<FastenSeq>){
   }
 }
 
+/// Read from a channel and print as fasta
 fn write_fasta(rx:std::sync::mpsc::Receiver<FastenSeq>){
   let receiver = rx.iter();
   for seq in receiver {
@@ -281,6 +311,7 @@ fn write_fasta(rx:std::sync::mpsc::Receiver<FastenSeq>){
   }
 }
 
+/// Read from a channel and print as sam
 fn write_sam(rx:std::sync::mpsc::Receiver<FastenSeq>){
   let receiver = rx.iter();
   for seq in receiver {
