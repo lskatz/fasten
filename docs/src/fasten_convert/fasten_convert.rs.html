@@ -321,15 +321,23 @@
 <span id="319">319</span>
 <span id="320">320</span>
 <span id="321">321</span>
+<span id="322">322</span>
+<span id="323">323</span>
+<span id="324">324</span>
+<span id="325">325</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Convert between different sequence formats</span>
 <span class="doccomment">//! # Examples</span>
 <span class="doccomment">//! </span>
+<span class="doccomment">//! ## Simple conversion</span>
 <span class="doccomment">//! ```bash</span>
-<span class="doccomment">//! # Simple conversion</span>
 <span class="doccomment">//! cat file.fastq | fasten_convert -i fastq -o fasta &gt; out.fasta</span>
-<span class="doccomment">//! # Convert to sam and then to bam</span>
+<span class="doccomment">//! ```</span>
+<span class="doccomment">//! ## Convert to sam and then to bam</span>
+<span class="doccomment">//! ```bash</span>
 <span class="doccomment">//! cat file.fastq | fasten_convert -i fastq -o sam   | samtools view -bS &gt; file.bam</span>
-<span class="doccomment">//! # Convert to fastq and then clean</span>
+<span class="doccomment">//! ```</span>
+<span class="doccomment">//! ## Convert to fastq and then clean</span>
+<span class="doccomment">//! ```bash</span>
 <span class="doccomment">//! cat file.fasta | fasten_convert -i fasta -o fastq | fasten_clean &gt; cleaned.fastq</span>
 <span class="doccomment">//!```</span>
 

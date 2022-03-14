@@ -118,13 +118,21 @@
 <span id="116">116</span>
 <span id="117">117</span>
 <span id="118">118</span>
+<span id="119">119</span>
+<span id="120">120</span>
+<span id="121">121</span>
+<span id="122">122</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Streaming editor for fastq data using a find/replace.</span>
 <span class="doccomment">//! </span>
 <span class="doccomment">//! # Examples</span>
 <span class="doccomment">//! </span>
-<span class="doccomment">//! ```bash</span>
 <span class="doccomment">//! # Force a motif to be lowercase</span>
+<span class="doccomment">//! ```bash</span>
 <span class="doccomment">//! cat file.fastq | fasten_replace --which SEQ --find ATAT --replace atat &gt; file.fastq</span>
+<span class="doccomment">//! ```</span>
+<span class="doccomment">//! # Mutate the middle base of a kmer</span>
+<span class="doccomment">//! ```bash</span>
+<span class="doccomment">//! cat file.fastq | fasten_replace --which SEQ --find AAAAA --replace AATAA &gt; file.fastq</span>
 <span class="doccomment">//! ```</span>
 <span class="doccomment">//! </span>
 <span class="doccomment">//! ```text</span>

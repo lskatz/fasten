@@ -1,12 +1,16 @@
 //! Convert between different sequence formats
 //! # Examples
 //! 
+//! ## Simple conversion
 //! ```bash
-//! # Simple conversion
 //! cat file.fastq | fasten_convert -i fastq -o fasta > out.fasta
-//! # Convert to sam and then to bam
+//! ```
+//! ## Convert to sam and then to bam
+//! ```bash
 //! cat file.fastq | fasten_convert -i fastq -o sam   | samtools view -bS > file.bam
-//! # Convert to fastq and then clean
+//! ```
+//! ## Convert to fastq and then clean
+//! ```bash
 //! cat file.fasta | fasten_convert -i fasta -o fastq | fasten_clean > cleaned.fastq
 //!```
 

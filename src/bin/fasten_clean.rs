@@ -4,7 +4,9 @@
 //! ```bash
 //! cat testdata/four_lines.fastq | \
 //!   fasten_clean > out.fastq
-//! # more options
+//! ```
+//! ## more options
+//! ```bash
 //! cat testdata | \
 //!   fasten_clean --min-avg-quality 25 --min-trim-quality 25 \
 //!   > out.fastq
