@@ -49,6 +49,10 @@ All scripts accept the parameters, read uncompressed fastq format from stdin, an
 * `--paired-end` Input reads are interleaved paired end
 * `--verbose` Print more status messages
 
+## Documentation
+
+Please see the inline documentation at https://lskatz.github.io/fasten
+
 ## Other documentation
 
 * Some workflows are shown in the [one-liners](./docs/one-liners.md) page.
