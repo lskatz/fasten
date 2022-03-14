@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["count_kmers",""],["kmers_in_str",""],["main",""],["revcomp","reverse-complement a dna sequence"],["switch_base","Complementary nucleotide"]]});
