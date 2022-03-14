@@ -2,18 +2,24 @@
 //! 
 //! # Examples
 //! 
+//! ## Find a specific read
 //! ```bash
-//! # Find a specific read
 //! cat file.fastq | fasten_regex --which ID --regex 'my-specific-read-id-1234' > my_read.fastq
-//! # Find a specific read but also keep its pair
+//! ```
+//!
+//! ## Find a specific read but also keep its pair
+//! ```bash
 //! cat file.fastq | fasten_regex --which ID --regex 'my-specific-read-id-1234' --paired-end > my_pairs.fastq
-//! # Find a specific motif
+//! ```
+//!
+//! ## Find a specific motif
+//! ```bash
 //! cat file.fastq | fasten_regex --which SEQ --regex ATAT > atat-motif.fastq
 //! ```
 //! 
-//! ```text
 //! # Usage
 //! 
+//! ```text
 //! Usage: fasten_regex [-h] [-n INT] [-p] [-v] [-r STRING] [-w String]
 //! 
 //! Options:

@@ -2,18 +2,29 @@
 //! 
 //! # Examples
 //! 
+//! ```perl
+//! print "hello world\n";
+//! ```
+//!
+//! ## General usage
+//! General usage to randomize the order of the reads
 //! ```bash
-//! # General usage to randomize the order of the reads
 //! cat file.fastq | fasten_randomize > random.fastq
-//! # Get one random read. Entries will always be in a 4-line format.
+//! ```
+//! ## One read
+//! Get one random read. Entries will always be in a 4-line format.
+//! ```bash
 //! cat file.fastq | fasten_randomize | head -n 4 > one_read.fastq
-//! # keep the paired ends together if paired
+//! ```
+//! ## Paired end
+//! If paired, keep them together
+//! ```bash
 //! cat R1.fastq R2.fastq | fasten_shuffle | fasten_randomize --paired-end | head -n 8 > one_pair.fastq
 //! ```
 //! 
-//! ```text
 //! # Usage
-//! 
+//!
+//! ```text
 //! Usage: fasten_randomize [-h] [-n INT] [-p] [-v]
 //! 
 //! Options:
@@ -56,6 +67,8 @@ fn main(){
     print_reads_from_stdin(lines_per_read);
 }
 
+/// Read fastq from stdin, add the reads to a vector,
+/// then print them to stdout in random order
 fn print_reads_from_stdin(lines_per_read :u32) -> () {
     // Start off with a capacity of 100k reads.
     let mut seqs :Vec<String> = Vec::with_capacity(100000);

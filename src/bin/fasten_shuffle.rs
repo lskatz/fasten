@@ -8,13 +8,17 @@
 //! 
 //! ## Shuffling
 //! 
+//! ### Simple transformation of R1 and R2 into interleaved
 //! ```bash
-//! # Simple transformation of R1 and R2 into interleaved
 //! cat file_1.fastq file_2.fastq | fasten_shuffle > interleaved.fastq
 //! fasten_shuffle -1 file_1.fastq -2 file_2.fastq > interleaved.fastq
-//! # interleave R1 and R2 and pipe it into another executable with --paired-end
+//! ```
+//! ### interleave R1 and R2 and pipe it into another executable with --paired-end
+//! ```bash
 //! cat file_1.fastq file_2.fastq | fasten_randomize --paired-end | head -n 8 > random-pair.fastq
-//! # ... or to another executable with --paired-end
+//! ```
+//! ### ... or to another executable with --paired-end
+//! ```bash
 //! cat file_1.fastq file_2.fastq | fasten_sample --paired-end --frequency 0.2 > downsample.20percent.fastq
 //! ```
 //! 
@@ -79,6 +83,7 @@ fn main(){
     }
 }
 
+/// Read from stdin and deshuffle reads into files
 fn deshuffle(matches: &getopts::Matches) -> () {
     
     // Where are we reading to?  Get those filenames.
@@ -114,6 +119,7 @@ fn deshuffle(matches: &getopts::Matches) -> () {
 
 }
 
+/// Read fastq from stdin and interleave
 fn shuffle(matches: &getopts::Matches) -> () {
 
     // Where are we reading from?  Get those filenames.
@@ -151,6 +157,7 @@ fn shuffle(matches: &getopts::Matches) -> () {
 
 }
 
+/// Read fastq entries from a filename
 fn read_seqs(filename: &String) -> Vec<Seq> {
 
     let my_file = File::open(&filename).expect("Could not open file");

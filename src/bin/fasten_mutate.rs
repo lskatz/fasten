@@ -6,8 +6,9 @@
 //! cat testdata/four_reads.fastq | fasten_mutate > out.fastq
 //! ```
 //! 
-//! ```text
 //! ## Usage
+//!
+//! ```text
 //! 
 //! Usage: fasten_mutate [-h] [-n INT] [-p] [-v] [-s INT] [-m]
 //! 
@@ -95,6 +96,10 @@ fn main(){
     }
 }
 
+/// Mutate a str of a sequence of nucleotides using the nucleotides
+/// in a vector `nts`.
+/// This function does not use any kind of mutation model and will
+/// choose random positions to replace with random nucleotides.
 fn mutate(seq: &str, nts: &Vec<char>, num_snps: u8, mark:bool) -> String {
     let mut sequence:Vec<u8> = seq.as_bytes().to_vec();
     if mark {

@@ -2,9 +2,13 @@
 //! 
 //! # Examples
 //! 
-//! ```bash
 //! # Force a motif to be lowercase
+//! ```bash
 //! cat file.fastq | fasten_replace --which SEQ --find ATAT --replace atat > file.fastq
+//! ```
+//! # Mutate the middle base of a kmer
+//! ```bash
+//! cat file.fastq | fasten_replace --which SEQ --find AAAAA --replace AATAA > file.fastq
 //! ```
 //! 
 //! ```text

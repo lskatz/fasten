@@ -176,18 +176,30 @@
 <span id="174">174</span>
 <span id="175">175</span>
 <span id="176">176</span>
+<span id="177">177</span>
+<span id="178">178</span>
+<span id="179">179</span>
+<span id="180">180</span>
+<span id="181">181</span>
+<span id="182">182</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Validates your reads and makes you feel good about yourself!</span>
 <span class="doccomment">//! </span>
 <span class="doccomment">//! # Examples</span>
 <span class="doccomment">//! </span>
+<span class="doccomment">//! ## Quick validation with stderr message</span>
 <span class="doccomment">//! ```bash</span>
-<span class="doccomment">//! # Quick validation with stderr message</span>
 <span class="doccomment">//! cat file.fastq | fasten_validate --verbose</span>
-<span class="doccomment">//! # Validate that your reads are paired end</span>
+<span class="doccomment">//! ```</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! ## Validate that your reads are paired end</span>
+<span class="doccomment">//! ```bash</span>
 <span class="doccomment">//! cat R1.fastq R2.fastq | fasten_shuffle | fasten_validate --paired-end</span>
-<span class="doccomment">//! </span>
-<span class="doccomment">//! # Large-scale validation of PE reads</span>
-<span class="doccomment">//! # with 4 CPUs</span>
+<span class="doccomment">//! ```</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! ## Parallelize</span>
+<span class="doccomment">//! Large-scale validation of PE reads</span>
+<span class="doccomment">//! with 4 CPUs and xargs</span>
+<span class="doccomment">//! ```bash</span>
 <span class="doccomment">//! \ls *_1.fastq.gz | xargs -n 1 -P 4 bash -c &#39;</span>
 <span class="doccomment">//!   echo -n &quot;.&quot; &gt;&amp;2 # progress bar</span>
 <span class="doccomment">//!   R1=$0</span>

@@ -6,8 +6,8 @@
 //! cat file.fastq | fasten_quality_filter > file_with_Ns.fastq
 //! ```
 //! 
+//! # Usage
 //! ```text
-//! ## Usage
 //! 
 //! Usage: fasten_quality_filter [-h] [-n INT] [-p] [-v] [-m INT]
 //! 

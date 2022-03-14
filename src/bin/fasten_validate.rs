@@ -2,14 +2,20 @@
 //! 
 //! # Examples
 //! 
+//! ## Quick validation with stderr message
 //! ```bash
-//! # Quick validation with stderr message
 //! cat file.fastq | fasten_validate --verbose
-//! # Validate that your reads are paired end
+//! ```
+//!
+//! ## Validate that your reads are paired end
+//! ```bash
 //! cat R1.fastq R2.fastq | fasten_shuffle | fasten_validate --paired-end
-//! 
-//! # Large-scale validation of PE reads
-//! # with 4 CPUs
+//! ```
+//!
+//! ## Parallelize
+//! Large-scale validation of PE reads
+//! with 4 CPUs and xargs
+//! ```bash
 //! \ls *_1.fastq.gz | xargs -n 1 -P 4 bash -c '
 //!   echo -n "." >&2 # progress bar
 //!   R1=$0

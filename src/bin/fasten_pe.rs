@@ -3,16 +3,18 @@
 //! 
 //! # Examples
 //! 
+//! ## Test the file and then print a message with the exit code
 //! ```bash
-//! # Test the file and then print a message with the exit code
 //! cat file.fastq | fasten_pe; echo "Reads were paired-end? $?";
-//! # Test the file and if it is paired end (exit code 0), then print a message
+//! ```
+//! ## Test the file and if it is paired end (exit code 0), then print a message
+//! ```bash
 //! cat file.fastq | fasten_pe || echo "Reads were paired end.";
 //! ```
 //! 
-//! ```text
 //! # Usage
 //! 
+//! ```text
 //! Usage: fasten_pe [-h] [-n INT] [-p] [-v] [--print-reads]
 //! 
 //! Options:
@@ -114,6 +116,8 @@ fn main() {
 
 }
 
+/// Detect whether the vector of IDs represent paired-endedness
+/// with finding out whether they end with `/1` and `/2`.
 fn is_paired_end_slash12(id1_ref: &Vec<String>, id2_ref: &Vec<String>) -> u8 {
 
     // We are using iterators and want to reset them
@@ -155,7 +159,9 @@ fn is_paired_end_slash12(id1_ref: &Vec<String>, id2_ref: &Vec<String>) -> u8 {
     return 1;
 }
 
- // http://support.illumina.com/content/dam/illumina-support/help/BaseSpaceHelp_v2/Content/Vault/Informatics/Sequencing_Analysis/BS/swSEQ_mBS_FASTQFiles.htm
+/// Detect whether the vector of IDs represent paired-endedness
+/// with finding out whether they fit the pattern shown in Illumina documentation at
+/// <http://support.illumina.com/content/dam/illumina-support/help/BaseSpaceHelp_v2/Content/Vault/Informatics/Sequencing_Analysis/BS/swSEQ_mBS_FASTQFiles.htm>
 fn is_paired_end_miseq(id1_ref: &Vec<String>, id2_ref: &Vec<String>) -> u8 {
     // We are using iterators and want to reset them
     let id1_vec = id1_ref.clone();

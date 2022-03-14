@@ -192,21 +192,29 @@
 <span id="190">190</span>
 <span id="191">191</span>
 <span id="192">192</span>
+<span id="193">193</span>
+<span id="194">194</span>
+<span id="195">195</span>
+<span id="196">196</span>
+<span id="197">197</span>
+<span id="198">198</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Determine paired-end-ness in an interleaved file.</span>
 <span class="doccomment">//! Exit code of 0 indicates PE. Exit code &gt; 0 indicates single end.</span>
 <span class="doccomment">//! </span>
 <span class="doccomment">//! # Examples</span>
 <span class="doccomment">//! </span>
+<span class="doccomment">//! ## Test the file and then print a message with the exit code</span>
 <span class="doccomment">//! ```bash</span>
-<span class="doccomment">//! # Test the file and then print a message with the exit code</span>
 <span class="doccomment">//! cat file.fastq | fasten_pe; echo &quot;Reads were paired-end? $?&quot;;</span>
-<span class="doccomment">//! # Test the file and if it is paired end (exit code 0), then print a message</span>
+<span class="doccomment">//! ```</span>
+<span class="doccomment">//! ## Test the file and if it is paired end (exit code 0), then print a message</span>
+<span class="doccomment">//! ```bash</span>
 <span class="doccomment">//! cat file.fastq | fasten_pe || echo &quot;Reads were paired end.&quot;;</span>
 <span class="doccomment">//! ```</span>
 <span class="doccomment">//! </span>
-<span class="doccomment">//! ```text</span>
 <span class="doccomment">//! # Usage</span>
 <span class="doccomment">//! </span>
+<span class="doccomment">//! ```text</span>
 <span class="doccomment">//! Usage: fasten_pe [-h] [-n INT] [-p] [-v] [--print-reads]</span>
 <span class="doccomment">//! </span>
 <span class="doccomment">//! Options:</span>
@@ -308,6 +316,8 @@
 
 }
 
+<span class="doccomment">/// Detect whether the vector of IDs represent paired-endedness</span>
+<span class="doccomment">/// with finding out whether they end with `/1` and `/2`.</span>
 <span class="kw">fn</span> <span class="ident">is_paired_end_slash12</span>(<span class="ident">id1_ref</span>: <span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>, <span class="ident">id2_ref</span>: <span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>) -&gt; <span class="ident">u8</span> {
 
     <span class="comment">// We are using iterators and want to reset them</span>
@@ -349,7 +359,9 @@
     <span class="kw">return</span> <span class="number">1</span>;
 }
 
- <span class="comment">// http://support.illumina.com/content/dam/illumina-support/help/BaseSpaceHelp_v2/Content/Vault/Informatics/Sequencing_Analysis/BS/swSEQ_mBS_FASTQFiles.htm</span>
+<span class="doccomment">/// Detect whether the vector of IDs represent paired-endedness</span>
+<span class="doccomment">/// with finding out whether they fit the pattern shown in Illumina documentation at</span>
+<span class="doccomment">/// &lt;http://support.illumina.com/content/dam/illumina-support/help/BaseSpaceHelp_v2/Content/Vault/Informatics/Sequencing_Analysis/BS/swSEQ_mBS_FASTQFiles.htm&gt;</span>
 <span class="kw">fn</span> <span class="ident">is_paired_end_miseq</span>(<span class="ident">id1_ref</span>: <span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>, <span class="ident">id2_ref</span>: <span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>) -&gt; <span class="ident">u8</span> {
     <span class="comment">// We are using iterators and want to reset them</span>
     <span class="kw">let</span> <span class="ident">id1_vec</span> <span class="op">=</span> <span class="ident">id1_ref</span>.<span class="ident">clone</span>();

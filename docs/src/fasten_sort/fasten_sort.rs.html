@@ -269,6 +269,13 @@
 <span id="267">267</span>
 <span id="268">268</span>
 <span id="269">269</span>
+<span id="270">270</span>
+<span id="271">271</span>
+<span id="272">272</span>
+<span id="273">273</span>
+<span id="274">274</span>
+<span id="275">275</span>
+<span id="276">276</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Sort a fastq file.</span>
 <span class="doccomment">//! If the reads are paired end, then the sorted field </span>
 <span class="doccomment">//! concatenates R1 and R2 before comparisons in the sort.</span>
@@ -281,18 +288,24 @@
 <span class="doccomment">//! </span>
 <span class="doccomment">//! # Examples</span>
 <span class="doccomment">//! </span>
+<span class="doccomment">//! ## stable hashsum</span>
 <span class="doccomment">//! ```bash</span>
-<span class="doccomment">//! # stable hashsum</span>
 <span class="doccomment">//! cat file.fastq | fasten_sort | md5sum &gt; file.fastq.md5</span>
-<span class="doccomment">//! # better compression by sorting by GC content</span>
+<span class="doccomment">//! ```</span>
+<span class="doccomment">//! ## better compression by sorting by GC content</span>
+<span class="doccomment">//! ```bash</span>
 <span class="doccomment">//! zcat file.fastq.gz | fasten_sort --sort-by GC | gzip -c &gt; smaller.fastq.gz</span>
 <span class="doccomment">//! </span>
-<span class="doccomment">//! # get good compression from paired end reads</span>
+<span class="doccomment">//! ## get good compression from paired end reads</span>
+<span class="doccomment">//! ```bash</span>
 <span class="doccomment">//! zcat R1.fastq.gz R2.fastq.gz | fasten_shuffle | \</span>
 <span class="doccomment">//!   fasten_sort --paired-end --sort-by GC | \</span>
 <span class="doccomment">//!   fasten_shuffle -d -1 sorted_1.fastq -2 sorted_2.fastq &amp;&amp; \</span>
 <span class="doccomment">//!   gzip -v sorted_1.fastq sorted_2.fastq</span>
-<span class="doccomment">//! # Compare compression between unsorted and sorted</span>
+<span class="doccomment">//! ```</span>
+<span class="doccomment">//! Compare compression between unsorted and sorted</span>
+<span class="doccomment">//! from the previous example</span>
+<span class="doccomment">//! ```bash</span>
 <span class="doccomment">//! ls -lh sorted_1.fastq.gz sorted_2.fastq.gz</span>
 <span class="doccomment">//! ```</span>
 <span class="doccomment">//! </span>
@@ -389,6 +402,7 @@
     }
 }
 
+<span class="doccomment">/// A sequence struct that is paired-end aware</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
 <span class="kw">struct</span> <span class="ident">Seq</span> {
     <span class="ident">pe</span>:     <span class="ident">bool</span>,

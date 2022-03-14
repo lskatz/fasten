@@ -30,6 +30,7 @@ use std::path::Path;
 
 use getopts::Options;
 
+/// input/output methods
 pub mod io;
 
 /// Have some strings that can be printed which could be

@@ -120,6 +120,7 @@ fn main(){
     count_kmers(stdin, kmer_length, matches.opt_present("revcomp"));
 }
 
+/// Read fastq from stdin and count kmers
 fn count_kmers (stdin:Stdin, kmer_length:usize, revcomp:bool) {
     
     // read the file
@@ -153,6 +154,8 @@ fn count_kmers (stdin:Stdin, kmer_length:usize, revcomp:bool) {
     }
 }
 
+/// Read a str of nucleotides and count kmers.
+/// If `should_revcomp` is true, then will also count kmers on the opposite strand.
 fn kmers_in_str (seq:&str, kmer_length:usize, should_revcomp:bool) -> HashMap<String,u32> {
     // save the kmers in this local hash
     let mut kmer_hash :HashMap<String,u32> = HashMap::new();
@@ -195,7 +198,7 @@ fn revcomp(dna: &str) -> String {
     rc_dna
 }
 
-/// Complementary nucleotide
+/// Complementary nucleotide for ACTGUN, case insensitive
 fn switch_base(c: char) -> char {
     match c {
         'a' => 't',

@@ -2,12 +2,17 @@
 //! 
 //! # Examples
 //! 
+//! ## Trim five bases from the right side
 //! ```bash
-//! # Trim five bases from the right side
 //! cat file.fastq | fasten_trim -l -5 > trimmed.fastq
-//! # Keep a maximum of 100bp
+//! ```
+//!
+//! ## Keep a maximum of 100bp
+//! ```bash
 //! cat file.fastq | fasten_trim -l 99 > trimmed.fastq
-//! # Trim 5bp from the left side
+//! ```
+//! ## Trim 5bp from the left side
+//! ```bash
 //! cat file.fastq | fasten_trim -f 4  > trimmed.fastq
 //! ```
 //! 
@@ -150,6 +155,7 @@ fn main(){
 
 }
 
+/// Trim a set of fastq entries and send it to a channel
 fn trim_worker(seqs:Vec<Seq>, first_base:usize, last_base:usize, tx:std::sync::mpsc::Sender<String> ){
 
   let blank_seq = Seq::blank();

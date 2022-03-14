@@ -171,6 +171,7 @@ fn average_quality (qual_line:&str) -> f32 {
     return my_avg_qual;
 }
 
+/// Local implementation of standard deviation
 fn standard_deviation(vec :&Vec<f32>) -> f32{
 
     let num_data_points = vec.len();

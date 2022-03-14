@@ -2,14 +2,14 @@
 //! 
 //! # Examples
 //! 
+//! ## Get 10% of the reads
 //! ```bash
-//! # Get 10% of the reads
 //! cat file.fastq | fasten_sample --frequency 0.1 > out.fastq
 //! ```
 //! 
-//! ```text
 //! # Usage
 //! 
+//! ```text
 //!     Usage: fasten_sample [-h] [-n INT] [-p] [-v] [-f FLOAT]
 //!     
 //!     Options:

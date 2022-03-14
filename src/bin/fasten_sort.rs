@@ -10,18 +10,24 @@
 //! 
 //! # Examples
 //! 
+//! ## stable hashsum
 //! ```bash
-//! # stable hashsum
 //! cat file.fastq | fasten_sort | md5sum > file.fastq.md5
-//! # better compression by sorting by GC content
+//! ```
+//! ## better compression by sorting by GC content
+//! ```bash
 //! zcat file.fastq.gz | fasten_sort --sort-by GC | gzip -c > smaller.fastq.gz
 //! 
-//! # get good compression from paired end reads
+//! ## get good compression from paired end reads
+//! ```bash
 //! zcat R1.fastq.gz R2.fastq.gz | fasten_shuffle | \
 //!   fasten_sort --paired-end --sort-by GC | \
 //!   fasten_shuffle -d -1 sorted_1.fastq -2 sorted_2.fastq && \
 //!   gzip -v sorted_1.fastq sorted_2.fastq
-//! # Compare compression between unsorted and sorted
+//! ```
+//! Compare compression between unsorted and sorted
+//! from the previous example
+//! ```bash
 //! ls -lh sorted_1.fastq.gz sorted_2.fastq.gz
 //! ```
 //! 
@@ -118,6 +124,7 @@ fn test_sort_fastq_basic () {
     }
 }
 
+/// A sequence struct that is paired-end aware
 #[derive(Debug, Clone)]
 struct Seq {
     pe:     bool,

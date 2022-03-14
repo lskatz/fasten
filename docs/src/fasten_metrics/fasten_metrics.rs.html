@@ -189,6 +189,7 @@
 <span id="187">187</span>
 <span id="188">188</span>
 <span id="189">189</span>
+<span id="190">190</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Gives read metrics on a read set.</span>
 <span class="doccomment">//! Values are given in a column delimited stdout.</span>
 
@@ -362,6 +363,7 @@
     <span class="kw">return</span> <span class="ident">my_avg_qual</span>;
 }
 
+<span class="doccomment">/// Local implementation of standard deviation</span>
 <span class="kw">fn</span> <span class="ident">standard_deviation</span>(<span class="ident">vec</span> :<span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">f32</span><span class="op">&gt;</span>) -&gt; <span class="ident">f32</span>{
 
     <span class="kw">let</span> <span class="ident">num_data_points</span> <span class="op">=</span> <span class="ident">vec</span>.<span class="ident">len</span>();

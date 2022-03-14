@@ -1,1 +1,1 @@
-initSidebarItems({"fn":[["main",""],["mutate",""]]});
+initSidebarItems({"fn":[["main",""],["mutate","Mutate a str of a sequence of nucleotides using the nucleotides in a vector `nts`. This function does not use any kind of mutation model and will choose random positions to replace with random nucleotides."]]});

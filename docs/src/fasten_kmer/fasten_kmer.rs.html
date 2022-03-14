@@ -216,6 +216,9 @@
 <span id="214">214</span>
 <span id="215">215</span>
 <span id="216">216</span>
+<span id="217">217</span>
+<span id="218">218</span>
+<span id="219">219</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Counts kmers.</span>
 <span class="doccomment">//! Each line is a kmer with two columns separated by tab: kmer, count</span>
 
@@ -338,6 +341,7 @@
     <span class="ident">count_kmers</span>(<span class="ident">stdin</span>, <span class="ident">kmer_length</span>, <span class="ident">matches</span>.<span class="ident">opt_present</span>(<span class="string">&quot;revcomp&quot;</span>));
 }
 
+<span class="doccomment">/// Read fastq from stdin and count kmers</span>
 <span class="kw">fn</span> <span class="ident">count_kmers</span> (<span class="ident">stdin</span>:<span class="ident">Stdin</span>, <span class="ident">kmer_length</span>:<span class="ident">usize</span>, <span class="ident">revcomp</span>:<span class="ident">bool</span>) {
     
     <span class="comment">// read the file</span>
@@ -371,6 +375,8 @@
     }
 }
 
+<span class="doccomment">/// Read a str of nucleotides and count kmers.</span>
+<span class="doccomment">/// If `should_revcomp` is true, then will also count kmers on the opposite strand.</span>
 <span class="kw">fn</span> <span class="ident">kmers_in_str</span> (<span class="ident">seq</span>:<span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">kmer_length</span>:<span class="ident">usize</span>, <span class="ident">should_revcomp</span>:<span class="ident">bool</span>) -&gt; <span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">String</span>,<span class="ident">u32</span><span class="op">&gt;</span> {
     <span class="comment">// save the kmers in this local hash</span>
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">kmer_hash</span> :<span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">String</span>,<span class="ident">u32</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">HashMap::new</span>();
@@ -413,7 +419,7 @@
     <span class="ident">rc_dna</span>
 }
 
-<span class="doccomment">/// Complementary nucleotide</span>
+<span class="doccomment">/// Complementary nucleotide for ACTGUN, case insensitive</span>
 <span class="kw">fn</span> <span class="ident">switch_base</span>(<span class="ident">c</span>: <span class="ident">char</span>) -&gt; <span class="ident">char</span> {
     <span class="kw">match</span> <span class="ident">c</span> {
         <span class="string">&#39;a&#39;</span> =&gt; <span class="string">&#39;t&#39;</span>,

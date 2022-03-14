@@ -2,17 +2,21 @@
 //! 
 //! # Examples
 //! 
+//! ## fasten_metrics progress
+//! While getting read metrics for a large fastq file, print the progress
+//!  to make the wait a little easier
 //! ```bash
-//! # While getting read metrics for a large fastq file, print the progress
-//! # to make the wait a little easier
 //! cat large.fastq | fasten_progress | fasten_metrics
-//! # While shuffling a large fastq file, print the progress
+//! ```
+//! ## fasten_shuffle progress
+//! While shuffling a large fastq file, print the progress
+//! ```bash
 //! cat large_1.fastq large_2.fastq | fasten_progress | fasten_shuffle > interleaved.fastq
 //! ```
 //! 
-//! ```text
 //! # Usage
 //! 
+//! ```text
 //! Usage: fasten_progress [-h] [-n INT] [-p] [-v] [--id STRING] [--update-every INT]
 //! 
 //! Options:

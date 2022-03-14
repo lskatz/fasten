@@ -1,1 +1,1 @@
-initSidebarItems({"fn":[["average_quality","given a cigar line for quality, return its average"],["main",""],["standard_deviation",""]]});
+initSidebarItems({"fn":[["average_quality","given a cigar line for quality, return its average"],["main",""],["standard_deviation","Local implementation of standard deviation"]]});
