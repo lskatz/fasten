@@ -178,7 +178,65 @@
 <span id="176">176</span>
 <span id="177">177</span>
 <span id="178">178</span>
-</pre><pre class="rust"><code><span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">fasten</span>;
+<span id="179">179</span>
+<span id="180">180</span>
+<span id="181">181</span>
+<span id="182">182</span>
+<span id="183">183</span>
+<span id="184">184</span>
+<span id="185">185</span>
+<span id="186">186</span>
+<span id="187">187</span>
+<span id="188">188</span>
+<span id="189">189</span>
+<span id="190">190</span>
+<span id="191">191</span>
+<span id="192">192</span>
+<span id="193">193</span>
+<span id="194">194</span>
+<span id="195">195</span>
+<span id="196">196</span>
+<span id="197">197</span>
+<span id="198">198</span>
+<span id="199">199</span>
+<span id="200">200</span>
+<span id="201">201</span>
+<span id="202">202</span>
+<span id="203">203</span>
+<span id="204">204</span>
+<span id="205">205</span>
+<span id="206">206</span>
+<span id="207">207</span>
+</pre><pre class="rust"><code><span class="doccomment">//! Blunt-end trims using 0-based coordinates</span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! # Examples</span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! ```bash</span>
+<span class="doccomment">//! # Trim five bases from the right side</span>
+<span class="doccomment">//! cat file.fastq | fasten_trim -l -5 &gt; trimmed.fastq</span>
+<span class="doccomment">//! # Keep a maximum of 100bp</span>
+<span class="doccomment">//! cat file.fastq | fasten_trim -l 99 &gt; trimmed.fastq</span>
+<span class="doccomment">//! # Trim 5bp from the left side</span>
+<span class="doccomment">//! cat file.fastq | fasten_trim -f 4  &gt; trimmed.fastq</span>
+<span class="doccomment">//! ```</span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! # Usage</span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! ```text</span>
+<span class="doccomment">//! Usage: fasten_trim [-h] [-n INT] [-p] [-v] [-f INT] [-l INT]</span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! Options:</span>
+<span class="doccomment">//!     -h, --help          Print this help menu.</span>
+<span class="doccomment">//!     -n, --numcpus INT   Number of CPUs (default: 1)</span>
+<span class="doccomment">//!     -p, --paired-end    The input reads are interleaved paired-end</span>
+<span class="doccomment">//!     -v, --verbose       Print more status messages</span>
+<span class="doccomment">//!     -f, --first-base INT</span>
+<span class="doccomment">//!                         The first base to keep (default: 0)</span>
+<span class="doccomment">//!     -l, --last-base INT The last base to keep. If negative, counts from the</span>
+<span class="doccomment">//!                         right. (default: 0)</span>
+<span class="doccomment">//! ```</span>
+
+<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">fasten</span>;
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">statistical</span>;
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">getopts</span>;
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">threadpool</span>;

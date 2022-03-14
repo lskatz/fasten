@@ -57,7 +57,47 @@
 <span id="55">55</span>
 <span id="56">56</span>
 <span id="57">57</span>
-</pre><pre class="rust"><code><span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">getopts</span>;
+<span id="58">58</span>
+<span id="59">59</span>
+<span id="60">60</span>
+<span id="61">61</span>
+<span id="62">62</span>
+<span id="63">63</span>
+<span id="64">64</span>
+<span id="65">65</span>
+<span id="66">66</span>
+<span id="67">67</span>
+<span id="68">68</span>
+<span id="69">69</span>
+<span id="70">70</span>
+<span id="71">71</span>
+<span id="72">72</span>
+<span id="73">73</span>
+<span id="74">74</span>
+<span id="75">75</span>
+<span id="76">76</span>
+<span id="77">77</span>
+</pre><pre class="rust"><code><span class="doccomment">//! Convert a fastq file to a standard 4-lines-per-entry format</span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! # Examples</span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! ```bash</span>
+<span class="doccomment">//! cat weird.fastq | fasten_straighten &gt; four-per-entry.fastq</span>
+<span class="doccomment">//! ```</span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! # Usage</span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! ```text</span>
+<span class="doccomment">//! Usage: fasten_straighten [-h] [-n INT] [-p] [-v]</span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! Options:</span>
+<span class="doccomment">//!     -h, --help          Print this help menu.</span>
+<span class="doccomment">//!     -n, --numcpus INT   Number of CPUs (default: 1)</span>
+<span class="doccomment">//!     -p, --paired-end    The input reads are interleaved paired-end</span>
+<span class="doccomment">//!     -v, --verbose       Print more status messages</span>
+<span class="doccomment">//! ```</span>
+
+<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">getopts</span>;
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">fasten</span>;
 <span class="kw">use</span> <span class="ident">std::fs::File</span>;
 <span class="kw">use</span> <span class="ident">std::io::BufReader</span>;

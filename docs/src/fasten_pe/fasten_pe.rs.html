@@ -168,7 +168,55 @@
 <span id="166">166</span>
 <span id="167">167</span>
 <span id="168">168</span>
-</pre><pre class="rust"><code><span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">fasten</span>;
+<span id="169">169</span>
+<span id="170">170</span>
+<span id="171">171</span>
+<span id="172">172</span>
+<span id="173">173</span>
+<span id="174">174</span>
+<span id="175">175</span>
+<span id="176">176</span>
+<span id="177">177</span>
+<span id="178">178</span>
+<span id="179">179</span>
+<span id="180">180</span>
+<span id="181">181</span>
+<span id="182">182</span>
+<span id="183">183</span>
+<span id="184">184</span>
+<span id="185">185</span>
+<span id="186">186</span>
+<span id="187">187</span>
+<span id="188">188</span>
+<span id="189">189</span>
+<span id="190">190</span>
+<span id="191">191</span>
+<span id="192">192</span>
+</pre><pre class="rust"><code><span class="doccomment">//! Determine paired-end-ness in an interleaved file.</span>
+<span class="doccomment">//! Exit code of 0 indicates PE. Exit code &gt; 0 indicates single end.</span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! # Examples</span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! ```bash</span>
+<span class="doccomment">//! # Test the file and then print a message with the exit code</span>
+<span class="doccomment">//! cat file.fastq | fasten_pe; echo &quot;Reads were paired-end? $?&quot;;</span>
+<span class="doccomment">//! # Test the file and if it is paired end (exit code 0), then print a message</span>
+<span class="doccomment">//! cat file.fastq | fasten_pe || echo &quot;Reads were paired end.&quot;;</span>
+<span class="doccomment">//! ```</span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! ```text</span>
+<span class="doccomment">//! # Usage</span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! Usage: fasten_pe [-h] [-n INT] [-p] [-v] [--print-reads]</span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! Options:</span>
+<span class="doccomment">//!     -h, --help          Print this help menu.</span>
+<span class="doccomment">//!     -n, --numcpus INT   Number of CPUs (default: 1)</span>
+<span class="doccomment">//!     -p, --paired-end    The input reads are interleaved paired-end</span>
+<span class="doccomment">//!     -v, --verbose       Print more status messages</span>
+<span class="doccomment">//!         --print-reads   Print each read. Useful for Unix pipes.</span>
+<span class="doccomment">//! ```    </span>
+<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">fasten</span>;
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">regex</span>;
 
 <span class="kw">use</span> <span class="ident">fasten::fasten_base_options</span>;

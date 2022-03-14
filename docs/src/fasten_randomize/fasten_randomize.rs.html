@@ -62,7 +62,55 @@
 <span id="60">60</span>
 <span id="61">61</span>
 <span id="62">62</span>
-</pre><pre class="rust"><code><span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">getopts</span>;
+<span id="63">63</span>
+<span id="64">64</span>
+<span id="65">65</span>
+<span id="66">66</span>
+<span id="67">67</span>
+<span id="68">68</span>
+<span id="69">69</span>
+<span id="70">70</span>
+<span id="71">71</span>
+<span id="72">72</span>
+<span id="73">73</span>
+<span id="74">74</span>
+<span id="75">75</span>
+<span id="76">76</span>
+<span id="77">77</span>
+<span id="78">78</span>
+<span id="79">79</span>
+<span id="80">80</span>
+<span id="81">81</span>
+<span id="82">82</span>
+<span id="83">83</span>
+<span id="84">84</span>
+<span id="85">85</span>
+<span id="86">86</span>
+</pre><pre class="rust"><code><span class="doccomment">//! Create random reads from stdin.</span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! # Examples</span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! ```bash</span>
+<span class="doccomment">//! # General usage to randomize the order of the reads</span>
+<span class="doccomment">//! cat file.fastq | fasten_randomize &gt; random.fastq</span>
+<span class="doccomment">//! # Get one random read. Entries will always be in a 4-line format.</span>
+<span class="doccomment">//! cat file.fastq | fasten_randomize | head -n 4 &gt; one_read.fastq</span>
+<span class="doccomment">//! # keep the paired ends together if paired</span>
+<span class="doccomment">//! cat R1.fastq R2.fastq | fasten_shuffle | fasten_randomize --paired-end | head -n 8 &gt; one_pair.fastq</span>
+<span class="doccomment">//! ```</span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! ```text</span>
+<span class="doccomment">//! # Usage</span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! Usage: fasten_randomize [-h] [-n INT] [-p] [-v]</span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! Options:</span>
+<span class="doccomment">//!     -h, --help          Print this help menu.</span>
+<span class="doccomment">//!     -n, --numcpus INT   Number of CPUs (default: 1)</span>
+<span class="doccomment">//!     -p, --paired-end    The input reads are interleaved paired-end</span>
+<span class="doccomment">//!     -v, --verbose       Print more status messages</span>
+<span class="doccomment">//! ```</span>
+<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">getopts</span>;
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">fasten</span>;
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">rand</span>;
 <span class="kw">use</span> <span class="ident">std::fs::File</span>;

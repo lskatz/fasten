@@ -136,7 +136,87 @@
 <span id="134">134</span>
 <span id="135">135</span>
 <span id="136">136</span>
-</pre><pre class="rust"><code><span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">getopts</span>;
+<span id="137">137</span>
+<span id="138">138</span>
+<span id="139">139</span>
+<span id="140">140</span>
+<span id="141">141</span>
+<span id="142">142</span>
+<span id="143">143</span>
+<span id="144">144</span>
+<span id="145">145</span>
+<span id="146">146</span>
+<span id="147">147</span>
+<span id="148">148</span>
+<span id="149">149</span>
+<span id="150">150</span>
+<span id="151">151</span>
+<span id="152">152</span>
+<span id="153">153</span>
+<span id="154">154</span>
+<span id="155">155</span>
+<span id="156">156</span>
+<span id="157">157</span>
+<span id="158">158</span>
+<span id="159">159</span>
+<span id="160">160</span>
+<span id="161">161</span>
+<span id="162">162</span>
+<span id="163">163</span>
+<span id="164">164</span>
+<span id="165">165</span>
+<span id="166">166</span>
+<span id="167">167</span>
+<span id="168">168</span>
+<span id="169">169</span>
+<span id="170">170</span>
+<span id="171">171</span>
+<span id="172">172</span>
+<span id="173">173</span>
+<span id="174">174</span>
+<span id="175">175</span>
+<span id="176">176</span>
+</pre><pre class="rust"><code><span class="doccomment">//! Validates your reads and makes you feel good about yourself!</span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! # Examples</span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! ```bash</span>
+<span class="doccomment">//! # Quick validation with stderr message</span>
+<span class="doccomment">//! cat file.fastq | fasten_validate --verbose</span>
+<span class="doccomment">//! # Validate that your reads are paired end</span>
+<span class="doccomment">//! cat R1.fastq R2.fastq | fasten_shuffle | fasten_validate --paired-end</span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! # Large-scale validation of PE reads</span>
+<span class="doccomment">//! # with 4 CPUs</span>
+<span class="doccomment">//! \ls *_1.fastq.gz | xargs -n 1 -P 4 bash -c &#39;</span>
+<span class="doccomment">//!   echo -n &quot;.&quot; &gt;&amp;2 # progress bar</span>
+<span class="doccomment">//!   R1=$0</span>
+<span class="doccomment">//!   R2=${0/_1.fastq.gz/_2.fastq.gz}</span>
+<span class="doccomment">//!   zcat $R1 $R2 | fasten_shuffle | fasten_validate --paired-end</span>
+<span class="doccomment">//! &#39;</span>
+<span class="doccomment">//! ```</span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! # Usage</span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! ```text</span>
+<span class="doccomment">//!     Usage: fasten_validate [-h] [-n INT] [-p] [-v] [--min-length INT] [--min-quality FLOAT] [--paired-end] [--print-reads] [-v]</span>
+<span class="doccomment">//!     </span>
+<span class="doccomment">//!     Options:</span>
+<span class="doccomment">//!         -h, --help          Print this help menu.</span>
+<span class="doccomment">//!         -n, --numcpus INT   Number of CPUs (default: 1)</span>
+<span class="doccomment">//!         -p, --paired-end    The input reads are interleaved paired-end</span>
+<span class="doccomment">//!         -v, --verbose       Print more status messages</span>
+<span class="doccomment">//!             --min-length INT</span>
+<span class="doccomment">//!                             Minimum read length allowed</span>
+<span class="doccomment">//!             --min-quality FLOAT</span>
+<span class="doccomment">//!                             Minimum quality allowed</span>
+<span class="doccomment">//!             --paired-end    The reads are interleaved paired-end</span>
+<span class="doccomment">//!             --print-reads   Print the reads as they are being validated (useful</span>
+<span class="doccomment">//!                             for unix pipes)</span>
+<span class="doccomment">//!         -v, --verbose       </span>
+<span class="doccomment">//! ```</span>
+
+<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">getopts</span>;
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">fasten</span>;
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">regex</span>;
 <span class="kw">use</span> <span class="ident">std::fs::File</span>;

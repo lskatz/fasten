@@ -1,3 +1,26 @@
+//! Mutates reads. There is no mutation model; only randomness.
+//! 
+//! # Examples
+//! 
+//! ``` bash
+//! cat testdata/four_reads.fastq | fasten_mutate > out.fastq
+//! ```
+//! 
+//! ```text
+//! ## Usage
+//! 
+//! Usage: fasten_mutate [-h] [-n INT] [-p] [-v] [-s INT] [-m]
+//! 
+//! Options:
+//!     -h, --help          Print this help menu.
+//!     -n, --numcpus INT   Number of CPUs (default: 1)
+//!     -p, --paired-end    The input reads are interleaved paired-end
+//!     -v, --verbose       Print more status messages
+//!     -s, --snps INT      Number of SNPs (point mutations) to include per read.
+//!     -m, --mark          lowercase all reads but uppercase the SNPs (not yet
+//!                         implemented)
+//! ```
+
 extern crate getopts;
 extern crate fasten;
 extern crate regex;

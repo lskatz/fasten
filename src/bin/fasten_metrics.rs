@@ -7,8 +7,8 @@
 //! cat testdata/four_reads.fastq | fasten_metrics | column -t
 //! ```
 
-//! ```text
 //! # Usage
+//! ```text
 
 //! Usage: fasten_metrics [-h] [-n INT] [-p] [-v] [--each-read] [--distribution STRING]
 

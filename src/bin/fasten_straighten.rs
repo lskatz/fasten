@@ -1,3 +1,23 @@
+//! Convert a fastq file to a standard 4-lines-per-entry format
+//! 
+//! # Examples
+//! 
+//! ```bash
+//! cat weird.fastq | fasten_straighten > four-per-entry.fastq
+//! ```
+//! 
+//! # Usage
+//! 
+//! ```text
+//! Usage: fasten_straighten [-h] [-n INT] [-p] [-v]
+//! 
+//! Options:
+//!     -h, --help          Print this help menu.
+//!     -n, --numcpus INT   Number of CPUs (default: 1)
+//!     -p, --paired-end    The input reads are interleaved paired-end
+//!     -v, --verbose       Print more status messages
+//! ```
+
 extern crate getopts;
 extern crate fasten;
 use std::fs::File;

@@ -171,7 +171,59 @@
 <span id="169">169</span>
 <span id="170">170</span>
 <span id="171">171</span>
-</pre><pre class="rust"><code><span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">getopts</span>;
+<span id="172">172</span>
+<span id="173">173</span>
+<span id="174">174</span>
+<span id="175">175</span>
+<span id="176">176</span>
+<span id="177">177</span>
+<span id="178">178</span>
+<span id="179">179</span>
+<span id="180">180</span>
+<span id="181">181</span>
+<span id="182">182</span>
+<span id="183">183</span>
+<span id="184">184</span>
+<span id="185">185</span>
+<span id="186">186</span>
+<span id="187">187</span>
+<span id="188">188</span>
+<span id="189">189</span>
+<span id="190">190</span>
+<span id="191">191</span>
+<span id="192">192</span>
+<span id="193">193</span>
+<span id="194">194</span>
+<span id="195">195</span>
+<span id="196">196</span>
+<span id="197">197</span>
+</pre><pre class="rust"><code><span class="doccomment">//! Filter reads based on a regular expression.</span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! # Examples</span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! ```bash</span>
+<span class="doccomment">//! # Find a specific read</span>
+<span class="doccomment">//! cat file.fastq | fasten_regex --which ID --regex &#39;my-specific-read-id-1234&#39; &gt; my_read.fastq</span>
+<span class="doccomment">//! # Find a specific read but also keep its pair</span>
+<span class="doccomment">//! cat file.fastq | fasten_regex --which ID --regex &#39;my-specific-read-id-1234&#39; --paired-end &gt; my_pairs.fastq</span>
+<span class="doccomment">//! # Find a specific motif</span>
+<span class="doccomment">//! cat file.fastq | fasten_regex --which SEQ --regex ATAT &gt; atat-motif.fastq</span>
+<span class="doccomment">//! ```</span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! ```text</span>
+<span class="doccomment">//! # Usage</span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! Usage: fasten_regex [-h] [-n INT] [-p] [-v] [-r STRING] [-w String]</span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! Options:</span>
+<span class="doccomment">//!     -h, --help          Print this help menu.</span>
+<span class="doccomment">//!     -n, --numcpus INT   Number of CPUs (default: 1)</span>
+<span class="doccomment">//!     -p, --paired-end    The input reads are interleaved paired-end</span>
+<span class="doccomment">//!     -v, --verbose       Print more status messages</span>
+<span class="doccomment">//!     -r, --regex STRING  Regular expression (default: &#39;.&#39;)</span>
+<span class="doccomment">//!     -w, --which String  Which field to match on? ID, SEQ, QUAL. Default: SEQ</span>
+<span class="doccomment">//! ```</span>
+<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">getopts</span>;
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">fasten</span>;
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">regex</span>;
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">threadpool</span>;
