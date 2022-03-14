@@ -53,6 +53,8 @@ All scripts accept the parameters, read uncompressed fastq format from stdin, an
 
 Please see the inline documentation at https://lskatz.github.io/fasten
 
+This documentation was built with `cargo docs --no-deps`
+
 ## Other documentation
 
 * Some workflows are shown in the [one-liners](./docs/one-liners.md) page.
