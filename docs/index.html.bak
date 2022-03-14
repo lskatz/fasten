@@ -1,0 +1,103 @@
+<table>
+    <caption>Index of fasten binaries</caption>
+    <thead>
+      <tr>
+          <th>script</th>
+          <th>Description</th>
+          <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+          <td>[`fasten_clean`](docs/bin/fasten_clean.md)</td>
+          <td>Trims and cleans a fastq file.</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>[`fasten_convert`](docs/bin/fasten_convert.md)</td>
+          <td>Converts between different sequence formats like fastq, sam, fasta.</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>[`fasten_straighten`](docs/bin/fasten_straighten.md)</td>
+          <td>Convert any fastq file to a standard four-line-per-entry format.</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>[`fasten_metrics`](docs/bin/fasten_metrics.md)</td>
+          <td>Prints basic read metrics.</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>[`fasten_pe`](docs/bin/fasten_pe.md)</td>
+          <td>Determines paired-endedness based on read IDs.</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>[`fasten_randomize`](docs/bin/fasten_randomize.md)</td>
+          <td>Randomizes reads from input</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>[`fasten_combine`](docs/bin/fasten_combine.md)</td>
+          <td>Combines identical reads and updates quality scores.</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>[`fasten_kmer`](docs/bin/fasten_kmer.md)</td>
+          <td>Kmer counting.</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>[`fasten_sample`](docs/bin/fasten_sample.md)</td>
+          <td>Downsamples reads.</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>[`fasten_shuffle`](docs/bin/fasten_shuffle.md)</td>
+          <td>Shuffles or deshuffles paired end reads.</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>[`fasten_validate`](docs/bin/fasten_validate.md)</td>
+          <td>Validates your reads</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>[`fasten_quality_filter`](docs/bin/fasten_quality_filter.md)</td>
+          <td>Transforms nucleotides to "N" if the quality is low</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>[`fasten_trim`](docs/bin/fasten_trim.md)</td>
+          <td>Blunt-end trims reads</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>[`fasten_replace`](docs/bin/fasten_replace.md)</td>
+          <td>Find and replace using regex</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>[`fasten_mutate`](docs/bin/fasten_mutate.md)</td>
+          <td>introduce random mutations</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>[`fasten_regex`](docs/bin/fasten_regex.md)</td>
+          <td>Filter for reads using regex</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>[`fasten_progress`](docs/bin/fasten_progress.md)</td>
+          <td>Add progress to any place in the pipeline</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>[`fasten_sort`](docs/bin/fasten_sort.md)</td>
+          <td>Sort fastq entries</td>
+          <td></td>
+      </tr>
+    </tbody>
+</table>
+
