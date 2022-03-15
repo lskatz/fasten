@@ -8,9 +8,11 @@
 //!     fasten_shuffle | fasten_metrics | column -t
 //! totalLength  numReads  avgReadLength  avgQual
 //! 800          8         100            19.53875
+//! ```
 //! 
 //! ## read cleaning
-//! 
+//!
+//! ```text
 //! $ cat testdata/R1.fastq testdata/R2.fastq | \
 //!     fasten_shuffle | \
 //!     fasten_clean --paired-end --min-length 2 | \
@@ -19,7 +21,43 @@
 //! $ zcat cleaned.shuffled.fastq.gz | fasten_metrics | column -t
 //! totalLength  numReads  avgReadLength  avgQual
 //! 800          8         100            19.53875
-//! # No reads were actually filtered with cleaning, with --min-length=2
+//! ```
+//! _NOTE_: No reads were actually filtered with cleaning, with --min-length=2
+//!
+//! ## Kmer counting
+//! ```text
+//! $ cat testdata/R1.fastq | \
+//!   fasten_kmer -k 21 > 21mers.tsv
+//! ```
+//! 
+//! ## Read sampling
+//! ```text
+//! $ cat testdata/R1.fastq testdata/R2.fastq | \
+//!     fasten_shuffle | \
+//!     fasten_sample --paired-end --frequency 0.1 > 10percent.fastq
+//! ```
+//!
+//! # Advanced
+//! ## Set of downsampled reads
+//! Create a set of downsampled reads for a titration experiment
+//! and clean them
+//! ```text
+//! for frequency in 0.1 0.2 0.3 0.4 0.5; do
+//!   cat testdata/R1.fastq testdata/R2.fastq | \
+//!     fasten_shuffle | \
+//!     fasten_clean --paired-end --min-length 50 --min-trim-quality 25
+//!     fasten_sample --paired-end --frequency $frequency > cleaned.$frequency.fastq
+//! done
+//! ```
+//!
+//! ## Validate a whole directory of fastq reads
+//! ```text
+//! \ls *_1.fastq.gz | xargs -n 1 -P 4 bash -c '
+//!   echo -n "." >&2 # progress bar
+//!   R1=$0
+//!   R2=${0/_1.fastq.gz/_2.fastq.gz}
+//!   zcat $R1 $R2 | fasten_shuffle | fasten_validate --paired-end
+//! '
 //! ```
 
 extern crate regex;
