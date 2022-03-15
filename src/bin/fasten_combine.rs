@@ -1,3 +1,30 @@
+//! Collapse identical reads into single reads, recalculating quality values.
+//! If paired end, then each set of reads must be identical to be collapsed.
+//! _Warning_: due to multiple reads collapsing into one, read identifiers will be reconstituted.
+
+//! # Examples
+
+//! ```bash
+//! cat testdata/four_reads | fasten_combine > combined.fastq
+//! ```
+//!## Usage
+//!
+//!```text
+//!Usage: fasten_combine [-h] [-n INT] [-p] [-v] [--max-qual-char CHAR] [--min-qual-char CHAR]
+//!
+//!Options:
+//!    -h, --help          Print this help menu.
+//!    -n, --numcpus INT   Number of CPUs (default: 1)
+//!    -p, --paired-end    The input reads are interleaved paired-end
+//!    -v, --verbose       Print more status messages
+//!        --max-qual-char CHAR
+//!                        Maximum quality character (default: I)
+//!        --min-qual-char CHAR
+//!                        Minimum quality character (default: !)
+//!
+//!    NOTE: range of quality scores is !"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHI
+//!```
+
 extern crate fasten;
 extern crate fastq;
 extern crate getopts;
@@ -16,9 +43,11 @@ use fasten::fasten_base_options;
 use fastq::{Parser, Record};
 use fasten::logmsg;
 
-// need this constant because the compiler had a problem
-// with the syntax 10.0.pow()
+/// need this constant because the compiler had a problem
+/// with the syntax `10.0.pow()`
 const TEN: f32 = 10.0;
+/// Glues together paired end reads internally and is a
+/// character not expected in any read
 const READ_SEPARATOR :char = '~';
 
 fn main(){
@@ -218,7 +247,10 @@ fn main(){
     }
 }
 
-
+/// Combines vectors of error probabilities
+/// such that the rate of error is probability of error
+/// from vector one times the probability of error 
+/// from vector two.
 fn combine_error_vectors(errors1 :&Vec<f32>, errors2: &Vec<f32>) -> Vec<f32> {
     if errors1.len() != errors2.len() {
         panic!("Lengths of error vectors do not match: {} and {}", errors1.len(), errors2.len());
@@ -236,6 +268,7 @@ fn combine_error_vectors(errors1 :&Vec<f32>, errors2: &Vec<f32>) -> Vec<f32> {
 // sequence that comes first alphabetically when compared
 // with its revcom
 
+/*
 #[allow(dead_code)]
 fn recalculate_qual(qual_str: &str, count: u32) -> String {
     let mut qual_out = String::new();
@@ -269,7 +302,7 @@ fn recalculate_qual(qual_str: &str, count: u32) -> String {
 
     return qual_out;
 }
-
+*/
 
 
 

@@ -1,3 +1,26 @@
+//! Counts kmers.
+//! Each line is a kmer with two columns separated by tab: kmer, count
+
+//! # Examples
+
+//! ```bash
+//! cat testdata/four_reads.fastq | fasten_kmer -k 15 > 15mers.tsv
+//! ```
+
+//! # Usage
+
+//! ```text
+//! Usage: fasten_kmer [-h] [-n INT] [-p] [-v] [-k INT]
+
+//! Options:
+//!    -h, --help          Print this help menu.
+//!    -n, --numcpus INT   Number of CPUs (default: 1)
+//!    -p, --paired-end    The input reads are interleaved paired-end
+//!    -v, --verbose       Print more status messages
+//!    -k, --kmer-length INT
+//!                        The size of the kmer
+//! ```
+    
 extern crate fasten;
 extern crate statistical;
 extern crate getopts;
@@ -97,6 +120,7 @@ fn main(){
     count_kmers(stdin, kmer_length, matches.opt_present("revcomp"));
 }
 
+/// Read fastq from stdin and count kmers
 fn count_kmers (stdin:Stdin, kmer_length:usize, revcomp:bool) {
     
     // read the file
@@ -130,6 +154,8 @@ fn count_kmers (stdin:Stdin, kmer_length:usize, revcomp:bool) {
     }
 }
 
+/// Read a str of nucleotides and count kmers.
+/// If `should_revcomp` is true, then will also count kmers on the opposite strand.
 fn kmers_in_str (seq:&str, kmer_length:usize, should_revcomp:bool) -> HashMap<String,u32> {
     // save the kmers in this local hash
     let mut kmer_hash :HashMap<String,u32> = HashMap::new();
@@ -172,7 +198,7 @@ fn revcomp(dna: &str) -> String {
     rc_dna
 }
 
-/// Complementary nucleotide
+/// Complementary nucleotide for ACTGUN, case insensitive
 fn switch_base(c: char) -> char {
     match c {
         'a' => 't',

@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["FastqReader","A FastQ reader"]]});

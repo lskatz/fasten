@@ -1,0 +1,1 @@
+window.ALL_CRATES = ["fasten","fasten_clean","fasten_combine","fasten_convert","fasten_kmer","fasten_metrics","fasten_mutate","fasten_pe","fasten_progress","fasten_quality_filter","fasten_randomize","fasten_regex","fasten_replace","fasten_sample","fasten_shuffle","fasten_sort","fasten_straighten","fasten_trim","fasten_validate"];

@@ -1,3 +1,49 @@
+//! Validates your reads and makes you feel good about yourself!
+//! 
+//! # Examples
+//! 
+//! ## Quick validation with stderr message
+//! ```bash
+//! cat file.fastq | fasten_validate --verbose
+//! ```
+//!
+//! ## Validate that your reads are paired end
+//! ```bash
+//! cat R1.fastq R2.fastq | fasten_shuffle | fasten_validate --paired-end
+//! ```
+//!
+//! ## Parallelize
+//! Large-scale validation of PE reads
+//! with 4 CPUs and xargs
+//! ```bash
+//! \ls *_1.fastq.gz | xargs -n 1 -P 4 bash -c '
+//!   echo -n "." >&2 # progress bar
+//!   R1=$0
+//!   R2=${0/_1.fastq.gz/_2.fastq.gz}
+//!   zcat $R1 $R2 | fasten_shuffle | fasten_validate --paired-end
+//! '
+//! ```
+//! 
+//! # Usage
+//! 
+//! ```text
+//!     Usage: fasten_validate [-h] [-n INT] [-p] [-v] [--min-length INT] [--min-quality FLOAT] [--paired-end] [--print-reads] [-v]
+//!     
+//!     Options:
+//!         -h, --help          Print this help menu.
+//!         -n, --numcpus INT   Number of CPUs (default: 1)
+//!         -p, --paired-end    The input reads are interleaved paired-end
+//!         -v, --verbose       Print more status messages
+//!             --min-length INT
+//!                             Minimum read length allowed
+//!             --min-quality FLOAT
+//!                             Minimum quality allowed
+//!             --paired-end    The reads are interleaved paired-end
+//!             --print-reads   Print the reads as they are being validated (useful
+//!                             for unix pipes)
+//!         -v, --verbose       
+//! ```
+
 extern crate getopts;
 extern crate fasten;
 extern crate regex;

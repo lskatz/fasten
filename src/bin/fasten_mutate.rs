@@ -1,3 +1,27 @@
+//! Mutates reads. There is no mutation model; only randomness.
+//! 
+//! # Examples
+//! 
+//! ``` bash
+//! cat testdata/four_reads.fastq | fasten_mutate > out.fastq
+//! ```
+//! 
+//! ## Usage
+//!
+//! ```text
+//! 
+//! Usage: fasten_mutate [-h] [-n INT] [-p] [-v] [-s INT] [-m]
+//! 
+//! Options:
+//!     -h, --help          Print this help menu.
+//!     -n, --numcpus INT   Number of CPUs (default: 1)
+//!     -p, --paired-end    The input reads are interleaved paired-end
+//!     -v, --verbose       Print more status messages
+//!     -s, --snps INT      Number of SNPs (point mutations) to include per read.
+//!     -m, --mark          lowercase all reads but uppercase the SNPs (not yet
+//!                         implemented)
+//! ```
+
 extern crate getopts;
 extern crate fasten;
 extern crate regex;
@@ -72,6 +96,10 @@ fn main(){
     }
 }
 
+/// Mutate a str of a sequence of nucleotides using the nucleotides
+/// in a vector `nts`.
+/// This function does not use any kind of mutation model and will
+/// choose random positions to replace with random nucleotides.
 fn mutate(seq: &str, nts: &Vec<char>, num_snps: u8, mark:bool) -> String {
     let mut sequence:Vec<u8> = seq.as_bytes().to_vec();
     if mark {

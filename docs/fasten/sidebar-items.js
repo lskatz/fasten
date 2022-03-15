@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["eexit","Propagate an error by printing invalid read(s)"],["fasten_base_options","a function that reads an options object and adds fasten default options."],["logmsg","Print a formatted message to stderr "]],"macro":[["print","Rewrite print!() so that it doesn’t panic on broken pipe."]],"mod":[["io","input/output methods"]]});

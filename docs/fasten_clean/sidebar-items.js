@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["avg_quality","Determine average quality of a qual cigar string, e.g., let q:f32 = avg_quality(“AABC!…”)"],["clean_entry","Cleans a SE or PE read"],["main",""],["trim","Trim the ends of reads with low quality"]]});

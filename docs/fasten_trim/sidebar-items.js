@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["main",""],["trim_worker","Trim a set of fastq entries and send it to a channel"]]});

@@ -1,3 +1,36 @@
+//! Trim and filter reads
+//! # Examples
+//! 
+//! ```bash
+//! cat testdata/four_lines.fastq | \
+//!   fasten_clean > out.fastq
+//! ```
+//! ## more options
+//! ```bash
+//! cat testdata | \
+//!   fasten_clean --min-avg-quality 25 --min-trim-quality 25 \
+//!   > out.fastq
+//! 
+//! ```
+//! 
+//! # Usage
+//! ```text
+//! Usage: fasten_clean [-h] [-n INT] [-p] [-v] [--min-length INT] [--min-avg-quality FLOAT] [--min-trim-quality INT]
+//!
+//!    Options:
+//!        -h, --help          Print this help menu.
+//!        -n, --numcpus INT   Number of CPUs (default: 1)
+//!        -p, --paired-end    The input reads are interleaved paired-end
+//!        -v, --verbose       Print more status messages
+//!            --min-length INT
+//!                            Minimum length for each read in bp
+//!            --min-avg-quality FLOAT
+//!                            Minimum average quality for each read
+//!            --min-trim-quality INT
+//!                            Trim the edges of each read until a nucleotide of at
+//!                            least X quality is found
+//! ```
+
 extern crate getopts;
 extern crate fasten;
 extern crate multiqueue;
@@ -306,7 +339,8 @@ fn clean_entry(lines:Vec<String>, min_length:usize, min_avg_qual:f32, min_trim_q
   }
 }
 
-/// determine average quality of a qual cigar string
+/// Determine average quality of a qual cigar string,
+/// e.g., let q:f32 = avg_quality("AABC!...")
 fn avg_quality(qual: &String) -> f32 {
     let mut total :u32 = 0;
     for qual_char in qual.chars() {

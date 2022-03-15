@@ -1,3 +1,27 @@
+//! Perform random operations on fastq files, using unix streaming.
+//! Secure your analysis with Fasten!
+//! # Synopsis
+//! ## read metrics
+//! ```text
+//! 
+//! $ cat testdata/R1.fastq testdata/R2.fastq | \
+//!     fasten_shuffle | fasten_metrics | column -t
+//! totalLength  numReads  avgReadLength  avgQual
+//! 800          8         100            19.53875
+//! 
+//! ## read cleaning
+//! 
+//! $ cat testdata/R1.fastq testdata/R2.fastq | \
+//!     fasten_shuffle | \
+//!     fasten_clean --paired-end --min-length 2 | \
+//!     gzip -c > cleaned.shuffled.fastq.gz
+//! 
+//! $ zcat cleaned.shuffled.fastq.gz | fasten_metrics | column -t
+//! totalLength  numReads  avgReadLength  avgQual
+//! 800          8         100            19.53875
+//! # No reads were actually filtered with cleaning, with --min-length=2
+//! ```
+
 extern crate regex;
 extern crate statistical;
 extern crate getopts;
@@ -6,6 +30,7 @@ use std::path::Path;
 
 use getopts::Options;
 
+/// input/output methods
 pub mod io;
 
 /// Have some strings that can be printed which could be
