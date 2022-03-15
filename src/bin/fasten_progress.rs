@@ -6,12 +6,25 @@
 //! While getting read metrics for a large fastq file, print the progress
 //!  to make the wait a little easier
 //! ```bash
-//! cat large.fastq | fasten_progress | fasten_metrics
+//! cat large.fastq | fasten_progress --print | fasten_metrics
 //! ```
 //! ## fasten_shuffle progress
 //! While shuffling a large fastq file, print the progress
 //! ```bash
-//! cat large_1.fastq large_2.fastq | fasten_progress | fasten_shuffle > interleaved.fastq
+//! cat large_1.fastq large_2.fastq | fasten_progress --print | fasten_shuffle > interleaved.fastq
+//! ```
+//! ## Two progress bars
+//! When there is a halting step in the process like `fasten_sort`, then it might make sense
+//! to have two progress bars.
+//! However, if there are no halting steps then the progress messages will collide.
+//! ```bash
+//! cat large_1.fastq large_2.fastq | \
+//!   fasten_progress --id first --print | \
+//!   fasten_shuffle | \
+//!   fasten_sort --paired-end | \
+//!   fasten_progress --id second --print | \
+//!   fasten_progress --id collision-with-second --print | \
+//!   fasten_metrics | column -t
 //! ```
 //! 
 //! # Usage
@@ -27,6 +40,7 @@
 //!         --id STRING     Progress identifier. Default: unnamed
 //!         --update-every INT
 //!                         Update progress every n reads.
+//!     -p, --print         Print the reads back to stdout
 //! ```
 
 extern crate getopts;
@@ -44,12 +58,15 @@ fn main(){
     // Options specific to this script
     opts.optopt("","id","Progress identifier. Default: unnamed","STRING");
     opts.optopt("","update-every","Update progress every n reads.","INT");
+    opts.optflag("p","print","Print the reads back to stdout");
 
     let matches = opts.parse(&args[1..]).expect("ERROR: could not parse parameters");
     if matches.opt_present("help") {
         println!("Prints a progress meter for number of fastq entries.\n{}", opts.usage(&opts.short_usage(&args[0])));
         std::process::exit(0);
     }
+
+    let print_reads:bool = matches.opt_present("print");
 
     let progress_id:String = {
       if matches.opt_present("id") {
@@ -80,12 +97,13 @@ fn main(){
 
     let mut line_counter = 0;
     eprint!("\r{} progress: {}", progress_id, line_counter/lines_per_read);
-    for _line in my_buffer.lines() {
-        //let _line=line.expect("ERROR: did not get a line");
+    for res in my_buffer.lines() {
+        let line=res.expect("ERROR: did not get a line");
+        if print_reads {
+            println!("{}", line);
+        }
         line_counter += 1;
 
-        // TODO pattern match for each kind of line:
-        // id, seq, +, qual
         match line_counter % update_every {
             0=>{
                 //println!("UPDATE: {}", line_counter);
