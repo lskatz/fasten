@@ -67,9 +67,12 @@ use std::env;
 use std::path::Path;
 
 use getopts::Options;
+use getopts::Matches;
 
 /// input/output methods
 pub mod io;
+
+const VERSION: &'static str = env!("CARGO_PKG_VERSION");
 
 /// Have some strings that can be printed which could be
 /// used to propagate errors between piped scripts.
@@ -113,8 +116,26 @@ pub fn fasten_base_options() -> Options{
     opts.optopt("n","numcpus","Number of CPUs (default: 1)","INT");
     opts.optflag("p","paired-end","The input reads are interleaved paired-end");
     opts.optflag("v","verbose","Print more status messages");
+    opts.optflag("v","version","Print the version of Fasten and exit");
 
     return opts;
+}
+
+/// a function that processes the options on the command line
+pub fn fasten_base_options_matches(opts:Options) -> Matches{
+    let args: Vec<String> = env::args().collect();
+    let matches = opts.parse(&args[1..]).expect("ERROR: could not parse parameters");
+
+    if matches.opt_present("version") {
+        println!("Fasten v{}", &VERSION);
+        std::process::exit(0);
+    }
+    if matches.opt_present("h") {
+        println!("{}", opts.usage(&opts.short_usage(&args[0])));
+        std::process::exit(0);
+    }
+
+    return matches
 }
 
 /// Print a formatted message to stderr 
