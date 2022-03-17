@@ -24,11 +24,10 @@ use std::fs::File;
 use std::io::BufReader;
 
 use fasten::fasten_base_options;
+use fasten::fasten_base_options_matches;
 use fasten::io::fastq;
 use fasten::io::seq::Cleanable;
 use fasten::logmsg;
-
-use std::env;
 
 #[test]
 /// Test to see whether we read the challenge dataset correctly
@@ -56,13 +55,9 @@ fn challenge_dataset () {
 
 
 fn main(){
-    let args: Vec<String> = env::args().collect();
     let opts = fasten_base_options();
-    let matches = opts.parse(&args[1..]).expect("ERROR: could not parse parameters");
-    if matches.opt_present("help") {
-        println!("Convert a fastq file to a standard 4-lines-per-entry format\n{}", opts.usage(&opts.short_usage(&args[0])));
-        std::process::exit(0);
-    }
+    let matches = fasten_base_options_matches("Convert a fastq file to a standard 4-lines-per-entry format", opts);
+    
     if matches.opt_present("paired-end") {
         logmsg("WARNING: --paired-end is not utilized in this script");
     }

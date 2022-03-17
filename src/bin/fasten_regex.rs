@@ -37,27 +37,22 @@ extern crate threadpool;
 use std::fs::File;
 use std::io::BufReader;
 use std::io::BufRead;
-use std::env;
 
 use regex::Regex;
 use threadpool::ThreadPool;
 use std::sync::mpsc::channel;
 
 use fasten::fasten_base_options;
+use fasten::fasten_base_options_matches;
 
 fn main(){
-    let args: Vec<String> = env::args().collect();
     let mut opts = fasten_base_options();
     // Options specific to this script
     opts.optopt("r","regex","Regular expression (default: '.')","STRING");
     opts.optopt("w","which","Which field to match on? ID, SEQ, QUAL. Default: SEQ","String");
     //opts.optflag("e","exclude","Exclude these reads instead of including them");
 
-    let matches = opts.parse(&args[1..]).expect("ERROR: could not parse parameters");
-    if matches.opt_present("help") {
-        println!("Filter reads based on a regular expression.\n{}", opts.usage(&opts.short_usage(&args[0])));
-        std::process::exit(0);
-    }
+    let matches = fasten_base_options_matches("Filter reads based on a regular expression.", opts);
 
     let (tx, rx):(std::sync::mpsc::Sender<String>,std::sync::mpsc::Receiver<String>) = channel();
 

@@ -27,11 +27,11 @@ extern crate getopts;
 
 use std::io::BufReader;
 use std::io::BufRead;
-use std::env;
 use std::io::stdin;
 use std::io::Stdin;
 
 use fasten::fasten_base_options;
+use fasten::fasten_base_options_matches;
 use fasten::logmsg;
 
 use std::collections::HashMap;
@@ -85,7 +85,6 @@ fn test_kmer_counting_4mers () {
 }
 
 fn main(){
-    let args: Vec<String> = env::args().collect();
     let mut opts = fasten_base_options();
 
     // script-specific options
@@ -93,12 +92,8 @@ fn main(){
     opts.optopt("k","kmer-length",&format!("The size of the kmer (default: {})",default_k),"INT");
     opts.optflag("r","revcomp", "Count kmers on the reverse complement strand too");
 
-    let matches = opts.parse(&args[1..]).expect("ERROR: could not parse parameters");
-
-    if matches.opt_present("help") {
-        println!("Counts kmers.\n{}", opts.usage(&opts.short_usage(&args[0])));
-        std::process::exit(0);
-    }
+    let matches = fasten_base_options_matches("Counts kmers.", opts);
+    
     if matches.opt_present("paired-end") {
         logmsg("WARNING: --paired-end is not utilized in this script");
     }

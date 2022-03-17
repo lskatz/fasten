@@ -115,14 +115,20 @@ pub fn fasten_base_options() -> Options{
     opts.optflag("h", "help", "Print this help menu.");
     opts.optopt("n","numcpus","Number of CPUs (default: 1)","INT");
     opts.optflag("p","paired-end","The input reads are interleaved paired-end");
-    opts.optflag("v","verbose","Print more status messages");
-    opts.optflag("v","version","Print the version of Fasten and exit");
+    opts.optflag("","verbose","Print more status messages");
+    opts.optflag("","version","Print the version of Fasten and exit");
 
     return opts;
 }
 
 /// a function that processes the options on the command line
-pub fn fasten_base_options_matches(opts:Options) -> Matches{
+/// The brief is a str that describes the program without using the program
+/// name, e.g., "counts kmers" for fasten_kmer.
+/// This function also takes care of --version.
+/// If --help is invoked, then the program name, the brief, and the usage()
+/// are all printed to stdout and then the program exits with 0.
+// TODO if possible add in default somehow for numcpus
+pub fn fasten_base_options_matches(brief:&str, opts:Options) -> Matches{
     let args: Vec<String> = env::args().collect();
     let matches = opts.parse(&args[1..]).expect("ERROR: could not parse parameters");
 
@@ -131,11 +137,20 @@ pub fn fasten_base_options_matches(opts:Options) -> Matches{
         std::process::exit(0);
     }
     if matches.opt_present("h") {
-        println!("{}", opts.usage(&opts.short_usage(&args[0])));
+        let prog_name = Path::new(&args[0])
+            .file_stem().unwrap()
+            .to_str().unwrap();
+        println!("{}: {}\n\n{}", 
+                 &prog_name,
+                 &brief,
+                 &opts.usage(
+                     &opts.short_usage(&prog_name)
+                 ),
+        );
         std::process::exit(0);
     }
 
-    return matches
+    return matches;
 }
 
 /// Print a formatted message to stderr 

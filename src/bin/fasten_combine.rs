@@ -36,10 +36,10 @@ use std::io::stdin;
 //use std::io::BufRead;
 use std::collections::HashMap;
 
-use std::env;
 use std::f32;
 
 use fasten::fasten_base_options;
+use fasten::fasten_base_options_matches;
 use fastq::{Parser, Record};
 use fasten::logmsg;
 
@@ -51,7 +51,6 @@ const TEN: f32 = 10.0;
 const READ_SEPARATOR :char = '~';
 
 fn main(){
-    let args: Vec<String> = env::args().collect();
     let mut opts = fasten_base_options();
 
     // make a string of characters like !"#...GHI to represent all quals
@@ -72,15 +71,9 @@ fn main(){
       format!("Minimum quality character (default: {})", default_phred_min_char).as_str(),
       "CHAR");
 
-    let matches = opts.parse(&args[1..]).expect("Parsing parameters");
+    let description:String = format!("Collapse identical reads into single reads, recalculating quality values. If paired end, then each set of reads must be identical to be collapsed. Warning: due to multiple reads collapsing into one, read identifiers will be reconstituted. NOTE: range of quality scores is {}", qual_range_string);
+    let matches = fasten_base_options_matches(&description, opts);
 
-    if matches.opt_present("h") {
-        println!("Collapse identical reads into single reads, recalculating quality values. If paired end, then each set of reads must be identical to be collapsed. Warning: due to multiple reads collapsing into one, read identifiers will be reconstituted.");
-        println!("{}",opts.usage(&opts.short_usage(&args[0])));
-        println!("NOTE: range of quality scores is {}", qual_range_string);
-        std::process::exit(0);
-    }
-    
     let max_qual_char:char = matches.opt_default("max-qual-char", &default_phred_max_char.to_string())
                      .unwrap_or(String::from(default_phred_max_char))
                      .parse()

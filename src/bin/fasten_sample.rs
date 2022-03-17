@@ -29,25 +29,18 @@ use std::fs::File;
 use std::io::BufReader;
 use std::io::BufRead;
 
-use std::env;
-
 use rand::thread_rng;
 use rand::Rng;
 
 use fasten::fasten_base_options;
+use fasten::fasten_base_options_matches;
 
 fn main(){
-    let args: Vec<String> = env::args().collect();
     let mut opts = fasten_base_options();
 
     opts.optopt("f","frequency","Frequency of sequences to print, 0 to 1. Default: 1","FLOAT");
 
-    let matches = opts.parse(&args[1..]).expect("ERROR: could not parse parameters");
-
-    if matches.opt_present("help") {
-        println!("Ursula: downsample your reads\n{}", opts.usage(&opts.short_usage(&args[0])));
-        std::process::exit(0);
-    }
+    let matches = fasten_base_options_matches("Downsample your reads", opts);
 
     let frequency :f32 = {
         if matches.opt_present("frequency") {
