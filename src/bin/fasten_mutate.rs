@@ -29,26 +29,21 @@ extern crate rand;
 use std::fs::File;
 use std::io::BufReader;
 use std::io::BufRead;
-use std::env;
 
 use rand::distributions::{IndependentSample, Range};
 
 use fasten::fasten_base_options;
+use fasten::fasten_base_options_matches;
 use fasten::logmsg;
 
 
 fn main(){
-    let args: Vec<String> = env::args().collect();
     let mut opts = fasten_base_options();
     // Options specific to this script
     opts.optopt("s", "snps", "Number of SNPs (point mutations) to include per read.", "INT");
     opts.optflag("m", "mark", "lowercase all reads but uppercase the SNPs (not yet implemented)");
 
-    let matches = opts.parse(&args[1..]).expect("ERROR: could not parse parameters");
-    if matches.opt_present("help") {
-        println!("Mutates reads. There is no mutation model; only randomness.\n{}", opts.usage(&opts.short_usage(&args[0])));
-        std::process::exit(0);
-    }
+    let matches = fasten_base_options_matches("Mutates reads. There is no mutation model; only randomness.", opts);
 
     if matches.opt_present("paired-end") {
         logmsg("WARNING: --paired-end is not utilized in this script");

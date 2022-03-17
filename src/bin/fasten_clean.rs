@@ -39,12 +39,12 @@ extern crate threadpool;
 use std::fs::File;
 use std::io::BufReader;
 use std::io::BufRead;
-use std::env;
 
 use threadpool::ThreadPool;
 use std::sync::mpsc::channel;
 
 use fasten::fasten_base_options;
+use fasten::fasten_base_options_matches;
 //use fasten::logmsg;
 
 #[test]
@@ -128,7 +128,6 @@ D>C1'02C+=I@IEFHC7&-E5',I?E*33E/@3#68B%\"!B-/2%(G=*@D052IA!('7-*$+A6>.$89,-CG71=
 }
 
 fn main(){
-    let args: Vec<String> = env::args().collect();
     let mut opts = fasten_base_options();
 
     // invisible option but maybe we can expose it:
@@ -140,12 +139,7 @@ fn main(){
     opts.optopt("","min-avg-quality","Minimum average quality for each read","FLOAT");
     opts.optopt("","min-trim-quality","Trim the edges of each read until a nucleotide of at least X quality is found","INT");
 
-    let matches = opts.parse(&args[1..]).expect("ERROR: could not parse parameters");
-
-    if matches.opt_present("h") {
-        println!("{}", opts.usage(&opts.short_usage(&args[0])));
-        std::process::exit(0);
-    }
+    let matches = fasten_base_options_matches("Trims and filters reads", opts);
 
     let mut min_length :usize = 0;
     if matches.opt_present("min-length") {

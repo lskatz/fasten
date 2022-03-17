@@ -52,26 +52,21 @@ use std::io::Write;
 use std::io::BufReader;
 
 use fasten::fasten_base_options;
+use fasten::fasten_base_options_matches;
 use fasten::io::fastq;
 use fasten::io::seq::Cleanable;
 use fasten::io::seq::Seq;
 use fasten::logmsg;
 
-use std::env;
-
 fn main(){
-    let args: Vec<String> = env::args().collect();
     let mut opts = fasten_base_options();
     //script-specific flags
     opts.optflag("d","deshuffle","Deshuffle reads from stdin");
     opts.optopt("1","","Forward reads. If deshuffling, reads are written to this file.","1.fastq");
     opts.optopt("2","","Forward reads. If deshuffling, reads are written to this file.","2.fastq");
 
-    let matches = opts.parse(&args[1..]).expect("Error: could not parse parameters");
-    if matches.opt_present("help") {
-        println!("Interleaves reads from either stdin or file parameters.\n{}", opts.usage(&opts.short_usage(&args[0])));
-        std::process::exit(0);
-    }
+    let matches = fasten_base_options_matches("Interleaves reads from either stdin or file parameters", opts);
+    
     if matches.opt_present("paired-end") {
         logmsg("WARNING: --paired-end was supplied but it is assumed for this script anyway");
     }

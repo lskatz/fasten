@@ -33,9 +33,8 @@ use std::io::BufReader;
 use std::io::BufRead;
 use std::f32;
 
-use std::env;
-
 use fasten::fasten_base_options;
+use fasten::fasten_base_options_matches;
 use fasten::logmsg;
 
 #[test]
@@ -53,19 +52,14 @@ fn test_average_quality () {
 }
 
 fn main(){
-    let args: Vec<String> = env::args().collect();
     let mut opts = fasten_base_options();
 
     // script-specific options
     opts.optflag("","each-read","Print the metrics for each read. This creates very large output");
     opts.optopt("","distribution","Print the distribution for each metric. Must supply either 'normal' or 'nonparametric'","STRING");
 
-    let matches = opts.parse(&args[1..]).expect("ERROR: could not parse parameters");
+    let matches = fasten_base_options_matches("Gives read metrics on a read set.", opts);
 
-    if matches.opt_present("help") {
-        println!("Gives read metrics on a read set.\n{}", opts.usage(&opts.short_usage(&args[0])));
-        std::process::exit(0);
-    }
     if matches.opt_present("paired-end") {
         logmsg("WARNING: --paired-end is not utilized in this script");
     }

@@ -39,22 +39,16 @@ extern crate rand;
 use std::fs::File;
 use std::io::BufReader;
 use std::io::BufRead;
-use std::env;
 
 use rand::{Rng,thread_rng};
 
 use fasten::fasten_base_options;
+use fasten::fasten_base_options_matches;
 
 fn main(){
-    let args: Vec<String> = env::args().collect();
     let opts = fasten_base_options();
-    //script-specific flags
 
-    let matches = opts.parse(&args[1..]).expect("Error: could not parse parameters");
-    if matches.opt_present("help") {
-        println!("Create random reads from stdin.\n{}", opts.usage(&opts.short_usage(&args[0])));
-        std::process::exit(0);
-    }
+    let matches = fasten_base_options_matches("Create random reads from stdin.", opts);
 
     let lines_per_read :u32={
         if matches.opt_present("paired-end") {

@@ -39,32 +39,26 @@ extern crate threadpool;
 
 use std::fs::File;
 use std::io::BufReader;
-use std::env;
 use std::cmp::min;
 
 use threadpool::ThreadPool;
 use std::sync::mpsc::channel;
 
 use fasten::fasten_base_options;
+use fasten::fasten_base_options_matches;
 use fasten::logmsg;
 use fasten::io::fastq;
 use fasten::io::seq::Cleanable;
 use fasten::io::seq::Seq;
 
 fn main(){
-    let args: Vec<String> = env::args().collect();
     let mut opts = fasten_base_options();
 
     // script-specific options
     opts.optopt("f","first-base","The first base to keep (default: 0)","INT");
     opts.optopt("l","last-base","The last base to keep. If negative, counts from the right. (default: 0)","INT");
 
-    let matches = opts.parse(&args[1..]).expect("ERROR: could not parse parameters");
-
-    if matches.opt_present("help") {
-        println!("Blunt-end trims using 0-based coordinates\n{}", opts.usage(&opts.short_usage(&args[0])));
-        std::process::exit(0);
-    }
+    let matches = fasten_base_options_matches("Blunt-end trims using 0-based coordinates", opts);
 
     let (tx, rx):(std::sync::mpsc::Sender<String>,std::sync::mpsc::Receiver<String>) = channel();
 

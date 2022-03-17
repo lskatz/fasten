@@ -48,23 +48,18 @@ extern crate fasten;
 use std::fs::File;
 use std::io::BufReader;
 use std::io::BufRead;
-use std::env;
 
 use fasten::fasten_base_options;
+use fasten::fasten_base_options_matches;
 
 fn main(){
-    let args: Vec<String> = env::args().collect();
     let mut opts = fasten_base_options();
     // Options specific to this script
     opts.optopt("","id","Progress identifier. Default: unnamed","STRING");
     opts.optopt("","update-every","Update progress every n reads.","INT");
     opts.optflag("p","print","Print the reads back to stdout");
 
-    let matches = opts.parse(&args[1..]).expect("ERROR: could not parse parameters");
-    if matches.opt_present("help") {
-        println!("Prints a progress meter for number of fastq entries.\n{}", opts.usage(&opts.short_usage(&args[0])));
-        std::process::exit(0);
-    }
+    let matches = fasten_base_options_matches("Prints a progress meter for number of fastq entries", opts);
 
     let print_reads:bool = matches.opt_present("print");
 

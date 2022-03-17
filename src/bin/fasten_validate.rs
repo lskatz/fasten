@@ -41,7 +41,6 @@
 //!             --paired-end    The reads are interleaved paired-end
 //!             --print-reads   Print the reads as they are being validated (useful
 //!                             for unix pipes)
-//!         -v, --verbose       
 //! ```
 
 extern crate getopts;
@@ -50,27 +49,21 @@ extern crate regex;
 use std::fs::File;
 use std::io::BufReader;
 use std::io::BufRead;
-use std::env;
 
 use regex::Regex;
 
 use fasten::fasten_base_options;
+use fasten::fasten_base_options_matches;
 
 fn main(){
-    let args: Vec<String> = env::args().collect();
     let mut opts = fasten_base_options();
     // Options specific to this script
     opts.optopt("","min-length","Minimum read length allowed","INT");
     opts.optopt("","min-quality","Minimum quality allowed","FLOAT");
     opts.optflag("","paired-end","The reads are interleaved paired-end");
     opts.optflag("","print-reads","Print the reads as they are being validated (useful for unix pipes)");
-    opts.optflag("v","verbose","");
 
-    let matches = opts.parse(&args[1..]).expect("ERROR: could not parse parameters");
-    if matches.opt_present("help") {
-        println!("Validates your reads and makes you feel good about yourself!\n{}", opts.usage(&opts.short_usage(&args[0])));
-        std::process::exit(0);
-    }
+    let matches = fasten_base_options_matches("Validates your reads and makes you feel good about yourself!", opts);
 
     let my_file = File::open("/dev/stdin").expect("Could not open file");
     let my_buffer=BufReader::new(my_file);

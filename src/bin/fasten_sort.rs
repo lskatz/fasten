@@ -55,9 +55,9 @@ extern crate threadpool;
 use std::fs::File;
 use std::io::BufReader;
 use std::io::BufRead;
-use std::env;
 
 use fasten::fasten_base_options;
+use fasten::fasten_base_options_matches;
 //use fasten::logmsg;
 
 #[test]
@@ -137,17 +137,12 @@ struct Seq {
 }
 
 fn main(){
-    let args: Vec<String> = env::args().collect();
     let mut opts = fasten_base_options();
     // Options specific to this script
     opts.optopt("s","sort-by","Sort by either SEQ, GC, or ID. If GC, then the entries are sorted by GC percentage. SEQ and ID are alphabetically sorted.","STRING");
     opts.optflag("r","reverse","Reverse sort");
 
-    let matches = opts.parse(&args[1..]).expect("ERROR: could not parse parameters");
-    if matches.opt_present("help") {
-        println!("Sort reads.\n{}", opts.usage(&opts.short_usage(&args[0])));
-        std::process::exit(0);
-    }
+    let matches = fasten_base_options_matches("Sort reads. This can be useful for many things including checksums and reducing gzip file sizes. Remember to use --paired-end if applicable.", opts);
 
     let my_file = File::open("/dev/stdin").expect("Could not open file");
     let my_buffer=BufReader::new(my_file);
@@ -235,6 +230,7 @@ fn sort_entries (unsorted:Vec<Seq>, which_field:&str, reverse_sort:bool) -> Vec<
     let mut sorted = unsorted.clone();
 
     // Actual sort
+    // TODO sort by length?
     match which_field{
         "ID" => {
             sorted.sort_by(|a, b| {

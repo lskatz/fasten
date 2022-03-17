@@ -38,12 +38,11 @@ extern crate bam;
 use bam::RecordReader;
 
 use fasten::fasten_base_options;
+use fasten::fasten_base_options_matches;
 use fasten::logmsg;
 
 use std::io::stdin;
 use fastq::{Parser, Record};
-
-use std::env;
 
 use std::sync::mpsc::channel;
 
@@ -123,16 +122,12 @@ fn test_fastq_to () {
 */
       
 fn main(){
-    let args: Vec<String> = env::args().collect();
     let mut opts = fasten_base_options();
-    opts.optopt("i", "in-format",  "The input format for stdin",  "FORMAT");
-    opts.optopt("o", "out-format", "The output format for stdin", "FORMAT");
+    opts.optopt("i", "in-format",  "The input format for stdin. FORMAT can be: fastq, fasta, sam.",  "FORMAT");
+    opts.optopt("o", "out-format", "The output format for stdin. See --in-format for FORMAT options.", "FORMAT");
 
-    let matches = opts.parse(&args[1..]).expect("ERROR: could not parse parameters");
-    if matches.opt_present("help") {
-        println!("{}  FORMAT can be: fastq, fasta, sam\n", opts.usage(&opts.short_usage(&args[0])));
-        std::process::exit(0);
-    }
+    let description:String = format!("Converts between sequence formats.");
+    let matches = fasten_base_options_matches(&description, opts);
 
     let paired_end = matches.opt_present("paired-end");
 

@@ -28,27 +28,19 @@ extern crate fasten;
 extern crate regex;
 
 use fasten::fasten_base_options;
+use fasten::fasten_base_options_matches;
 use fasten::logmsg;
 use regex::Regex;
 
 use std::fs::File;
 use std::io::BufReader;
 use std::io::BufRead;
-use std::env;
 
 fn main() {
-    let args: Vec<String> = env::args().collect();
     let mut opts = fasten_base_options();
-    //opts.optopt("c","check-first","How many deflines to check to make sure the input is paired-end","INT");
     opts.optflag("","print-reads","Print each read. Useful for Unix pipes.");
-    let matches = opts.parse(&args[1..]).expect("ERROR: could not parse parameters");
+    let matches = fasten_base_options_matches("Determine paired-end-ness in an interleaved file. Exit code of 0 indicates PE. Exit code > 0 indicates SE.", opts);
     
-    if matches.opt_present("help") {
-        println!("Determine paired-end-ness in an interleaved file. Exit code of 0 indicates PE. Exit code > 0 indicates SE.\n{}", 
-                 opts.usage(&opts.short_usage(&args[0]))
-                );
-        std::process::exit(0);
-    }
     if matches.opt_present("paired-end") {
         logmsg("WARNING: --paired-end was supplied but this script is supposed to determine whether the input is paired-end.");
     }
