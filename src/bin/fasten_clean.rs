@@ -140,7 +140,6 @@ fn main(){
     opts.optopt("","min-trim-quality","Trim the edges of each read until a nucleotide of at least X quality is found","INT");
 
     let matches = fasten_base_options_matches("Trims and filters reads", opts);
-    //let matches = opts.parse(&args[1..]).expect("ERROR: could not parse parameters");
 
     let mut min_length :usize = 0;
     if matches.opt_present("min-length") {
