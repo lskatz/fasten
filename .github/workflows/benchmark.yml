@@ -14,7 +14,6 @@ jobs:
         os: ["ubuntu-latest"]
         python-version: ["3.7"]
     steps:
-      - uses: actions/checkout@v2
       - uses: conda-incubator/setup-miniconda@v2
         with:
           auto-update-conda: true
@@ -35,6 +34,7 @@ jobs:
         shell: bash -l {0}
         run:  |
           which seqkit
+      - uses: actions/checkout@v2
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
