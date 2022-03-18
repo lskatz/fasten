@@ -15,6 +15,7 @@ jobs:
         python-version: ["3.7"]
     steps:
       - uses: actions/checkout@v2
+      - uses: conda-incubator/setup-miniconda@v2
         with:
           python-version: ${{ matrix.python-version }}
           mamba-version: "*"
@@ -26,7 +27,6 @@ jobs:
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
-      - uses: conda-incubator/setup-miniconda@v2
       - uses: actions-rs/cargo@v1
         with:
           command: build
