@@ -40,9 +40,7 @@ jobs:
       - name: env
         shell: bash -l {0}
         run:  |
-          echo "fasten/target/release" >> $GITHUB_PATH
           which seqkit
-          which fasten_clean
       - uses: actions/checkout@v2
       - uses: actions-rs/toolchain@v1
         with:
@@ -54,6 +52,9 @@ jobs:
       - name: benchmark
         shell: bash -l {0}
         run:  |
+          echo "fasten/target/release" >> $GITHUB_PATH
+          export PATH=$PATH:fasten/target/release
+          which fasten_clean
           bash tests/10_benchmark.sh
 
 
