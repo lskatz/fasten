@@ -19,7 +19,7 @@ jobs:
           wget https://github.com/sharkdp/hyperfine/releases/download/v1.13.0/hyperfine-v1.13.0-x86_64-unknown-linux-gnu.tar.gz
           tar zxvf hyperfine-v1.13.0-x86_64-unknown-linux-gnu.tar.gz
           ls -Fd hyperfine-v1.13.0-x86_64-unknown-linux-gnu/*
-        echo hyperfine-v1.13.0-x86_64-unknown-linux-gnu >> $GITHUB_PATH
+          echo hyperfine-v1.13.0-x86_64-unknown-linux-gnu >> $GITHUB_PATH
       - uses: conda-incubator/setup-miniconda@v2
         with:
           auto-update-conda: true
