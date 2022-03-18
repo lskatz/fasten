@@ -24,11 +24,10 @@ jobs:
       - name: create conda env
         run:  |
           conda info
-          #conda create -n benchmarking
+          conda env list
           mamba install -n benchmarking seqkit
       - name: env
         run:  |
-          conda activate benchmarking
           which seqkit
       - uses: actions-rs/toolchain@v1
         with:
