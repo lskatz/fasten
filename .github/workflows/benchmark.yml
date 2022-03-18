@@ -18,6 +18,7 @@ jobs:
         run:  |
           wget https://github.com/sharkdp/hyperfine/releases/download/v1.13.0/hyperfine-v1.13.0-x86_64-unknown-linux-gnu.tar.gz
           tar zxvf hyperfine-v1.13.0-x86_64-unknown-linux-gnu.tar.gz
+          echo
           ls -Fd hyperfine-v1.13.0-x86_64-unknown-linux-gnu/*
           echo hyperfine-v1.13.0-x86_64-unknown-linux-gnu >> $GITHUB_PATH
       - uses: conda-incubator/setup-miniconda@v2
@@ -39,7 +40,9 @@ jobs:
       - name: env
         shell: bash -l {0}
         run:  |
+          echo "fasten/target/release" >> $GITHUB_PATH
           which seqkit
+          which fasten_clean
       - uses: actions/checkout@v2
       - uses: actions-rs/toolchain@v1
         with:
