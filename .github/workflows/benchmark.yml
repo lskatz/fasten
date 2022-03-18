@@ -43,7 +43,9 @@ jobs:
           which seqkit
           echo "fasten/target/release" >> $GITHUB_PATH
           tree -d
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+        with:
+          path: fasten
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
