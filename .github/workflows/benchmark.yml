@@ -41,7 +41,6 @@ jobs:
         shell: bash -l {0}
         run:  |
           which seqkit
-          echo "fasten/target/release" >> $GITHUB_PATH
           tree -d
       - uses: actions/checkout@v3
         with:
@@ -49,10 +48,15 @@ jobs:
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
-      - uses: actions-rs/cargo@v1
-        with:
-          command: build
-          args: --release --all-features fasten
+      #- uses: actions-rs/cargo@v1
+      #  with:
+      #    command: build
+      #    args: --release --all-features
+      - name: cargo build
+        run: |
+          cd fasten && cargo build --release
+          tree -d
+          echo "fasten/target/release" >> $GITHUB_PATH
       - name: benchmark
         shell: bash -l {0}
         run:  |
