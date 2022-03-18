@@ -20,7 +20,8 @@ jobs:
           args: --release --all-features
       - name: env
         run:  |
-          sudo apt-get install seqkit
+          sudo apt-get update
+          sudo apt-get -y install seqkit
       - name: benchmark
         run:  |
           bash tests/10_benchmark.sh
