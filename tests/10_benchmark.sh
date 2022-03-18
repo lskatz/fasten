@@ -13,7 +13,7 @@ large_R2="$thisDir/../testdata/R2.large.fastq"
 large_interleaved="$thisDir/../testdata/shuffled.large.fastq.gz"
 large_sorted="$thisDir/../testdata/shuffled.sorted.fastq.gz"
 
-multiplier=10000;
+multiplier=100000;
 R1_content=`cat $R1`;
 R2_content=`cat $R2`;
 for i in `seq 1 $multiplier`; do 
