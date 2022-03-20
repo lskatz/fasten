@@ -32,6 +32,11 @@ for i in `seq 1 $multiplier`; do
   echo "$R2_content"
 done > $large_R2
 
+# Version information
+seqtk 2>&1 | grep -i version
+seqkit version | grep -m 1 v
+fasten_clean --version
+
 # Save this file even though it's not used in the first benchmark
 cat $R1 $R2 | fasten_shuffle | gzip -c9 > $large_interleaved
 ls -lhS $large_interleaved $R1 $R2
@@ -44,8 +49,8 @@ hyperfine --warmup 2 --shell $SHELL --runs $num_runs \
 # Set the width to really long on fq2fa to match the output exactly
 hyperfine --warmup 2 --shell $SHELL --runs $num_runs \
   -n "Fasten convert" "zcat $large_sorted | fasten_convert -i fastq -o fasta " \
-  -n "Seqkit fq2fa -w 1000" "zcat $large_sorted | seqkit fq2fa " \
-  -n "Seqtk seq -A" "seqtk seq -A $large_sorted"
+  -n "Seqkit fq2fa -w 1000" "zcat $large_sorted | seqkit fq2fa "
+  #-n "Seqtk seq -A" "seqtk seq -A $large_sorted"
 
 # get first 100 reads for any fastq file
 hyperfine --warmup 2 --shell $SHELL --runs $num_runs --export-markdown $(mktemp --tmpdir=$reportsDir hyperfine.XXXXXX.md) \
