@@ -33,7 +33,7 @@ for i in `seq 1 $multiplier`; do
 done > $large_R2
 
 # Version information
-seqtk 2>&1 | grep -i version
+seqtk 2>&1 | grep -i version | sed 's/^/seqtk /'
 seqkit version | grep -m 1 v
 fasten_clean --version
 
@@ -53,7 +53,7 @@ hyperfine --warmup 2 --shell $SHELL --runs $num_runs \
   #-n "Seqtk seq -A" "seqtk seq -A $large_sorted"
 
 # get first 100 reads for any fastq file
-hyperfine --warmup 2 --shell $SHELL --runs $num_runs --export-markdown $(mktemp --tmpdir=$reportsDir hyperfine.XXXXXX.md) \
+hyperfine --warmup 2 --shell $SHELL --runs $num_runs \
   -n "seqkit head" "cat $large_R1 | seqkit head --number 100" \
   -n "fasten_straighten" "cat $large_R1 | fasten_straighten | head -n 400"
 
