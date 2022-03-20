@@ -36,7 +36,7 @@ jobs:
         run:  |
           conda info
           conda env list
-          mamba install -n benchmarking seqkit
+          mamba install -n benchmarking seqkit seqtk
       - name: env
         shell: bash -l {0}
         run:  |
