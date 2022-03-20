@@ -55,7 +55,8 @@ hyperfine --warmup 2 --shell $SHELL --runs $num_runs \
 # get first 100 reads for any fastq file
 hyperfine --warmup 2 --shell $SHELL --runs $num_runs \
   -n "seqkit head" "cat $large_R1 | seqkit head --number 100" \
-  -n "fasten_straighten" "cat $large_R1 | fasten_straighten | head -n 400"
+  -n "fasten_straighten" "cat $large_R1 | fasten_straighten | head -n 400" \
+  -n "seqtk seq straighten" "seqtk seq -l0 $large_R1 | head -n 400"
 
 # Grep for CCCC
 pattern="CCCC"
