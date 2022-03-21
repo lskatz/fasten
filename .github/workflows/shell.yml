@@ -21,19 +21,19 @@ jobs:
       - name: shell
         run: |
           export PATH=fasten/target/release:$PATH
-          tests/fasten_clean.sh
-          tests/fasten_combine.sh
-          tests/fasten_kmer.sh
-          tests/fasten_metrics.sh
-          tests/fasten_pe.sh
-          tests/fasten_quality_filter.sh
-          tests/fasten_randomize.sh
-          tests/fasten_regex.sh
-          tests/fasten_replace.sh
-          tests/fasten_sample.sh
-          tests/fasten_shuffle.sh
-          tests/fasten_straighten.sh
-          tests/fasten_trim.sh
-          tests/fasten_validate.sh
+          bash tests/fasten_clean.sh
+          bash tests/fasten_combine.sh
+          bash tests/fasten_kmer.sh
+          bash tests/fasten_metrics.sh
+          bash tests/fasten_pe.sh
+          bash tests/fasten_quality_filter.sh
+          bash tests/fasten_randomize.sh
+          bash tests/fasten_regex.sh
+          bash tests/fasten_replace.sh
+          bash tests/fasten_sample.sh
+          bash tests/fasten_shuffle.sh
+          bash tests/fasten_straighten.sh
+          bash tests/fasten_trim.sh
+          bash tests/fasten_validate.sh
 
 
