@@ -6,7 +6,7 @@ INPUT=testdata/four_reads.pe.fastq;
 reads_not_trimmed=$(./target/debug/fasten_trim < $INPUT )
 original_reads=$(cat $INPUT)
 if [ "$reads_not_trimmed" != "$original_reads" ]; then
-  echo "ERROR while not trimming reads"
+  echo "ERROR running fasten_trim with no trimming options, ie not trimming and keeping output the same as input."
   exit 1
 fi
 
