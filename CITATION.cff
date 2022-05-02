@@ -1,0 +1,13 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: "Katz"
+  given-names: "Lee"
+  orcid: "https://orcid.org/0000-0002-2533-9161"
+- family-names: "Phan"
+  given-names: "John"
+- family-names: "Den Bakker"
+  given-names: "Hendrik"
+  orcid: "https://orcid.org/0000-0002-4086-1580"
+title: "fasten"
+url: "https://github.com/lskatz/fasten"
