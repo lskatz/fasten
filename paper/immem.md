@@ -2,8 +2,8 @@
 title: 'Fasten with Pipes'
 tags:
   - command line
-  - fastq
-  - one more keyword
+  - fastq manipulation
+  - interleaved fastq
 authors:
   - name: Lee S. Katz
     affiliation: "1, 2"
@@ -39,18 +39,24 @@ The core executables perform these fundamental functions:
 
 There are 18 executables including but not limited to read metrics, read cleaning, kmer counting, read validation, and regular expressions for interleaved fastq files.
 
-We have also taken advantage of Rust to make comprehensive documentation, available at lskatz.github.io/lskatz/fasten/fasten.
-
-Continuous integration was implemented in GitHub Actions for unit testing, containerizing, and benchmarking.
+We have also taken advantage of Rust to make comprehensive documentation, available at lskatz.github.io/lskatz/fasten/fasten. Continuous integration was implemented in GitHub Actions for unit testing, containerizing, and benchmarking. Benchmarking was performed against other mainstream packages using `hyperfine` using 100 replicates and 2 burn-ins.
 
 # Results
 
 Documentation, the container, and code are available at github.com/lskatz/fasten.
 
-Benchmarking yielded times available at https://github.com/lskatz/fasten/actions/workflows/benchmark.yml
+[!Six benchmarks. From left to right, then to bottom: Searching for a sequence in a fastq file with either `seqkit grep` or `fasten_regex`; downsampling reads using either `fasten sample` or `seqtk sample`; interleaving reads from R1 and R2 files not using `fasten_progress`, using it before shuffle, or using it after shuffle; sorting fastq entries by sequence with `fasten_sort` or `seqkit sort`; sorting sequences by id; and converting nonstandard fastq files to a format whose entries are four lines each.](benchmarks.png)
 
 # Conclusions
 
 Fasten is a powerful manipulation suite for interleaved fastq files, written in Rust.
-It touts a comprehensive manual, continuous integration, and integration into the command line with unix pipes.
+We benchmarked Fasten on several categories. It did not run faster than other software in some categories
+but it did run fastest when sorting sequences.
+We also tested whether `fasten_progress` slowed computation in certain situations.
+We conclude that creating a progress meter before a blocking operation such as `fasten_shuffle`
+adds a substantial delay in computation. When speed is important, a progress meter is better placed after any blocking steps in a pipe.
+
+Fasten touts a comprehensive manual, continuous integration, and integration into the command line with unix pipes.
+It is well poised to be a crucial module for daily work on the command line.
+
 
