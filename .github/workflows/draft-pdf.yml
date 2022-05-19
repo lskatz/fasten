@@ -2,7 +2,7 @@ on: [push]
 name: paper formatting
 
 jobs:
-  immem-paper:
+  immem:
     runs-on: ubuntu-latest
     name: Paper Draft
     steps:
@@ -21,7 +21,7 @@ jobs:
           # This is the output path where Pandoc will write the compiled
           # PDF. Note, this should be the same directory as the input
           # paper.md
-          path: immem-abstract.pdf
+          path: paper/immem.pdf
 #  paper:
 #    runs-on: ubuntu-latest
 #    name: Paper Draft
