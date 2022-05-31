@@ -131,7 +131,7 @@ fn shuffle(matches: &getopts::Matches) -> () {
 
     // Read 1 first, and read 2 is halfway down.
     // Unfortunately this means that it all goes into ram.
-    let     seqs1 = read_seqs(&r1_filename);
+    let mut seqs1 = read_seqs(&r1_filename);
     let mut seqs2 = read_seqs(&r2_filename);
     let mut num_pairs = seqs1.len();
 
@@ -139,10 +139,23 @@ fn shuffle(matches: &getopts::Matches) -> () {
     // is empty. If so, redistribute half the reads from 
     // seqs1 into seqs2.
     if seqs2.len() == 0 {
-        num_pairs = seqs1.len()/2;
-        for seq in seqs1[seqs1.len()/2..seqs1.len()].iter() {
-            seqs2.push(seq.clone());
+        num_pairs = ((num_pairs as f32)/2.0).ceil() as usize;
+        // put it all into seqs_all and truncate the seqs
+        let seqs_all = seqs1.clone();
+        seqs1 = vec![];
+        let mut seq_idx = 0;
+        while seq_idx < num_pairs {
+            if seq_idx + num_pairs >= seqs_all.len()-1 {
+                logmsg("Looks like one of the R2 reads is missing. Skipping an R1/R2 pair.");
+                logmsg("If this is in error, please see fasten_validate --paired-ends");
+                break;
+            }
+            seqs1.push(seqs_all[seq_idx].clone());
+            seqs2.push(seqs_all[seq_idx + num_pairs].clone());
+            seq_idx += 2;
         }
+        // Free up some memory
+        drop(seqs_all);
     }
 
     for i in  0..num_pairs  {
