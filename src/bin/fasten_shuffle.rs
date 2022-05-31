@@ -148,11 +148,12 @@ fn shuffle(matches: &getopts::Matches) -> () {
             if seq_idx + num_pairs >= seqs_all.len()-1 {
                 logmsg("Looks like one of the R2 reads is missing. Skipping an R1/R2 pair.");
                 logmsg("If this is in error, please see fasten_validate --paired-ends");
+                num_pairs = seq_idx;
                 break;
             }
             seqs1.push(seqs_all[seq_idx].clone());
             seqs2.push(seqs_all[seq_idx + num_pairs].clone());
-            seq_idx += 2;
+            seq_idx += 1;
         }
         // Free up some memory
         drop(seqs_all);
