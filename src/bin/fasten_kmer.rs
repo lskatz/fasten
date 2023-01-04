@@ -1,5 +1,7 @@
 //! Counts kmers.
 //! Each line is a kmer with two columns separated by tab: kmer, count
+//! Optional columns starting with column 3 are the reads that start with that kmer
+//! with a delimiter of `~`
 
 //! # Examples
 
@@ -91,6 +93,7 @@ fn main(){
     let default_k:usize = 21;
     opts.optopt("k","kmer-length",&format!("The size of the kmer (default: {})",default_k),"INT");
     opts.optflag("r","revcomp", "Count kmers on the reverse complement strand too");
+    opts.optflag("m","remember-reads", "Add reads to subsequent columns. Each read begins with the kmer. Only lists reads in the forward direction.");
 
     let matches = fasten_base_options_matches("Counts kmers.", opts);
     
@@ -112,23 +115,26 @@ fn main(){
 
     let stdin = stdin();
     
-    count_kmers(stdin, kmer_length, matches.opt_present("revcomp"));
+    count_kmers(stdin, kmer_length, matches.opt_present("revcomp"), matches.opt_present("remember-reads"));
 }
 
 /// Read fastq from stdin and count kmers
-fn count_kmers (stdin:Stdin, kmer_length:usize, revcomp:bool) {
+fn count_kmers (stdin:Stdin, kmer_length:usize, revcomp:bool, remember_reads:bool) {
+
+    // keep track of which sequences start with which kmers
+    let mut kmer_to_seqs :HashMap<String, Vec<String>> = HashMap::new();
     
     // read the file
     let my_buffer=BufReader::new(stdin);
     let mut buffer_iter = my_buffer.lines();
     let mut kmer_hash :HashMap<String,u32> = HashMap::new();
-    while let Some(_) = buffer_iter.next() {
+    while let Some(id_opt) = buffer_iter.next() {
         let seq = buffer_iter.next().expect("ERROR reading a sequence line")
             .expect("ERROR reading a sequence line");
         // burn the plus line
-        buffer_iter.next();
+        let plus_opt = buffer_iter.next();
         // burn the qual line
-        buffer_iter.next();
+        let qual_opt = buffer_iter.next();
 
         // get all the kmers in this entry
         let entry_kmers = kmers_in_str(&seq, kmer_length, revcomp);
@@ -138,6 +144,25 @@ fn count_kmers (stdin:Stdin, kmer_length:usize, revcomp:bool) {
                 or_insert(0);
             *kmer_count += value;
         }
+
+        // Remember the read that initiated this
+        if remember_reads {
+            let init_kmer = String::from(&seq[0..kmer_length]);
+            let init_kmer_vec = kmer_to_seqs.entry(init_kmer).or_insert(vec![]);
+
+            // get the formatted entry
+            let id   = id_opt.expect("reading the ID line");
+            let plus = plus_opt.expect("reading the plus line")
+                .expect("reading the plus line");
+            let qual = qual_opt.expect("reading the qual line")
+                .expect("reading the qual line");
+
+            init_kmer_vec.push(
+                format!("{}~~~{}~~~{}~~~{}",
+                        id, seq, plus, qual
+                        )
+            );
+        }
     }
 
 
@@ -145,7 +170,16 @@ fn count_kmers (stdin:Stdin, kmer_length:usize, revcomp:bool) {
     // complement kmers before printing because it is basically
     // double the information needed.
     for (kmer,count) in kmer_hash.iter() {
-        println!("{}\t{}",kmer,count);
+        let mut line :String = format!("{}\t{}", kmer, count);
+        if remember_reads {
+            let reads_vec = kmer_to_seqs.entry(kmer.to_string()).or_insert(vec![]);
+            for read in reads_vec {
+                line.push_str("\t");
+                line.push_str(read);
+            }
+        }
+
+        println!("{}", line);
     }
 }
 
