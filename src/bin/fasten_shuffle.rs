@@ -145,7 +145,7 @@ fn shuffle(matches: &getopts::Matches) -> () {
         seqs1 = vec![];
         let mut seq_idx = 0;
         while seq_idx < num_pairs {
-            if seq_idx + num_pairs >= seqs_all.len()-1 {
+            if seq_idx + num_pairs >= seqs_all.len() {
                 logmsg("Looks like one of the R2 reads is missing. Skipping an R1/R2 pair.");
                 logmsg("If this is in error, please see fasten_validate --paired-ends");
                 num_pairs = seq_idx;
