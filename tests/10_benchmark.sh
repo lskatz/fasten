@@ -13,6 +13,7 @@ if [[ ! -z "$CI" ]]; then
 fi
 # output directory for markdown files
 reportsDir="$thisDir/hyperfine"
+mkdir -pv $reportsDir
 
 thisDir=$(dirname $(realpath $0))
 
