@@ -1,6 +1,6 @@
 on: 
   push:
-    branches: [master,benchmarking]
+    branches: [master,benchmarking,fasten_normalize]
 
 
 name: benchmarking

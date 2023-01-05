@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["SamReader","Reads records from SAM format."],["SamWriter","Writes records in SAM format."],["SamWriterBuilder","Builder of the SamWriter."]]});

@@ -1,0 +1,263 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src&#x2F;bin&#x2F;fasten_normalize.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>fasten_normalize.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script src="../../crates.js"></script><script defer src="../../main.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script>
+    <noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu" role="button">&#9776;</div><a class="sidebar-logo" href="../../fasten_normalize/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.png" alt="logo"></div>
+        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../fasten_normalize/index.html"><img class="rust-logo" src="../../rust-logo.png" alt="logo"></a><nav class="sub"><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="18" height="18" alt="Pick another theme!" src="../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../settings.html" title="settings"><img width="18" height="18" alt="Change settings" src="../../wheel.svg"></a></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">  1</span>
+<span id="2">  2</span>
+<span id="3">  3</span>
+<span id="4">  4</span>
+<span id="5">  5</span>
+<span id="6">  6</span>
+<span id="7">  7</span>
+<span id="8">  8</span>
+<span id="9">  9</span>
+<span id="10"> 10</span>
+<span id="11"> 11</span>
+<span id="12"> 12</span>
+<span id="13"> 13</span>
+<span id="14"> 14</span>
+<span id="15"> 15</span>
+<span id="16"> 16</span>
+<span id="17"> 17</span>
+<span id="18"> 18</span>
+<span id="19"> 19</span>
+<span id="20"> 20</span>
+<span id="21"> 21</span>
+<span id="22"> 22</span>
+<span id="23"> 23</span>
+<span id="24"> 24</span>
+<span id="25"> 25</span>
+<span id="26"> 26</span>
+<span id="27"> 27</span>
+<span id="28"> 28</span>
+<span id="29"> 29</span>
+<span id="30"> 30</span>
+<span id="31"> 31</span>
+<span id="32"> 32</span>
+<span id="33"> 33</span>
+<span id="34"> 34</span>
+<span id="35"> 35</span>
+<span id="36"> 36</span>
+<span id="37"> 37</span>
+<span id="38"> 38</span>
+<span id="39"> 39</span>
+<span id="40"> 40</span>
+<span id="41"> 41</span>
+<span id="42"> 42</span>
+<span id="43"> 43</span>
+<span id="44"> 44</span>
+<span id="45"> 45</span>
+<span id="46"> 46</span>
+<span id="47"> 47</span>
+<span id="48"> 48</span>
+<span id="49"> 49</span>
+<span id="50"> 50</span>
+<span id="51"> 51</span>
+<span id="52"> 52</span>
+<span id="53"> 53</span>
+<span id="54"> 54</span>
+<span id="55"> 55</span>
+<span id="56"> 56</span>
+<span id="57"> 57</span>
+<span id="58"> 58</span>
+<span id="59"> 59</span>
+<span id="60"> 60</span>
+<span id="61"> 61</span>
+<span id="62"> 62</span>
+<span id="63"> 63</span>
+<span id="64"> 64</span>
+<span id="65"> 65</span>
+<span id="66"> 66</span>
+<span id="67"> 67</span>
+<span id="68"> 68</span>
+<span id="69"> 69</span>
+<span id="70"> 70</span>
+<span id="71"> 71</span>
+<span id="72"> 72</span>
+<span id="73"> 73</span>
+<span id="74"> 74</span>
+<span id="75"> 75</span>
+<span id="76"> 76</span>
+<span id="77"> 77</span>
+<span id="78"> 78</span>
+<span id="79"> 79</span>
+<span id="80"> 80</span>
+<span id="81"> 81</span>
+<span id="82"> 82</span>
+<span id="83"> 83</span>
+<span id="84"> 84</span>
+<span id="85"> 85</span>
+<span id="86"> 86</span>
+<span id="87"> 87</span>
+<span id="88"> 88</span>
+<span id="89"> 89</span>
+<span id="90"> 90</span>
+<span id="91"> 91</span>
+<span id="92"> 92</span>
+<span id="93"> 93</span>
+<span id="94"> 94</span>
+<span id="95"> 95</span>
+<span id="96"> 96</span>
+<span id="97"> 97</span>
+<span id="98"> 98</span>
+<span id="99"> 99</span>
+<span id="100">100</span>
+<span id="101">101</span>
+<span id="102">102</span>
+<span id="103">103</span>
+<span id="104">104</span>
+<span id="105">105</span>
+<span id="106">106</span>
+<span id="107">107</span>
+<span id="108">108</span>
+<span id="109">109</span>
+<span id="110">110</span>
+<span id="111">111</span>
+<span id="112">112</span>
+<span id="113">113</span>
+<span id="114">114</span>
+<span id="115">115</span>
+<span id="116">116</span>
+<span id="117">117</span>
+<span id="118">118</span>
+<span id="119">119</span>
+<span id="120">120</span>
+<span id="121">121</span>
+<span id="122">122</span>
+<span id="123">123</span>
+<span id="124">124</span>
+<span id="125">125</span>
+<span id="126">126</span>
+<span id="127">127</span>
+<span id="128">128</span>
+<span id="129">129</span>
+</pre><pre class="rust"><code><span class="doccomment">//! Normalizes kmer depth by removing some reads from high kmer depths</span>
+<span class="doccomment">//! The input has to be from `fasten_kmer --remember-reads` where there are at least three columns:</span>
+<span class="doccomment">//! kmer, count, read1, [read2,...]</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! This was inspired by BBNorm and is probably not the exact same algorithm.</span>
+<span class="doccomment">//! &lt;https://jgi.doe.gov/data-and-tools/software-tools/bbtools/bb-tools-user-guide/bbnorm-guide/&gt;</span>
+
+<span class="doccomment">//! # Examples</span>
+
+<span class="doccomment">//! ```bash</span>
+<span class="doccomment">//! cat testdata/four_reads.fastq | \</span>
+<span class="doccomment">//!   fasten_kmer -k 5 --remember-reads | \</span>
+<span class="doccomment">//!   fasten_normalize | \</span>
+<span class="doccomment">//!   gzip -c &gt; four_reads.normalized.fastq.gz</span>
+<span class="doccomment">//! ```</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! Paired end reads</span>
+<span class="doccomment">//! </span>
+<span class="doccomment">//! ```bash</span>
+<span class="doccomment">//! cat testdata/R[12].fastq | \</span>
+<span class="doccomment">//!   fasten_shuffle | \</span>
+<span class="doccomment">//!   fasten_kmer -k 3 -m --paired-end | \</span>
+<span class="doccomment">//!   fasten_normalize --target-depth 10 --paired-end | \</span>
+<span class="doccomment">//!   gzip -c &gt; normalized.fastq.gz</span>
+<span class="doccomment">//! ```</span>
+
+<span class="doccomment">//! # Usage</span>
+
+<span class="doccomment">//! ```text</span>
+<span class="doccomment">//! Usage: fasten_normalize [-h] [-n INT] [-p] [--verbose] [--version] [-t INT]</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! Options:</span>
+<span class="doccomment">//!     -h, --help          Print this help menu.</span>
+<span class="doccomment">//!     -n, --numcpus INT   Number of CPUs (default: 1)</span>
+<span class="doccomment">//!     -p, --paired-end    The input reads are interleaved paired-end</span>
+<span class="doccomment">//!         --verbose       Print more status messages</span>
+<span class="doccomment">//!         --version       Print the version of Fasten and exit</span>
+<span class="doccomment">//!     -t, --target-depth INT</span>
+<span class="doccomment">//!                         The target depth of kmer.</span>
+<span class="doccomment">//! ```</span>
+    
+<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">fasten</span>;
+<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">getopts</span>;
+<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">rand</span>;
+
+<span class="kw">use</span> <span class="ident">std::io::BufReader</span>;
+<span class="kw">use</span> <span class="ident">std::io::BufRead</span>;
+<span class="kw">use</span> <span class="ident">std::io::stdin</span>;
+<span class="kw">use</span> <span class="ident">std::io::Stdin</span>;
+<span class="kw">use</span> <span class="ident">std::cmp::min</span>;
+<span class="kw">use</span> <span class="ident">rand::Rng</span>;
+
+<span class="kw">use</span> <span class="ident">fasten::fasten_base_options</span>;
+<span class="kw">use</span> <span class="ident">fasten::fasten_base_options_matches</span>;
+<span class="comment">//use fasten::logmsg;</span>
+
+<span class="doccomment">/// Glues together paired end reads internally and is a</span>
+<span class="doccomment">/// character not expected in any read</span>
+<span class="kw">const</span> <span class="ident">READ_SEPARATOR</span> :<span class="ident">char</span> <span class="op">=</span> <span class="string">&#39;~&#39;</span>;
+
+<span class="kw">fn</span> <span class="ident">main</span>(){
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">opts</span> <span class="op">=</span> <span class="ident">fasten_base_options</span>();
+
+    <span class="comment">// script-specific options</span>
+    <span class="ident">opts</span>.<span class="ident">optopt</span>(<span class="string">&quot;t&quot;</span>, <span class="string">&quot;target-depth&quot;</span>, <span class="string">&quot;The target depth of kmer.&quot;</span>, <span class="string">&quot;INT&quot;</span>);
+    <span class="kw">let</span> <span class="ident">matches</span> <span class="op">=</span> <span class="ident">fasten_base_options_matches</span>(<span class="string">&quot;Normalizes reads based on kmer coverage.&quot;</span>, <span class="ident">opts</span>);
+
+    <span class="kw">let</span> <span class="ident">target_depth</span> :<span class="ident">u32</span> <span class="op">=</span> <span class="ident">matches</span>.<span class="ident">opt_str</span>(<span class="string">&quot;target-depth&quot;</span>)
+        .<span class="ident">expect</span>(<span class="string">&quot;need --target-depth&quot;</span>)
+        .<span class="ident">parse</span>()
+        .<span class="ident">expect</span>(<span class="string">&quot;Convert target-depth to integer&quot;</span>);
+
+    <span class="kw">let</span> <span class="ident">stdin</span> <span class="op">=</span> <span class="ident">stdin</span>();
+
+    <span class="kw">let</span> <span class="ident">paired_end</span> <span class="op">=</span> <span class="ident">matches</span>.<span class="ident">opt_present</span>(<span class="string">&quot;paired-end&quot;</span>);
+    
+    <span class="ident">normalize_coverage</span>(<span class="ident">stdin</span>, <span class="ident">target_depth</span>, <span class="ident">paired_end</span>);
+}
+
+<span class="doccomment">/// Normalize the coverage to a certain target and print as a fastq</span>
+<span class="kw">fn</span> <span class="ident">normalize_coverage</span> (<span class="ident">stdin</span>:<span class="ident">Stdin</span>, <span class="ident">target_depth</span>:<span class="ident">u32</span>, <span class="ident">paired_end</span>:<span class="ident">bool</span>) {
+    <span class="comment">// start off a random thing so that we can get random reads later on</span>
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">rng</span> <span class="op">=</span> <span class="ident">rand::thread_rng</span>();
+
+    <span class="comment">// read the file</span>
+    <span class="kw">let</span> <span class="ident">my_buffer</span><span class="op">=</span><span class="ident">BufReader::new</span>(<span class="ident">stdin</span>);
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">buffer_iter</span> <span class="op">=</span> <span class="ident">my_buffer</span>.<span class="ident">lines</span>();
+    <span class="kw">while</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">line_opt</span>) <span class="op">=</span> <span class="ident">buffer_iter</span>.<span class="ident">next</span>() {
+        <span class="kw">let</span> <span class="ident">line</span> <span class="op">=</span> <span class="ident">line_opt</span>.<span class="ident">expect</span>(<span class="string">&quot;read the next line&quot;</span>);
+
+        <span class="comment">// get the fields: kmer, count, reads...</span>
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">f</span> :<span class="ident">Vec</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">line</span>.<span class="ident">split</span>(<span class="string">&quot;\t&quot;</span>).<span class="ident">collect</span>();
+        <span class="comment">// No need to normalize if there are no reads and therefore nothing in field 3</span>
+        <span class="kw">if</span> <span class="ident">f</span>.<span class="ident">len</span>() <span class="op">&lt;</span> <span class="number">3</span> {
+            <span class="kw">continue</span>;
+        }
+
+        <span class="kw">let</span> <span class="ident">kmer_count</span> :<span class="ident">Vec</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">f</span>.<span class="ident">splice</span>(<span class="number">0</span>..<span class="number">2</span>, <span class="macro">vec!</span>[]).<span class="ident">collect</span>();
+        <span class="comment">//let _kmer = kmer_count[0];</span>
+        <span class="kw">let</span> <span class="ident">count</span> :<span class="ident">u32</span> <span class="op">=</span> <span class="ident">kmer_count</span>[<span class="number">1</span>].<span class="ident">parse</span>().<span class="ident">unwrap</span>();
+
+        <span class="comment">// number of reads to keep is the target depth / kmer coverage * number of reads present</span>
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">num_reads_to_keep</span> :<span class="ident">usize</span> <span class="op">=</span> <span class="ident">min</span>(
+            (<span class="ident">target_depth</span> <span class="kw">as</span> <span class="ident">f32</span> <span class="op">/</span> <span class="ident">count</span> <span class="kw">as</span> <span class="ident">f32</span> <span class="op">*</span> <span class="ident">f</span>.<span class="ident">len</span>() <span class="kw">as</span> <span class="ident">f32</span>).<span class="ident">ceil</span>() <span class="kw">as</span> <span class="ident">usize</span>,
+            <span class="ident">f</span>.<span class="ident">len</span>() <span class="kw">as</span> <span class="ident">usize</span>
+        ) <span class="kw">as</span> <span class="ident">usize</span>;
+        <span class="kw">if</span> <span class="ident">paired_end</span> {
+            <span class="ident">num_reads_to_keep</span> <span class="op">=</span> (<span class="ident">num_reads_to_keep</span> <span class="kw">as</span> <span class="ident">f32</span> <span class="op">/</span> <span class="number">2.0</span>).<span class="ident">ceil</span>() <span class="kw">as</span> <span class="ident">usize</span>;
+        }
+
+        <span class="comment">//println!(&quot;target depth:{} count:{} num reads:{} = {}&quot;, target_depth, count, f.len(), num_reads_to_keep);</span>
+        
+        <span class="comment">// shuffle the reads in place</span>
+        <span class="ident">rng</span>.<span class="ident">shuffle</span>(<span class="kw-2">&amp;mut</span> <span class="ident">f</span>);
+        <span class="comment">// take the top X reads</span>
+        <span class="kw">let</span> <span class="ident">reads_to_keep</span> :<span class="ident">Vec</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">f</span>.<span class="ident">splice</span>(<span class="number">0</span>..<span class="ident">num_reads_to_keep</span>, <span class="macro">vec!</span>[]).<span class="ident">collect</span>();
+
+        <span class="ident">print_reads</span>(<span class="ident">reads_to_keep</span>);
+    }
+}
+
+<span class="doccomment">/// Print the reads in fastq format when given in a single line with `~`</span>
+<span class="kw">fn</span> <span class="ident">print_reads</span> (<span class="ident">reads</span>:<span class="ident">Vec</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span><span class="op">&gt;</span>) {
+    <span class="kw">for</span> <span class="ident">entry</span> <span class="kw">in</span> <span class="ident">reads</span>{
+        <span class="kw">let</span> <span class="ident">entry_string</span> <span class="op">=</span> <span class="ident">entry</span>.<span class="ident">replace</span>(<span class="ident">READ_SEPARATOR</span>, <span class="string">&quot;\n&quot;</span>);
+        <span class="macro">println!</span>(<span class="string">&quot;{}&quot;</span>, <span class="ident">entry_string</span>);
+    }
+}
+
+</code></pre></div>
+</section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="fasten_normalize" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.59.0 (9d1b2106e 2022-02-23)" ></div>
+</body></html>

@@ -1,6 +1,6 @@
 [package]
 name    = "fasten"
-version = "0.4.4"
+version = "0.5.0"
 authors = ["Lee Katz <gzu2@cdc.gov>"]
 #license-file  = "LICENSE"
 license       = "MIT"
@@ -82,6 +82,10 @@ path = "src/bin/fasten_progress.rs"
 [[bin]]
 name = "fasten_sort"
 path = "src/bin/fasten_sort.rs"
+
+[[bin]]
+name = "fasten_normalize"
+path = "src/bin/fasten_normalize.rs"
 
 [dependencies]
 regex        = "0.2.10"

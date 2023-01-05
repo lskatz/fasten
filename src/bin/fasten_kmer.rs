@@ -1,10 +1,30 @@
 //! Counts kmers.
 //! Each line is a kmer with two columns separated by tab: kmer, count
+//! Optional columns starting with column 3 are the reads that start with that kmer
+//! with a delimiter of `~`
 
 //! # Examples
 
+//! Counting kmers of 15. Using `--paired-end` will not matter here.
+//!
 //! ```bash
 //! cat testdata/four_reads.fastq | fasten_kmer -k 15 > 15mers.tsv
+//! ```
+//!
+//! Counting kmers and retaining reads
+//!
+//! ```bash
+//! cat testdata/four_reads.fastq | \
+//!   fasten_kmer -k 15 --remember-reads > 15mers.tsv
+//! ```
+//!
+//! # Example output
+//!
+//! First two lines of a kmer output where they contain reads
+//!
+//! ```text
+//! TAGTGAATCCTTTTTCATAAA   39      @M03235:53:000000000-AHLTD:1:1113:23312:4764 1:N:0:6~TAGTGAATCCTTTTTCATAAAATCTTGCTTCAAAATTGCTAAGAGTTTATAAGCAAGAAGTGTTCCAAGTTTGCAAGATGAGGTGAGATTGTGTAAATAAGCTACAAAATTTTTAATTTAAGCCCTACAAGCTCTTAAATATCAAAAGCATTTTCTAAAATATGCAAAAATGTAAGCAAAATGTTTAAAGGAAAGTCGTGAAAAATGCTGAAAAAACTTTAAGAAGGAATTTTTTTACCCTAATCTTACTT~+~>AAA>DDFFFFFGGGGGGGGGGHHHHHHHHHHHHHHHHHHHHGHHGHHHHHHHHFHHHHHGGHHHHHHHGHHHHHHGHHHHHHCHGHHFHHHHGHHHHHHHHHHHGHHHGHHHHHHHHHHHHHHHGHHHGHHFHGHFHHHHHHGHHHFHHHHHHHGHHHHHHHHGHHHHHHHHGHHFHHHHHHHHHHHHHHHGHGFHAFDHGHFHFHHGHGHHFHGFFGGHHHHHFGHFHB=0D::GCGHBHHFBCGGGGG~@M03235:53:000000000-AHLTD:1:1113:23312:4764  2:N:0:6~TCGTAGTAGTATTTCCTAAAATAAGGCAAACCATAGATGATAGACCCACAAAAAGAAAGTAAGATTAGGGTAAAAAAATTCCTTCTTAAAGTTTTTTCAGCATTTTTCACGACTTTCCTTTAAACATTTTGCTTACATTTTTGCATATTTTAGAAAATGCTTTTGATATTTAAGAGCTTGTAGGGCTTAAATTAAAAATTTTGTAGCTTATTTACACAATCTCACCTCATCTTGCAAACTTGGAACACTT~+~CCCCDCCFFFFFGGGGGGGGGGHHHHHHHHHGHHHHHHHHHHGHHHGHGGGHHHGGGHHHHFFHHFHHHFEGGHHHGGHHFHHHHHHHGHHFDGHGGFHHHHHHHHHHGHHGGGGGHHGGHHGHHHHHHHHHGHHHHHHHHHGGHHHHHHHHHHHHGHFFHHHHHGHGHHHFHFHHFHHHHHFBFFHHHEDHHHGFHHHHGHGHHDHBGGHHGHHFDGEHHHFFHHFHGHHHHGFC::CBFFBBFF/CFB
+//! TATCAAGGCTGCTCAAATGAT   35      @M03235:53:000000000-AHLTD:1:1114:18962:2371  1:N:0:6~TATCAAGGCTGCTCAAATGATGGCTTTTGTTATGCTCCGCAAAAGCGTGAATTTAGAATTTTTAAAGAGGGTCAAATTTATAAAACTAGCCCTTATGAAACAATGCAAAGTGAAGAAGAGCAAATCGCCTTTTCTTTGAAAAATGAAAATTTAGCACTCATCTTGCTTAGTTTTTTTGGTTACGGACTTTTGCTTTCTCTTACGCCTTGCACCTTACCGATGATTCCTATTTTATCTTCACTTATCATAG~+~AABBA5FBAFFBGGGGGGGGGGHGHHHFHHHHHHHHHCGGGGGBHFFEE2FHHFHHHFGGHHHGHHHFHGGGHGHHHHGHHHHHHHHHHHHFHHHGHHHHFFHHHHHHHHHHGHHHCGGGH3FHEGDAFGGGGHHFGHFHHEHHHGHFFFHHGEHHHHGHHHFHFFHHHHDFHHGCFDGHEHFEGDCCHHHBBG0GFHFHHBGGF-G?BGGGCGCG//;.9.CBFB0BBGGGGBFFFF0;0FFGFGBF00~@M03235:53:000000000-AHLTD:1:1114:18962:2371   2:N:0:6~GATTAAAGAAAGTAAAAAGCTTTGTTTTTTAGAAGGTTTCGTGCCACCTTTTGCTATGATAAGTGAAGATAAAATAGGAATCATCGGTAAGGTGCAAGGCGTAAGAGAAAGCAAAAGTCCGTAACCAAAAAAACTAAGCAAGATGAGTGCTAAATTTTCATTTTTCAAAGAAAAGGCGATTTGCTCTTCTTCACTTTGCATTGTTTCATAAGGGCTAGTTTTATAAATTTGACCCTCTTTAAAAATTCTAA~+~CCCCCFFFFFFFGGGGGGGGGGHHFHHHGGHHGGHHGHHHGHGGHHHGHHHHHHHHHHHHGHHHHHHHHHHHHHHHHHHHHHHHHHGGGEGFGFHHFHGHGGGEHGHHHHHHGHHHHFHFE?GEGHHHHGGGGGGGHHHHGHHHHHHHFDFHHHHGFHFHHGHHGHHHHHHHHHH.A@EGGC0D0G0D0GDHFHHFCC00FGFHHHHHHHFHB;EFGGFGGBFGEFGGFFFFGCBFGGGGGGBFGGFGFFF
 //! ```
 
 //! # Usage
@@ -19,6 +39,10 @@
 //!    -v, --verbose       Print more status messages
 //!    -k, --kmer-length INT
 //!                        The size of the kmer
+//!    -r, --revcomp       Count kmers on the reverse complement strand too
+//!    -m, --remember-reads
+//!                        Add reads to subsequent columns. Each read begins with
+//!                        the kmer. Only lists reads in the forward direction.
 //! ```
     
 extern crate fasten;
@@ -35,6 +59,10 @@ use fasten::fasten_base_options_matches;
 use fasten::logmsg;
 
 use std::collections::HashMap;
+
+/// Glues together paired end reads internally and is a
+/// character not expected in any read
+const READ_SEPARATOR :char = '~';
 
 #[test]
 /// Let's count some kmers on homopolymers
@@ -91,12 +119,13 @@ fn main(){
     let default_k:usize = 21;
     opts.optopt("k","kmer-length",&format!("The size of the kmer (default: {})",default_k),"INT");
     opts.optflag("r","revcomp", "Count kmers on the reverse complement strand too");
+    opts.optflag("m","remember-reads", "Add reads to subsequent columns. Each read begins with the kmer. Only lists reads in the forward direction.");
 
     let matches = fasten_base_options_matches("Counts kmers.", opts);
     
-    if matches.opt_present("paired-end") {
-        logmsg("WARNING: --paired-end is not utilized in this script");
-    }
+    //if matches.opt_present("paired-end") {
+    //    logmsg("WARNING: --paired-end is not utilized in this script");
+    //}
 
     let kmer_length:usize={
         if matches.opt_present("kmer-length") {
@@ -112,23 +141,26 @@ fn main(){
 
     let stdin = stdin();
     
-    count_kmers(stdin, kmer_length, matches.opt_present("revcomp"));
+    count_kmers(stdin, kmer_length, matches.opt_present("revcomp"), matches.opt_present("remember-reads"), matches.opt_present("paired-end"));
 }
 
 /// Read fastq from stdin and count kmers
-fn count_kmers (stdin:Stdin, kmer_length:usize, revcomp:bool) {
+fn count_kmers (stdin:Stdin, kmer_length:usize, revcomp:bool, remember_reads:bool, paired_end:bool) {
+
+    // keep track of which sequences start with which kmers
+    let mut kmer_to_seqs :HashMap<String, Vec<String>> = HashMap::new();
     
     // read the file
     let my_buffer=BufReader::new(stdin);
     let mut buffer_iter = my_buffer.lines();
     let mut kmer_hash :HashMap<String,u32> = HashMap::new();
-    while let Some(_) = buffer_iter.next() {
+    while let Some(id_opt) = buffer_iter.next() {
         let seq = buffer_iter.next().expect("ERROR reading a sequence line")
             .expect("ERROR reading a sequence line");
         // burn the plus line
-        buffer_iter.next();
+        let plus_opt = buffer_iter.next();
         // burn the qual line
-        buffer_iter.next();
+        let qual_opt = buffer_iter.next();
 
         // get all the kmers in this entry
         let entry_kmers = kmers_in_str(&seq, kmer_length, revcomp);
@@ -138,6 +170,58 @@ fn count_kmers (stdin:Stdin, kmer_length:usize, revcomp:bool) {
                 or_insert(0);
             *kmer_count += value;
         }
+
+        // If this is paired end and if we're saving the second pair's
+        // read, then reserve a declaired variable here for the string.
+        let mut r2_read_string :String = String::new();
+        if paired_end {
+            let id2 = buffer_iter.next().expect("reading the ID2 line")
+                .expect("reading the ID2 line");
+
+            let seq2 = buffer_iter.next().expect("ERROR reading a sequence line, second in pair")
+                .expect("ERROR reading a sequence line, second in pair");
+            // burn the plus line
+            let plus2 = buffer_iter.next().expect("reading the plus2 line")
+                .expect("reading the plus2 line");
+            // burn the qual line
+            let qual2 = buffer_iter.next().expect("reading the qual2 line")
+                .expect("reading the qual2 line");
+
+            // get all the kmers in this entry
+            let entry_kmers2 = kmers_in_str(&seq2, kmer_length, revcomp);
+            // merge the entry kmers
+            for (key, value) in entry_kmers2.iter() { 
+                let kmer_count = kmer_hash.entry(String::from(key)).
+                    or_insert(0);
+                *kmer_count += value;
+            }
+
+            r2_read_string = vec![id2,seq2,plus2,qual2].join(&READ_SEPARATOR.to_string());
+        }
+
+        // Remember the read that initiated this
+        if remember_reads {
+            let init_kmer = String::from(&seq[0..kmer_length]);
+            let init_kmer_vec = kmer_to_seqs.entry(init_kmer).or_insert(vec![]);
+
+            // get the formatted entry
+            let id   = id_opt.expect("reading the ID line");
+            let plus = plus_opt.expect("reading the plus line")
+                .expect("reading the plus line");
+            let qual = qual_opt.expect("reading the qual line")
+                .expect("reading the qual line");
+
+            if paired_end {
+                init_kmer_vec.push(
+                    vec![id, seq, plus, qual, r2_read_string].join(&READ_SEPARATOR.to_string())
+                );
+            }
+            else {
+                init_kmer_vec.push(
+                    vec![id, seq, plus, qual].join(&READ_SEPARATOR.to_string())
+                );
+            }
+        }
     }
 
 
@@ -145,7 +229,16 @@ fn count_kmers (stdin:Stdin, kmer_length:usize, revcomp:bool) {
     // complement kmers before printing because it is basically
     // double the information needed.
     for (kmer,count) in kmer_hash.iter() {
-        println!("{}\t{}",kmer,count);
+        let mut line :String = format!("{}\t{}", kmer, count);
+        if remember_reads {
+            let reads_vec = kmer_to_seqs.entry(kmer.to_string()).or_insert(vec![]);
+            for read in reads_vec {
+                line.push_str("\t");
+                line.push_str(read);
+            }
+        }
+
+        println!("{}", line);
     }
 }
 

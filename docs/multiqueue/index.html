@@ -1,0 +1,336 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="This crate provides a fast mpmc broadcast queue. It’s based on the queue design from the LMAX Disruptor, with a few improvements:"><meta name="keywords" content="rust, rustlang, rust-lang, multiqueue"><title>multiqueue - Rust</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../normalize.css"><link rel="stylesheet" type="text/css" href="../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../dark.css" disabled><link rel="stylesheet" type="text/css" href="../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../storage.js"></script><script src="../crates.js"></script><script defer src="../main.js"></script>
+    <noscript><link rel="stylesheet" href="../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../favicon.svg"></head><body class="rustdoc mod crate"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu" role="button">&#9776;</div><a class="sidebar-logo" href="../multiqueue/index.html"><div class="logo-container"><img class="rust-logo" src="../rust-logo.png" alt="logo"></div>
+        </a><h2 class="location">Crate multiqueue</h2><div class="block version"><div class="narrow-helper"></div><p>Version 0.3.2</p></div><div class="sidebar-elems"><a id="all-types" href="all.html"><p>See all multiqueue's items</p></a><div class="block items"><ul><li><a href="#modules">Modules</a></li><li><a href="#structs">Structs</a></li><li><a href="#functions">Functions</a></li></ul></div><div id="sidebar-vars" data-name="multiqueue" data-ty="mod" data-relpath=""></div><script defer src="sidebar-items.js"></script></div></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../multiqueue/index.html"><img class="rust-logo" src="../rust-logo.png" alt="logo"></a><nav class="sub"><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="18" height="18" alt="Pick another theme!" src="../brush.svg"></button><div id="theme-choices" role="menu"></div></div><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../settings.html" title="settings"><img width="18" height="18" alt="Change settings" src="../wheel.svg"></a></div></form></nav></div><section id="main-content" class="content"><h1 class="fqn"><span class="in-band">Crate <a class="mod" href="#">multiqueue</a><button id="copy-path" onclick="copy_path(this)" title="Copy item path to clipboard"><img src="../clipboard.svg" width="19" height="18" alt="Copy item path"></button></span><span class="out-of-band"><span id="render-detail"><a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class="inner">&#x2212;</span>]</a></span><a class="srclink" href="../src/multiqueue/lib.rs.html#1-323" title="goto source code">[src]</a></span></h1><details class="rustdoc-toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>This crate provides a fast mpmc broadcast queue.
+It’s based on the queue design from the LMAX Disruptor, with a few improvements:</p>
+<ul>
+<li>
+<p>It acts as a futures stream/sink, so you can set up high-performance pipelines</p>
+</li>
+<li>
+<p>It can dynamically add/remove senders, and each stream can have multiple receivers</p>
+</li>
+<li>
+<p>It has fast runtime fallbacks for when there’s a single consumer and/or a single producer</p>
+</li>
+<li>
+<p>It works on 32 bit systems without any performance or capability penalty</p>
+</li>
+<li>
+<p>In most cases, one can view data written directly into the queue without copying it</p>
+</li>
+</ul>
+<p>In many cases, <code>MultiQueue</code> will be a good replacement for channels and it’s broadcast
+capabilities can replace more complex concurrency systems with a single queue.</p>
+<p>#Queue Model:
+<code>MultiQueue</code> functions similarly to the LMAX Disruptor from a high level view.
+There’s an incoming FIFO data stream that is broadcast to a set of subscribers
+as if there were multiple streams being written to.
+There are two main differences:</p>
+<ul>
+<li>
+<p><code>MultiQueue</code> transparently supports switching between single and multiple producers.</p>
+</li>
+<li>
+<p>Each broadcast stream can be shared among multiple consumers.</p>
+</li>
+</ul>
+<p>The last part makes the model a bit confusing, since there’s a difference between a
+stream of data and something consuming that stream. To make things worse, each consumer
+may not actually see each value on the stream. Instead, multiple consumers may act on
+a single stream each getting unique access to certain elements.</p>
+<p>A helpful mental model may be to think about this as if each stream was really just an mpmc
+queue that was getting pushed to, and the <code>MultiQueue</code> structure just assembled a bunch
+together behind the scenes. This isn’t the case of course, but it’s helpful for thinking.</p>
+<p>An diagram that represents a general use case of the queue where each consumer has unique
+access to a stream is below - the # stand in for producers and @ stands in for the consumer of
+each stream, each with a label. The lines are meant to show the data flow through the queue.</p>
+<div class="example-wrap"><pre class="language-text"><code>. -&gt; #        @-1
+.     \      /
+.      -&gt; -&gt; -&gt; @-2
+.     /      \
+. -&gt; #        @-3</code></pre></div>
+<p>This is a pretty standard broadcast queue setup -
+for each element sent in, it is seen on each stream by that’s streams consumer.</p>
+<p>However, in MultiQueue, each logical consumer might actually be demultiplexed
+across many actual consumers, like below.</p>
+<div class="example-wrap"><pre class="language-text"><code>. -&gt; #        @-1
+.     \      /
+.      -&gt; -&gt; -&gt; @-2&#39; (really @+@+@ each compete for a spot)
+.     /      \
+. -&gt; #        @-3</code></pre></div>
+<p>If this diagram is redrawn with each of the producers sending in a
+sequenced element (time goes left  to right):</p>
+<div class="example-wrap"><pre class="language-text"><code>. t=1|t=2|    t=3    | t=4|
+. 1 -&gt; #              @-1 (1, 2)
+.       \            /
+.        -&gt; 2 -&gt; 1 -&gt; -&gt; @-2&#39; (really @ (1) + @ (2) + @ (nothing yet))
+.       /            \
+. 2 -&gt; #              @-3 (1, 2)</code></pre></div>
+<p>If one imagines this as a webserver, the streams for @-1 and @-3 might be doing random
+webservery work like some logging or metrics gathering and can handle
+the workload completely on one core, @-2 is doing expensive work handling requests
+and is split into multiple workers dealing with the data stream.</p>
+<p>#MPMC Mode:
+One might notice that the broadcast queue modes requires that a type be Clone,
+and the single-reader inplace variants require that a type be Sync as well.
+This is only required for broadcast queues and not normal mpmc queues,
+so there’s an mpmc api as well. It doesn’t require that a type be Clone or Sync
+for any api, and also moves items directly out of the queue instead of cloning them.</p>
+<p>#Futures Mode:
+For both mpmc and broadcast, a futures mode is supported. The datastructures are quite
+similar to the normal ones, except they implement the Futures Sink/Stream traits for
+senders and receivers. This comes at a bit of a performance cost, which is why the
+futures types are separate</p>
+<p>#Usage:
+From the receiving side, this behaves quite similarly to a channel receiver.
+The .recv function will block until data is available and then return the data.</p>
+<p>For senders, there is only <code>.try_send</code> (except for the futures sink, which can park),
+This is due to performance and api reasons - you should handle backlog instead of just blocking.</p>
+<h2 id="example-spsc-channel" class="section-header"><a href="#example-spsc-channel">Example: SPSC channel</a></h2>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">multiqueue</span>;
+
+<span class="kw">use</span> <span class="ident">std::thread</span>;
+
+<span class="kw">let</span> (<span class="ident">send</span>, <span class="ident">recv</span>) <span class="op">=</span> <span class="ident">multiqueue::mpmc_queue</span>(<span class="number">10</span>);
+
+<span class="kw">let</span> <span class="ident">handle</span> <span class="op">=</span> <span class="ident">thread::spawn</span>(<span class="kw">move</span> <span class="op">|</span><span class="op">|</span> {
+    <span class="kw">for</span> <span class="ident">val</span> <span class="kw">in</span> <span class="ident">recv</span> {
+        <span class="macro">println!</span>(<span class="string">&quot;Got {}&quot;</span>, <span class="ident">val</span>);
+    }
+});
+
+<span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">10</span> {
+    <span class="ident">send</span>.<span class="ident">try_send</span>(<span class="ident">i</span>).<span class="ident">unwrap</span>();
+}
+
+<span class="comment">// Drop the sender to close the queue</span>
+<span class="ident">drop</span>(<span class="ident">send</span>);
+
+<span class="ident">handle</span>.<span class="ident">join</span>();
+
+<span class="comment">// prints</span>
+<span class="comment">// Got 0</span>
+<span class="comment">// Got 1</span>
+<span class="comment">// Got 2</span>
+<span class="comment">// etc</span></code></pre></div>
+<h2 id="example-spsc-broadcasting" class="section-header"><a href="#example-spsc-broadcasting">Example: SPSC broadcasting</a></h2>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">multiqueue</span>;
+
+<span class="kw">use</span> <span class="ident">std::thread</span>;
+
+<span class="kw">let</span> (<span class="ident">send</span>, <span class="ident">recv</span>) <span class="op">=</span> <span class="ident">multiqueue::broadcast_queue</span>(<span class="number">4</span>);
+<span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">handles</span> <span class="op">=</span> <span class="macro">vec!</span>[];
+<span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">2</span> { <span class="comment">// or n</span>
+    <span class="kw">let</span> <span class="ident">cur_recv</span> <span class="op">=</span> <span class="ident">recv</span>.<span class="ident">add_stream</span>();
+    <span class="ident">handles</span>.<span class="ident">push</span>(<span class="ident">thread::spawn</span>(<span class="kw">move</span> <span class="op">|</span><span class="op">|</span> {
+        <span class="kw">for</span> <span class="ident">val</span> <span class="kw">in</span> <span class="ident">cur_recv</span> {
+            <span class="macro">println!</span>(<span class="string">&quot;Stream {} got {}&quot;</span>, <span class="ident">i</span>, <span class="ident">val</span>);
+        }
+    }));
+}
+
+<span class="comment">// Take notice that I drop the reader - this removes it from</span>
+<span class="comment">// the queue, meaning that the readers in the new threads</span>
+<span class="comment">// won&#39;t get starved by the lack of progress from recv</span>
+<span class="ident">recv</span>.<span class="ident">unsubscribe</span>();
+
+<span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">10</span> {
+    <span class="comment">// Don&#39;t do this busy loop in real stuff unless you&#39;re really sure</span>
+    <span class="kw">loop</span> {
+        <span class="kw">if</span> <span class="ident">send</span>.<span class="ident">try_send</span>(<span class="ident">i</span>).<span class="ident">is_ok</span>() {
+            <span class="kw">break</span>;
+        }
+    }
+}
+
+<span class="comment">// Drop the sender to close the queue</span>
+<span class="ident">drop</span>(<span class="ident">send</span>);
+
+<span class="kw">for</span> <span class="ident">t</span> <span class="kw">in</span> <span class="ident">handles</span> {
+    <span class="ident">t</span>.<span class="ident">join</span>();
+}
+
+<span class="comment">// prints along the lines of</span>
+<span class="comment">// Stream 0 got 0</span>
+<span class="comment">// Stream 0 got 1</span>
+<span class="comment">// Stream 1 got 0</span>
+<span class="comment">// Stream 0 got 2</span>
+<span class="comment">// Stream 1 got 1</span>
+<span class="comment">// etc</span>
+</code></pre></div>
+<h2 id="example-spmc-broadcast" class="section-header"><a href="#example-spmc-broadcast">Example: SPMC broadcast</a></h2>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">multiqueue</span>;
+
+<span class="kw">use</span> <span class="ident">std::thread</span>;
+
+<span class="kw">let</span> (<span class="ident">send</span>, <span class="ident">recv</span>) <span class="op">=</span> <span class="ident">multiqueue::broadcast_queue</span>(<span class="number">4</span>);
+
+<span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">handles</span> <span class="op">=</span> <span class="macro">vec!</span>[];
+
+<span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">2</span> { <span class="comment">// or n</span>
+    <span class="kw">let</span> <span class="ident">cur_recv</span> <span class="op">=</span> <span class="ident">recv</span>.<span class="ident">add_stream</span>();
+    <span class="kw">for</span> <span class="ident">j</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">2</span> {
+        <span class="kw">let</span> <span class="ident">stream_consumer</span> <span class="op">=</span> <span class="ident">cur_recv</span>.<span class="ident">clone</span>();
+        <span class="ident">handles</span>.<span class="ident">push</span>(<span class="ident">thread::spawn</span>(<span class="kw">move</span> <span class="op">|</span><span class="op">|</span> {
+            <span class="kw">for</span> <span class="ident">val</span> <span class="kw">in</span> <span class="ident">stream_consumer</span> {
+                <span class="macro">println!</span>(<span class="string">&quot;Stream {} consumer {} got {}&quot;</span>, <span class="ident">i</span>, <span class="ident">j</span>, <span class="ident">val</span>);
+            }
+        }));
+    }
+    <span class="comment">// cur_recv is dropped here</span>
+}
+
+<span class="comment">// Take notice that I drop the reader - this removes it from</span>
+<span class="comment">// the queue, meaning that the readers in the new threads</span>
+<span class="comment">// won&#39;t get starved by the lack of progress from recv</span>
+<span class="ident">recv</span>.<span class="ident">unsubscribe</span>();
+
+<span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">10</span> {
+    <span class="comment">// Don&#39;t do this busy loop in real stuff unless you&#39;re really sure</span>
+    <span class="kw">loop</span> {
+        <span class="kw">if</span> <span class="ident">send</span>.<span class="ident">try_send</span>(<span class="ident">i</span>).<span class="ident">is_ok</span>() {
+            <span class="kw">break</span>;
+        }
+    }
+}
+<span class="ident">drop</span>(<span class="ident">send</span>);
+
+<span class="kw">for</span> <span class="ident">t</span> <span class="kw">in</span> <span class="ident">handles</span> {
+    <span class="ident">t</span>.<span class="ident">join</span>();
+}
+
+<span class="comment">// prints along the lines of</span>
+<span class="comment">// Stream 0 consumer 1 got 2</span>
+<span class="comment">// Stream 0 consumer 0 got 0</span>
+<span class="comment">// Stream 1 consumer 0 got 0</span>
+<span class="comment">// Stream 0 consumer 1 got 1</span>
+<span class="comment">// Stream 1 consumer 1 got 1</span>
+<span class="comment">// Stream 1 consumer 0 got 2</span>
+<span class="comment">// etc</span>
+
+<span class="comment">// some join mechanics here</span></code></pre></div>
+<h2 id="example-usage-menagerie" class="section-header"><a href="#example-usage-menagerie">Example: Usage menagerie</a></h2>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">multiqueue</span>;
+
+<span class="kw">use</span> <span class="ident">std::thread</span>;
+
+<span class="kw">let</span> (<span class="ident">send</span>, <span class="ident">recv</span>) <span class="op">=</span> <span class="ident">multiqueue::broadcast_queue</span>(<span class="number">4</span>);
+<span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">handles</span> <span class="op">=</span> <span class="macro">vec!</span>[];
+
+<span class="comment">// start like before</span>
+<span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">2</span> { <span class="comment">// or n</span>
+    <span class="kw">let</span> <span class="ident">cur_recv</span> <span class="op">=</span> <span class="ident">recv</span>.<span class="ident">add_stream</span>();
+    <span class="kw">for</span> <span class="ident">j</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">2</span> {
+        <span class="kw">let</span> <span class="ident">stream_consumer</span> <span class="op">=</span> <span class="ident">cur_recv</span>.<span class="ident">clone</span>();
+        <span class="ident">handles</span>.<span class="ident">push</span>(<span class="ident">thread::spawn</span>(<span class="kw">move</span> <span class="op">|</span><span class="op">|</span>
+            <span class="kw">for</span> <span class="ident">val</span> <span class="kw">in</span> <span class="ident">stream_consumer</span> {
+                <span class="macro">println!</span>(<span class="string">&quot;Stream {} consumer {} got {}&quot;</span>, <span class="ident">i</span>, <span class="ident">j</span>, <span class="ident">val</span>);
+            }
+        ));
+    }
+    <span class="comment">// cur_recv is dropped here</span>
+}
+
+<span class="comment">// On this stream, since there&#39;s only one consumer,</span>
+<span class="comment">// the receiver can be made into a UniReceiver</span>
+<span class="comment">// which can view items inline in the queue</span>
+<span class="kw">let</span> <span class="ident">single_recv</span> <span class="op">=</span> <span class="ident">recv</span>.<span class="ident">add_stream</span>().<span class="ident">into_single</span>().<span class="ident">unwrap</span>();
+
+<span class="ident">handles</span>.<span class="ident">push</span>(<span class="ident">thread::spawn</span>(<span class="kw">move</span> <span class="op">|</span><span class="op">|</span>
+    <span class="kw">for</span> <span class="ident">val</span> <span class="kw">in</span> <span class="ident">single_recv</span>.<span class="ident">iter_with</span>(<span class="op">|</span><span class="ident">item_ref</span><span class="op">|</span> <span class="number">10</span> <span class="op">*</span> <span class="kw-2">*</span><span class="ident">item_ref</span>) {
+        <span class="macro">println!</span>(<span class="string">&quot;{}&quot;</span>, <span class="ident">val</span>);
+    }
+));
+
+<span class="comment">// Same as above, except this time we just want to iterate until the receiver is empty</span>
+<span class="kw">let</span> <span class="ident">single_recv_2</span> <span class="op">=</span> <span class="ident">recv</span>.<span class="ident">add_stream</span>().<span class="ident">into_single</span>().<span class="ident">unwrap</span>();
+
+<span class="ident">handles</span>.<span class="ident">push</span>(<span class="ident">thread::spawn</span>(<span class="kw">move</span> <span class="op">|</span><span class="op">|</span>
+    <span class="kw">for</span> <span class="ident">val</span> <span class="kw">in</span> <span class="ident">single_recv_2</span>.<span class="ident">try_iter_with</span>(<span class="op">|</span><span class="ident">item_ref</span><span class="op">|</span> <span class="number">10</span> <span class="op">*</span> <span class="kw-2">*</span><span class="ident">item_ref</span>) {
+        <span class="macro">println!</span>(<span class="string">&quot;{}&quot;</span>, <span class="ident">val</span>);
+    }
+));
+
+<span class="comment">// Take notice that I drop the reader - this removes it from</span>
+<span class="comment">// the queue, meaning that the readers in the new threads</span>
+<span class="comment">// won&#39;t get starved by the lack of progress from recv</span>
+<span class="ident">recv</span>.<span class="ident">unsubscribe</span>();
+
+<span class="comment">// Many senders to give all the receivers something</span>
+<span class="kw">for</span> <span class="kw">_</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">3</span> {
+    <span class="kw">let</span> <span class="ident">cur_send</span> <span class="op">=</span> <span class="ident">send</span>.<span class="ident">clone</span>();
+    <span class="ident">handles</span>.<span class="ident">push</span>(<span class="ident">thread::spawn</span>(<span class="kw">move</span> <span class="op">|</span><span class="op">|</span>
+        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">10</span> {
+            <span class="kw">loop</span> {
+                <span class="kw">if</span> <span class="ident">cur_send</span>.<span class="ident">try_send</span>(<span class="ident">i</span>).<span class="ident">is_ok</span>() {
+                    <span class="kw">break</span>;
+                }
+            }
+        }
+    ));
+}
+<span class="ident">drop</span>(<span class="ident">send</span>);
+
+<span class="kw">for</span> <span class="ident">t</span> <span class="kw">in</span> <span class="ident">handles</span> {
+   <span class="ident">t</span>.<span class="ident">join</span>();
+}</code></pre></div>
+</div></details><h2 id="modules" class="small-section-header"><a href="#modules">Modules</a></h2>
+<div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="mod" href="wait/index.html" title="multiqueue::wait mod">wait</a></div><div class="item-right docblock-short"><p>This module contains the waiting strategies used by the queue
+when there is no data left. Users should not find themselves
+directly accessing these except for construction
+unless a custom Wait is being written.</p>
+</div></div></div><h2 id="structs" class="small-section-header"><a href="#structs">Structs</a></h2>
+<div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="struct" href="struct.BroadcastFutReceiver.html" title="multiqueue::BroadcastFutReceiver struct">BroadcastFutReceiver</a></div><div class="item-right docblock-short"><p>This is the futures-compatible version of <code>BroadcastReceiver</code>
+It implements <code>Stream</code></p>
+</div></div><div class="item-row"><div class="item-left module-item"><a class="struct" href="struct.BroadcastFutSender.html" title="multiqueue::BroadcastFutSender struct">BroadcastFutSender</a></div><div class="item-right docblock-short"><p>This is the futures-compatible version of <code>BroadcastSender</code>
+It implements Sink</p>
+</div></div><div class="item-row"><div class="item-left module-item"><a class="struct" href="struct.BroadcastFutUniReceiver.html" title="multiqueue::BroadcastFutUniReceiver struct">BroadcastFutUniReceiver</a></div><div class="item-right docblock-short"><p>This is the futures-compatible version of <code>BroadcastUniReceiver</code>
+It implements <code>Stream</code> and behaves like the iterator would.
+To use a different function must transform itself into a different
+<code>BroadcastFutUniRecveiver</code> use <code>transform_operation</code></p>
+</div></div><div class="item-row"><div class="item-left module-item"><a class="struct" href="struct.BroadcastReceiver.html" title="multiqueue::BroadcastReceiver struct">BroadcastReceiver</a></div><div class="item-right docblock-short"><p>This class is the receiving half of the broadcast <code>MultiQueue</code>.
+Within each stream, it supports both single and multi consumer modes
+with competitive performance in each case. It supports blocking and
+nonblocking read modes as well as being the conduit for adding
+new streams.</p>
+</div></div><div class="item-row"><div class="item-left module-item"><a class="struct" href="struct.BroadcastSender.html" title="multiqueue::BroadcastSender struct">BroadcastSender</a></div><div class="item-right docblock-short"><p>This class is the sending half of the broadcasting <code>MultiQueue</code>. It supports both
+single and multi consumer modes with competitive performance in each case.
+It only supports nonblocking writes (the futures sender being an exception)
+as well as being the conduit for adding new writers.</p>
+</div></div><div class="item-row"><div class="item-left module-item"><a class="struct" href="struct.BroadcastUniReceiver.html" title="multiqueue::BroadcastUniReceiver struct">BroadcastUniReceiver</a></div><div class="item-right docblock-short"><p>This class is similar to the receiver, except it ensures that there
+is only one consumer for the stream it owns. This means that
+one can safely view the data in-place with the recv_view method family
+and avoid the cost of copying it. If there’s only one receiver on a stream,
+it can be converted into a <code>BroadcastUniInnerRecv</code></p>
+</div></div><div class="item-row"><div class="item-left module-item"><a class="struct" href="struct.MPMCFutReceiver.html" title="multiqueue::MPMCFutReceiver struct">MPMCFutReceiver</a></div><div class="item-right docblock-short"><p>This is the futures-compatible version of <code>MPMCReceiver</code>
+It implements Stream</p>
+</div></div><div class="item-row"><div class="item-left module-item"><a class="struct" href="struct.MPMCFutSender.html" title="multiqueue::MPMCFutSender struct">MPMCFutSender</a></div><div class="item-right docblock-short"><p>This is the futures-compatible version of <code>MPMCSender</code>
+It implements Sink</p>
+</div></div><div class="item-row"><div class="item-left module-item"><a class="struct" href="struct.MPMCFutUniReceiver.html" title="multiqueue::MPMCFutUniReceiver struct">MPMCFutUniReceiver</a></div><div class="item-right docblock-short"><p>This is the futures-compatible version of <code>MPMCUniReceiver</code>
+It implements <code>Stream</code> and behaves like the iterator would.
+To use a different function must transform itself into a different
+UniRecveiver use <code>transform_operation</code></p>
+</div></div><div class="item-row"><div class="item-left module-item"><a class="struct" href="struct.MPMCReceiver.html" title="multiqueue::MPMCReceiver struct">MPMCReceiver</a></div><div class="item-right docblock-short"><p>This is the receiving end of a standard mpmc view of the queue
+It functions similarly to the <code>BroadcastReceiver</code> execpt there
+is only ever one stream. As a result, the type doesn’t need to be clone</p>
+</div></div><div class="item-row"><div class="item-left module-item"><a class="struct" href="struct.MPMCSender.html" title="multiqueue::MPMCSender struct">MPMCSender</a></div><div class="item-right docblock-short"><p>This class is the sending half of the mpmc <code>MultiQueue</code>. It supports both
+single and multi consumer modes with competitive performance in each case.
+It only supports nonblocking writes (the futures sender being an exception)
+as well as being the conduit for adding new writers.</p>
+</div></div><div class="item-row"><div class="item-left module-item"><a class="struct" href="struct.MPMCUniReceiver.html" title="multiqueue::MPMCUniReceiver struct">MPMCUniReceiver</a></div><div class="item-right docblock-short"><p>This is the receiving end of a standard mpmc view of the queue
+for when it’s statically know that there is only one receiver.
+It functions similarly to the <code>BroadcastUniReceiver</code> execpt there
+is only ever one stream. As a result, the type doesn’t need to be clone or sync</p>
+</div></div></div><h2 id="functions" class="small-section-header"><a href="#functions">Functions</a></h2>
+<div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="fn" href="fn.broadcast_fut_queue.html" title="multiqueue::broadcast_fut_queue fn">broadcast_fut_queue</a></div><div class="item-right docblock-short"><p>Futures variant of broadcast_queue - datastructures implement
+Sink + Stream at a minor (~30 ns) performance cost to BlockingWait</p>
+</div></div><div class="item-row"><div class="item-left module-item"><a class="fn" href="fn.broadcast_queue.html" title="multiqueue::broadcast_queue fn">broadcast_queue</a></div><div class="item-right docblock-short"><p>Creates a (<code>BroadcastSender</code>, <code>BroadcastReceiver</code>) pair with a capacity that’s
+the next power of two &gt;= the given capacity</p>
+</div></div><div class="item-row"><div class="item-left module-item"><a class="fn" href="fn.broadcast_queue_with.html" title="multiqueue::broadcast_queue_with fn">broadcast_queue_with</a></div><div class="item-right docblock-short"><p>Creates a (<code>BroadcastSender</code>, <code>BroadcastReceiver</code>) pair with a capacity that’s
+the next power of two &gt;= the given capacity and the specified wait strategy</p>
+</div></div><div class="item-row"><div class="item-left module-item"><a class="fn" href="fn.mpmc_fut_queue.html" title="multiqueue::mpmc_fut_queue fn">mpmc_fut_queue</a></div><div class="item-right docblock-short"><p>Futures variant of <code>mpmc_queue</code> - datastructures implement
+Sink + Stream at a minor (~30 ns) performance cost to <code>BlockingWait</code></p>
+</div></div><div class="item-row"><div class="item-left module-item"><a class="fn" href="fn.mpmc_queue.html" title="multiqueue::mpmc_queue fn">mpmc_queue</a></div><div class="item-right docblock-short"><p>Creates a (<code>MPMCSender</code>, <code>MPMCReceiver</code>) pair with a capacity that’s
+the next power of two &gt;= the given capacity</p>
+</div></div><div class="item-row"><div class="item-left module-item"><a class="fn" href="fn.mpmc_queue_with.html" title="multiqueue::mpmc_queue_with fn">mpmc_queue_with</a></div><div class="item-right docblock-short"></div></div></div></section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../" data-current-crate="multiqueue" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.59.0 (9d1b2106e 2022-02-23)" ></div>
+</body></html>

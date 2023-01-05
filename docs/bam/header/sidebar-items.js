@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["EntryType",""],["HeaderLine",""]],"struct":[["Header","BAM/SAM Header."],["HeaderEntry","A single header line."],["Tag","A single tag in a line."]],"type":[["TagName",""]]});
