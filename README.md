@@ -35,7 +35,7 @@ After downloading, use the Rust executable `cargo` like so:
 
     cd fasten
     cargo build --release
-    export PATH=$PATH:$(pwd)/fasten/target/release
+    export PATH=$PATH:$(pwd)/target/release
 
 All executables will be in the directory `fasten/target/release`.
 
