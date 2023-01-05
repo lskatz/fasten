@@ -1,6 +1,9 @@
 //! Normalizes kmer depth by removing some reads from high kmer depths
 //! The input has to be from `fasten_kmer --remember-reads` where there are at least three columns:
 //! kmer, count, read1, [read2,...]
+//!
+//! This was inspired by BBNorm and is probably not the exact same algorithm.
+//! <https://jgi.doe.gov/data-and-tools/software-tools/bbtools/bb-tools-user-guide/bbnorm-guide/>
 
 //! # Examples
 
@@ -10,12 +13,30 @@
 //!   fasten_normalize | \
 //!   gzip -c > four_reads.normalized.fastq.gz
 //! ```
+//!
+//! Paired end reads
+//! 
+//! ```bash
+//! cat testdata/R[12].fastq | \
+//!   fasten_shuffle | \
+//!   fasten_kmer -k 3 -m --paired-end | \
+//!   fasten_normalize --target-depth 10 --paired-end | \
+//!   gzip -c > normalized.fastq.gz
+//! ```
 
 //! # Usage
 
 //! ```text
-//! TODO
-
+//! Usage: fasten_normalize [-h] [-n INT] [-p] [--verbose] [--version] [-t INT]
+//!
+//! Options:
+//!     -h, --help          Print this help menu.
+//!     -n, --numcpus INT   Number of CPUs (default: 1)
+//!     -p, --paired-end    The input reads are interleaved paired-end
+//!         --verbose       Print more status messages
+//!         --version       Print the version of Fasten and exit
+//!     -t, --target-depth INT
+//!                         The target depth of kmer.
 //! ```
     
 extern crate fasten;
@@ -33,12 +54,15 @@ use fasten::fasten_base_options;
 use fasten::fasten_base_options_matches;
 //use fasten::logmsg;
 
+/// Glues together paired end reads internally and is a
+/// character not expected in any read
+const READ_SEPARATOR :char = '~';
 
 fn main(){
     let mut opts = fasten_base_options();
 
     // script-specific options
-    opts.optopt("t", "target-depth", "The target depth of kmer", "INT");
+    opts.optopt("t", "target-depth", "The target depth of kmer.", "INT");
     let matches = fasten_base_options_matches("Normalizes reads based on kmer coverage.", opts);
 
     let target_depth :u32 = matches.opt_str("target-depth")
@@ -47,12 +71,14 @@ fn main(){
         .expect("Convert target-depth to integer");
 
     let stdin = stdin();
+
+    let paired_end = matches.opt_present("paired-end");
     
-    normalize_coverage(stdin, target_depth);
+    normalize_coverage(stdin, target_depth, paired_end);
 }
 
 /// Normalize the coverage to a certain target and print as a fastq
-fn normalize_coverage (stdin:Stdin, target_depth:u32) {
+fn normalize_coverage (stdin:Stdin, target_depth:u32, paired_end:bool) {
     // start off a random thing so that we can get random reads later on
     let mut rng = rand::thread_rng();
 
@@ -74,10 +100,13 @@ fn normalize_coverage (stdin:Stdin, target_depth:u32) {
         let count :u32 = kmer_count[1].parse().unwrap();
 
         // number of reads to keep is the target depth / kmer coverage * number of reads present
-        let num_reads_to_keep :usize = min(
+        let mut num_reads_to_keep :usize = min(
             (target_depth as f32 / count as f32 * f.len() as f32).ceil() as usize,
             f.len() as usize
         ) as usize;
+        if paired_end {
+            num_reads_to_keep = (num_reads_to_keep as f32 / 2.0).ceil() as usize;
+        }
 
         //println!("target depth:{} count:{} num reads:{} = {}", target_depth, count, f.len(), num_reads_to_keep);
         
@@ -90,9 +119,10 @@ fn normalize_coverage (stdin:Stdin, target_depth:u32) {
     }
 }
 
+/// Print the reads in fastq format when given in a single line with `~`
 fn print_reads (reads:Vec<&str>) {
     for entry in reads{
-        let entry_string = entry.replace("~~~", "\n");
+        let entry_string = entry.replace(READ_SEPARATOR, "\n");
         println!("{}", entry_string);
     }
 }
