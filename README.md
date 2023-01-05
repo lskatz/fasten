@@ -71,6 +71,7 @@ This documentation was built with `cargo docs --no-deps`
 |[`fasten_randomize`](https://lskatz.github.io/fasten/fasten_randomize) | Randomizes reads from input |
 |[`fasten_combine`](https://lskatz.github.io/fasten/fasten_combine)   | Combines identical reads and updates quality scores.|
 |[`fasten_kmer`](https://lskatz.github.io/fasten/fasten_kmer)      | Kmer counting.|
+|[`fasten_normalize`](https://lskatz.github.io/fasten/fasten_normalize)      | Normalize read depth by using kmer counting.|
 |[`fasten_sample`](https://lskatz.github.io/fasten/fasten_sample)    | Downsamples reads.|
 |[`fasten_shuffle`](https://lskatz.github.io/fasten/fasten_shuffle)   | Shuffles or deshuffles paired end reads.|
 |[`fasten_validate`](https://lskatz.github.io/fasten/fasten_validate)  | Validates your reads|
