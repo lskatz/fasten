@@ -38,6 +38,10 @@ use fasten::logmsg;
 
 use std::collections::HashMap;
 
+/// Glues together paired end reads internally and is a
+/// character not expected in any read
+const READ_SEPARATOR :char = '~';
+
 #[test]
 /// Let's count some kmers on homopolymers
 fn test_kmer_counting_homopolymers () {
@@ -97,9 +101,9 @@ fn main(){
 
     let matches = fasten_base_options_matches("Counts kmers.", opts);
     
-    if matches.opt_present("paired-end") {
-        logmsg("WARNING: --paired-end is not utilized in this script");
-    }
+    //if matches.opt_present("paired-end") {
+    //    logmsg("WARNING: --paired-end is not utilized in this script");
+    //}
 
     let kmer_length:usize={
         if matches.opt_present("kmer-length") {
@@ -115,11 +119,11 @@ fn main(){
 
     let stdin = stdin();
     
-    count_kmers(stdin, kmer_length, matches.opt_present("revcomp"), matches.opt_present("remember-reads"));
+    count_kmers(stdin, kmer_length, matches.opt_present("revcomp"), matches.opt_present("remember-reads"), matches.opt_present("paired-end"));
 }
 
 /// Read fastq from stdin and count kmers
-fn count_kmers (stdin:Stdin, kmer_length:usize, revcomp:bool, remember_reads:bool) {
+fn count_kmers (stdin:Stdin, kmer_length:usize, revcomp:bool, remember_reads:bool, paired_end:bool) {
 
     // keep track of which sequences start with which kmers
     let mut kmer_to_seqs :HashMap<String, Vec<String>> = HashMap::new();
@@ -145,6 +149,34 @@ fn count_kmers (stdin:Stdin, kmer_length:usize, revcomp:bool, remember_reads:boo
             *kmer_count += value;
         }
 
+        // If this is paired end and if we're saving the second pair's
+        // read, then reserve a declaired variable here for the string.
+        let mut r2_read_string :String = String::new();
+        if paired_end {
+            let id2 = buffer_iter.next().expect("reading the ID2 line")
+                .expect("reading the ID2 line");
+
+            let seq2 = buffer_iter.next().expect("ERROR reading a sequence line, second in pair")
+                .expect("ERROR reading a sequence line, second in pair");
+            // burn the plus line
+            let plus2 = buffer_iter.next().expect("reading the plus2 line")
+                .expect("reading the plus2 line");
+            // burn the qual line
+            let qual2 = buffer_iter.next().expect("reading the qual2 line")
+                .expect("reading the qual2 line");
+
+            // get all the kmers in this entry
+            let entry_kmers2 = kmers_in_str(&seq2, kmer_length, revcomp);
+            // merge the entry kmers
+            for (key, value) in entry_kmers2.iter() { 
+                let kmer_count = kmer_hash.entry(String::from(key)).
+                    or_insert(0);
+                *kmer_count += value;
+            }
+
+            r2_read_string = vec![id2,seq2,plus2,qual2].join(&READ_SEPARATOR.to_string());
+        }
+
         // Remember the read that initiated this
         if remember_reads {
             let init_kmer = String::from(&seq[0..kmer_length]);
@@ -157,11 +189,16 @@ fn count_kmers (stdin:Stdin, kmer_length:usize, revcomp:bool, remember_reads:boo
             let qual = qual_opt.expect("reading the qual line")
                 .expect("reading the qual line");
 
-            init_kmer_vec.push(
-                format!("{}~~~{}~~~{}~~~{}",
-                        id, seq, plus, qual
-                        )
-            );
+            if paired_end {
+                init_kmer_vec.push(
+                    vec![id, seq, plus, qual, r2_read_string].join(&READ_SEPARATOR.to_string())
+                );
+            }
+            else {
+                init_kmer_vec.push(
+                    vec![id, seq, plus, qual].join(&READ_SEPARATOR.to_string())
+                );
+            }
         }
     }
 
