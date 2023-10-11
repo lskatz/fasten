@@ -120,7 +120,7 @@ fn validate_reads(lines_per_read: u8, seq_regex: regex::Regex, qual_regex: regex
                 illegal_seq_chars.push_str(&cap[0]);
             }
         }
-        id = format!("{} seq-invalid-chars:'{}'", &id, &illegal_seq_chars);
+        id = format!("{} seq-invalid-chars:{}", &id, &illegal_seq_chars);
 
         // Test plus
         if plus.chars().nth(0).unwrap() == '+' {
@@ -136,7 +136,7 @@ fn validate_reads(lines_per_read: u8, seq_regex: regex::Regex, qual_regex: regex
                 illegal_qual_chars.push_str(&cap[0]);
             }
         }
-        id = format!("{} qual-invalid-chars:'{}'", &id, &illegal_qual_chars);
+        id = format!("{} qual-invalid-chars:{}", &id, &illegal_qual_chars);
 
         // quality score regex
         let mut qual_total :usize = 0;
