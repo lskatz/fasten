@@ -3,7 +3,30 @@
 //! # Examples
 //! ```bash
 //! ./target/debug/fasten_inspect  < testdata/four_reads.fastq | ./target/debug/fasten_repair
+//!
 //! ```
+//!
+//! If remove-info is given, then extra header information from fasten_inspect will be removed.
+//!
+//! # Usage
+//!
+//! ```text
+//! Usage: fasten_repair [-h] [-n INT] [-p] [--verbose] [--version] [--min-length INT] [--min-quality FLOAT] [--remove-info] [-m STRING]
+//! Options:
+//!    -h, --help          Print this help menu.
+//!    -n, --numcpus INT   Number of CPUs (default: 1)
+//!    -p, --paired-end    The input reads are interleaved paired-end
+//!        --verbose       Print more status messages
+//!        --version       Print the version of Fasten and exit
+//!        --min-length INT
+//!                        Minimum read length allowed
+//!        --min-quality FLOAT
+//!                        Minimum quality allowed
+//!        --remove-info   Remove fasten_inspect headers
+//!    -m, --mode STRING   (Not currently in use) Either repair or panic. If panic, then the binary will
+//!                        panic when the first issue comes up. Default:repair
+//! ```
+//!
 //! 
 
 extern crate getopts;
