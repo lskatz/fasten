@@ -23,10 +23,26 @@
 //!        --min-quality FLOAT
 //!                        Minimum quality allowed
 //!        --remove-info   Remove fasten_inspect headers
-//!    -m, --mode STRING   (Not currently in use) Either repair or panic. If panic, then the binary will
+//!    -m, --mode STRING   Either repair or panic. If panic, then the binary will
 //!                        panic when the first issue comes up. Default:repair
 //! ```
 //!
+//! # Methods of repair
+//!
+//! If you choose `--mode repair`, then this is the expected behavior
+//!
+//! * Mismatched seq and qual lengths: seq or qual length will be truncated
+//!
+//! # Panic
+//!
+//! If the sequences are not repaired but there is still an issue, the program might still panic:
+//!
+//! * seq length < min length (TODO when implementing PE reads)
+//! * avg qual < min qual (TODO when implementing PE reads)
+//! * invalid characters in seq (TODO when implementing PE reads)
+//! * invalid characters in qual (TODO when implementing PE reads)
+//! * `@` not present in first character of the entry (TODO when implementing PE reads)
+//! * `+` not present in the first character of the third line (TODO when implementing PE reads)
 //! 
 
 extern crate getopts;
@@ -45,7 +61,7 @@ fn main(){
     opts.optopt("","min-length","Minimum read length allowed","INT");
     opts.optopt("","min-quality","Minimum quality allowed","FLOAT");
     opts.optflag("", "remove-info", "Remove fasten_inspect headers");
-    opts.optopt("m", "mode", "(not in use yet) Either repair or panic. If panic, then the binary will panic when the first issue comes up. Default:repair", "STRING");
+    opts.optopt("m", "mode", " Either repair or panic. If panic, then the binary will panic when the first issue comes up. Default:repair", "STRING");
 
     let matches = fasten_base_options_matches("Repairs reads", opts);
 
@@ -73,19 +89,28 @@ fn main(){
     };
 
     let remove_info :bool = matches.opt_present("remove-info");
-    let _mode :String = {
+    let mode :String = {
         if matches.opt_present("mode") {
             matches.opt_str("mode")
                 .expect("ERROR parsing mode")
         } else {
-            "panic".to_string()
+            "repair".to_string()
         }
     };
 
-    repair_reads(paired_end, min_length, min_qual, remove_info);
+    repair_reads(paired_end, min_length, min_qual, remove_info, &mode);
 }
 
-fn repair_reads(paired_end:bool, min_length: usize, min_qual: f32, remove_info: bool) {
+fn repair_reads(paired_end:bool, min_length: usize, min_qual: f32, remove_info: bool, mode: &str) {
+    //behavior
+    let should_repair :bool = {
+        if mode == "repair" {
+            true
+        } else {
+            false
+        }
+    };
+
     let my_file = File::open("/dev/stdin").expect("Could not open file");
     let mut my_buffer = BufReader::new(my_file);
 
@@ -142,9 +167,18 @@ fn repair_reads(paired_end:bool, min_length: usize, min_qual: f32, remove_info: 
 
         // Check seq length and qual length
         if seq_length != qual_length {
-            panic!("ERROR: seq length({}) did not match qual length({}) on seqid {}", &seq_length, &qual_length, &id);
+            if should_repair {
+                let new_length :usize = *vec![seq_length, qual_length].iter().min().unwrap();
+                seq  = seq[..new_length].to_string();
+                qual = qual[..new_length].to_string();
+                eprintln!("Repaired sequence length for {}", &id);
+            } else {
+                panic!("ERROR: seq length({}) did not match qual length({}) on seqid {}", &seq_length, &qual_length, &id);
+            }
         }
         if seq_length < min_length {
+            // TODO skip this sequence
+            //   TODO consider whether this is paired-end
             panic!("ERROR: seq length({}) is less than min length specified ({})", &seq_length, &min_length);
         }
         // Check quality score
