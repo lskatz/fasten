@@ -175,6 +175,8 @@
 <span id="173">173</span>
 <span id="174">174</span>
 <span id="175">175</span>
+<span id="176">176</span>
+<span id="177">177</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Validates your reads and makes you feel good about yourself!</span>
 <span class="doccomment">//! </span>
 <span class="doccomment">//! # Examples</span>
@@ -231,8 +233,10 @@
 
 <span class="kw">use</span> <span class="ident">fasten::fasten_base_options</span>;
 <span class="kw">use</span> <span class="ident">fasten::fasten_base_options_matches</span>;
+<span class="kw">use</span> <span class="ident">fasten::logmsg</span>;
 
 <span class="kw">fn</span> <span class="ident">main</span>(){
+    <span class="ident">logmsg</span>(<span class="string">&quot;NOTE: fasten_validate is deprecated starting in v0.6 in favor of fasten_inspect and fasten_repair&quot;</span>);
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">opts</span> <span class="op">=</span> <span class="ident">fasten_base_options</span>();
     <span class="comment">// Options specific to this script</span>
     <span class="ident">opts</span>.<span class="ident">optopt</span>(<span class="string">&quot;&quot;</span>,<span class="string">&quot;min-length&quot;</span>,<span class="string">&quot;Minimum read length allowed&quot;</span>,<span class="string">&quot;INT&quot;</span>);
