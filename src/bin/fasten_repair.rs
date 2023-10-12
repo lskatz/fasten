@@ -127,6 +127,7 @@ fn repair_reads(paired_end:bool, min_length: usize, min_qual: f32, remove_info: 
         if my_buffer.read_line(&mut id).expect("Cannot read new line") == 0 {
             break;
         }
+        let r1_id = id.clone();
         
         seq.clear();
         my_buffer.read_line(&mut seq).expect("ERROR: failed to read 'seq' line");
@@ -145,12 +146,13 @@ fn repair_reads(paired_end:bool, min_length: usize, min_qual: f32, remove_info: 
         let mut is_r2_good = true;
         let mut r2 = "".to_string();
         let mut err2 = "".to_string();
+        let mut r2_id :String = "".to_string();
         if paired_end {
-            let r1_id = id.clone();
             id.clear();
             if my_buffer.read_line(&mut id).expect("Cannot read new line") == 0 {
                 panic!("ERROR: paired end expected but not found after R1 {}", r1_id);
             }
+            r2_id = id.clone();
             
             seq.clear();
             my_buffer.read_line(&mut seq).expect("ERROR: failed to read 'seq' line");
@@ -188,10 +190,10 @@ fn repair_reads(paired_end:bool, min_length: usize, min_qual: f32, remove_info: 
             
             // Print the errors.
             if err1.as_str() != "" {
-                logmsg(format!("ERROR(s) on R1: {}", err1));
+                logmsg(format!("SKIP R1 {}\n=> {}\n", r1_id.trim(), err1));
             }
             if err2.as_str() != "" {
-                logmsg(format!("ERROR(s) on R2: {}", err2));
+                logmsg(format!("SKIP R2 {}\n=> {}\n", r2_id.trim(), err2));
             }
         }
     }
@@ -240,7 +242,7 @@ fn repair_one_read(mut id:String, mut seq:String, plus:String, mut qual:String, 
             seq  = seq[..new_length].to_string();
             qual = qual[..new_length].to_string();
             error.push_str(
-                &format!("Repaired sequence length for {}\n", &id)
+                &format!("Repaired sequence and qual length\n")
             );
             // Don't count this as an actual error and so don't increment.
         } else {
@@ -249,14 +251,14 @@ fn repair_one_read(mut id:String, mut seq:String, plus:String, mut qual:String, 
     }
     if seq_length < min_length {
         error.push_str(
-            &format!("ERROR: seq length({}) is less than min length specified ({})\n", &seq_length, &min_length)
+            &format!("seq length({}) is less than min length specified ({})\n", &seq_length, &min_length)
         );
         num_errors += 1;
     }
     // Check quality score
     if avg_qual < min_qual {
         error.push_str(
-            &format!("ERROR: average quality ({}) is less than min quality ({})\n", &avg_qual, &min_qual)
+            &format!("average quality ({}) is less than min quality ({})\n", &avg_qual, &min_qual)
         );
         num_errors += 1;
     }
@@ -264,14 +266,14 @@ fn repair_one_read(mut id:String, mut seq:String, plus:String, mut qual:String, 
     // check key seq-invalid-chars
     if seq_invalid_chars != "" {
         error.push_str(
-            &format!("ERROR: invalid seq characters found in {}\n", &id)
+            &format!("invalid seq characters found in {}\n", &id)
         );
         num_errors += 1;
     }
     // check key qual-invalid-chars
     if qual_invalid_chars != "" {
         error.push_str(
-            &format!("ERROR: invalid qual characters found in {}\n", &id)
+            &format!("invalid qual characters found in {}\n", &id)
         );
         num_errors += 1;
     }
@@ -279,14 +281,14 @@ fn repair_one_read(mut id:String, mut seq:String, plus:String, mut qual:String, 
     // check key id-at
     if id_at < 1 {
         error.push_str(
-            &format!("ERROR: no @ found at position 1 on line 1 for {}\n", &id)
+            &format!("no @ found at position 1 on line 1 for {}\n", &id)
         );    
         num_errors += 1;
     }
     // check key id-plus 
     if id_plus < 1 {
         error.push_str(
-            &format!("ERROR: no + found at position 1 on line 3 for {}\n", &id)
+            &format!("no + found at position 1 on line 3 for {}\n", &id)
         );
         num_errors += 1;
     }

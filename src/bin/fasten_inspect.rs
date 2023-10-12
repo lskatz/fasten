@@ -86,7 +86,7 @@ fn validate_reads(lines_per_read: u8, seq_regex: regex::Regex, qual_regex: regex
     let mut plus = String::new();
     let mut qual = String::new();
 
-    let mut i = 0;
+    let mut i :u64 = 0;
     loop{
 
         id.clear();
@@ -143,11 +143,17 @@ fn validate_reads(lines_per_read: u8, seq_regex: regex::Regex, qual_regex: regex
         for q in qual.chars() {
             qual_total += q as usize;
         }
-        let avg_qual :f32 = qual_total as f32 / qual.len() as f32 - 33.0;
+        let avg_qual :f32 = {
+            if qual.len() == 0 {
+                -1.0
+            } else {            
+                qual_total as f32 / qual.len() as f32 - 33.0
+            }
+        };
         id = format!("{} avg-qual:{:.2}", &id, avg_qual);
         id = format!("{} qual-length:{}", &id, qual.len());
 
-        let mut read_pair:u8 = (i % lines_per_read) + 1;
+        let mut read_pair:u8 = ((i as u64 % lines_per_read as u64) + 1) as u8;
         if read_pair > 1 {
             read_pair = 2;
         }
@@ -157,12 +163,6 @@ fn validate_reads(lines_per_read: u8, seq_regex: regex::Regex, qual_regex: regex
 
         println!("{}\n{}\n{}\n{}", id, seq, plus, qual);
     }
-    /*
-    if i % lines_per_read > 0{
-        panic!("ERROR: incomplete fastq entry. Num lines: {}",i);
-    }
-    */
-
 }
 
 

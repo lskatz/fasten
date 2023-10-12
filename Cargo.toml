@@ -72,6 +72,10 @@ name = "fasten_sample"
 path = "src/bin/fasten_sample.rs"
 
 [[bin]]
+name = "fasten_validate"
+path = "src/bin/fasten_validate.rs"
+
+[[bin]]
 name = "fasten_inspect"
 path = "src/bin/fasten_inspect.rs"
 
