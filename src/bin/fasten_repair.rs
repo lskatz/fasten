@@ -1,8 +1,10 @@
 //! Repairs reads from fasten_inspect output
 //! 
 //! # Examples
+//! 
 //! ```bash
-//! ./target/debug/fasten_inspect  < testdata/four_reads.fastq | ./target/debug/fasten_repair
+//! ./target/debug/fasten_inspect  < testdata/four_reads.fastq | \
+//!   ./target/debug/fasten_repair --remove-info > repaired.fastq
 //!
 //! ```
 //!
@@ -102,6 +104,7 @@ fn main(){
     repair_reads(paired_end, min_length, min_qual, remove_info, &mode);
 }
 
+/// Repairs reads depending on the deflines by calling repair_one_read
 fn repair_reads(paired_end:bool, min_length: usize, min_qual: f32, remove_info: bool, mode: &str) {
     //behavior
     let should_repair :bool = {

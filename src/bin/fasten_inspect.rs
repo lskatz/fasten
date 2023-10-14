@@ -4,21 +4,30 @@
 //! 
 //! ## Quick validation with stderr message
 //! ```bash
-//! cat file.fastq | fasten_validate > markedup.fastq
-//! cat file.fastq | fasten_validate --paired-end > markedup-paired.fastq
+//! cat file.fastq | fasten_inspect > markedup.fastq
+//! cat file.fastq | fasten_inspect --paired-end > markedup-paired.fastq
+//! ```
+//!
+//! The resulting marked-up fastq file will have deflines like
+//!
+//! ```text
+//! @read0/1 id-at:1 seq-length:100 seq-invalid-chars: id-plus:1 qual-invalid-chars: avg-qual:20.93 qual-length:100 read-pair:1
 //! ```
 //!
 //! # Usage
 //! 
 //! ```text
-//! Usage: fasten_validate [-h] [-n INT] [-p] [--verbose] [--version] [--paired-end]
+//!fasten_inspect: Marks up your reads with useful information like read length
 //!
-//! Options:
-//!     -h, --help          Print this help menu.
-//!     -n, --numcpus INT   Number of CPUs (default: 1)
-//!     -p, --paired-end    The input reads are interleaved paired-end
-//!         --verbose       Print more status messages
-//!         --version       Print the version of Fasten and exit
+//!Usage: fasten_inspect [-h] [-n INT] [-p] [--verbose] [--version]
+//!
+//!Options:
+//!    -h, --help          Print this help menu.
+//!    -n, --numcpus INT   Number of CPUs (default: 1)
+//!    -p, --paired-end    The input reads are interleaved paired-end
+//!        --verbose       Print more status messages
+//!        --version       Print the version of Fasten and exit
+//!
 //! ```
 //!
 //! The fields will be found on the defline of the sequence and include:
@@ -77,6 +86,7 @@ fn main(){
     }
 }
 
+/// marks up reads from stdin
 fn validate_reads(lines_per_read: u8, seq_regex: regex::Regex, qual_regex: regex::Regex) {
     let my_file = File::open("/dev/stdin").expect("Could not open file");
     let mut my_buffer = BufReader::new(my_file);
