@@ -309,11 +309,18 @@
 <span id="307">307</span>
 <span id="308">308</span>
 <span id="309">309</span>
+<span id="310">310</span>
+<span id="311">311</span>
+<span id="312">312</span>
+<span id="313">313</span>
+<span id="314">314</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Repairs reads from fasten_inspect output</span>
 <span class="doccomment">//! </span>
 <span class="doccomment">//! # Examples</span>
+<span class="doccomment">//! </span>
 <span class="doccomment">//! ```bash</span>
-<span class="doccomment">//! ./target/debug/fasten_inspect  &lt; testdata/four_reads.fastq | ./target/debug/fasten_repair</span>
+<span class="doccomment">//! ./target/debug/fasten_inspect  &lt; testdata/four_reads.fastq | \</span>
+<span class="doccomment">//!   ./target/debug/fasten_repair --remove-info &gt; repaired.fastq</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! ```</span>
 <span class="doccomment">//!</span>
@@ -343,6 +350,8 @@
 <span class="doccomment">//! If you choose `--mode repair`, then this is the expected behavior</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! * Mismatched seq and qual lengths: seq or qual length will be truncated</span>
+<span class="doccomment">//! * R1 or R2 not passing: then the other (R1 or R2) will also not pass and they will not be</span>
+<span class="doccomment">//! printed.</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! # Panic</span>
 <span class="doccomment">//!</span>
@@ -413,6 +422,7 @@
     <span class="ident">repair_reads</span>(<span class="ident">paired_end</span>, <span class="ident">min_length</span>, <span class="ident">min_qual</span>, <span class="ident">remove_info</span>, <span class="kw-2">&amp;</span><span class="ident">mode</span>);
 }
 
+<span class="doccomment">/// Repairs reads depending on the deflines by calling repair_one_read</span>
 <span class="kw">fn</span> <span class="ident">repair_reads</span>(<span class="ident">paired_end</span>:<span class="ident">bool</span>, <span class="ident">min_length</span>: <span class="ident">usize</span>, <span class="ident">min_qual</span>: <span class="ident">f32</span>, <span class="ident">remove_info</span>: <span class="ident">bool</span>, <span class="ident">mode</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) {
     <span class="comment">//behavior</span>
     <span class="kw">let</span> <span class="ident">should_repair</span> :<span class="ident">bool</span> <span class="op">=</span> {

@@ -168,40 +168,61 @@
 <span id="166">166</span>
 <span id="167">167</span>
 <span id="168">168</span>
+<span id="169">169</span>
+<span id="170">170</span>
+<span id="171">171</span>
+<span id="172">172</span>
+<span id="173">173</span>
+<span id="174">174</span>
+<span id="175">175</span>
+<span id="176">176</span>
+<span id="177">177</span>
+<span id="178">178</span>
+<span id="179">179</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Marks up your reads with useful information like read length</span>
 <span class="doccomment">//! </span>
 <span class="doccomment">//! # Examples</span>
 <span class="doccomment">//! </span>
 <span class="doccomment">//! ## Quick validation with stderr message</span>
 <span class="doccomment">//! ```bash</span>
-<span class="doccomment">//! cat file.fastq | fasten_validate &gt; markedup.fastq</span>
-<span class="doccomment">//! cat file.fastq | fasten_validate --paired-end &gt; markedup-paired.fastq</span>
+<span class="doccomment">//! cat file.fastq | fasten_inspect &gt; markedup.fastq</span>
+<span class="doccomment">//! cat file.fastq | fasten_inspect --paired-end &gt; markedup-paired.fastq</span>
+<span class="doccomment">//! ```</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! The resulting marked-up fastq file will have deflines like</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! ```text</span>
+<span class="doccomment">//! @read0/1 id-at:1 seq-length:100 seq-invalid-chars: id-plus:1 qual-invalid-chars: avg-qual:20.93 qual-length:100 read-pair:1</span>
 <span class="doccomment">//! ```</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! # Usage</span>
 <span class="doccomment">//! </span>
 <span class="doccomment">//! ```text</span>
-<span class="doccomment">//! Usage: fasten_validate [-h] [-n INT] [-p] [--verbose] [--version] [--paired-end]</span>
+<span class="doccomment">//!fasten_inspect: Marks up your reads with useful information like read length</span>
 <span class="doccomment">//!</span>
-<span class="doccomment">//! Options:</span>
-<span class="doccomment">//!     -h, --help          Print this help menu.</span>
-<span class="doccomment">//!     -n, --numcpus INT   Number of CPUs (default: 1)</span>
-<span class="doccomment">//!     -p, --paired-end    The input reads are interleaved paired-end</span>
-<span class="doccomment">//!         --verbose       Print more status messages</span>
-<span class="doccomment">//!         --version       Print the version of Fasten and exit</span>
+<span class="doccomment">//!Usage: fasten_inspect [-h] [-n INT] [-p] [--verbose] [--version]</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//!Options:</span>
+<span class="doccomment">//!    -h, --help          Print this help menu.</span>
+<span class="doccomment">//!    -n, --numcpus INT   Number of CPUs (default: 1)</span>
+<span class="doccomment">//!    -p, --paired-end    The input reads are interleaved paired-end</span>
+<span class="doccomment">//!        --verbose       Print more status messages</span>
+<span class="doccomment">//!        --version       Print the version of Fasten and exit</span>
+<span class="doccomment">//!</span>
 <span class="doccomment">//! ```</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! The fields will be found on the defline of the sequence and include:</span>
 <span class="doccomment">//!</span>
-<span class="doccomment">//! | key | type | example | note |</span>
-<span class="doccomment">//! | --- | ---   | ---  | -----  |</span>
-<span class="doccomment">//! | id-at | boolean (1 or 0) | id-at:1 | | </span>
-<span class="doccomment">//! | seq-invalid-chars | string | seq-invalid-chars:&#39;$$%&#39; | |</span>
-<span class="doccomment">//! | qual-invalid-chars | string | qual-invalid-chars:&#39;[]&#39; | |</span>
-<span class="doccomment">//! | seq-length | int | seq-length:100 | |</span>
-<span class="doccomment">//! | id-plus | boolean | id-plus:1 | Whether or not the plus sign was found on 3rd line |</span>
-<span class="doccomment">//! | avg-qual | float | avg-qual:17.52 | |</span>
-<span class="doccomment">//! | qual-length | int | qual-length:100 | Length of the quality score line |</span>
+<span class="doccomment">//!| key | type  | example | note   |</span>
+<span class="doccomment">//!| --- | ----- | ------- | ------ |</span>
+<span class="doccomment">//!| id-at | boolean (1 or 0) | id-at:1 | Whether or not the `@` was first character, first line | </span>
+<span class="doccomment">//!| seq-invalid-chars | string | seq-invalid-chars:$$% | |</span>
+<span class="doccomment">//!| qual-invalid-chars | string | qual-invalid-chars:[&lt; | |</span>
+<span class="doccomment">//!| seq-length | int | seq-length:100 | |</span>
+<span class="doccomment">//!| id-plus | boolean | id-plus:1 | Whether or not the `+` was first character, 3rd line |</span>
+<span class="doccomment">//!| avg-qual | float | avg-qual:17.52 | |</span>
+<span class="doccomment">//!| qual-length | int | qual-length:100 | Length of the quality score line |</span>
+<span class="doccomment">//!</span>
 <span class="doccomment">//!</span>
 
 <span class="comment">// TODO add points that were validated into the sequence deflines: length, is-paired, seq-regex=1, and anything else</span>
@@ -247,6 +268,7 @@
     }
 }
 
+<span class="doccomment">/// marks up reads from stdin</span>
 <span class="kw">fn</span> <span class="ident">validate_reads</span>(<span class="ident">lines_per_read</span>: <span class="ident">u8</span>, <span class="ident">seq_regex</span>: <span class="ident">regex::Regex</span>, <span class="ident">qual_regex</span>: <span class="ident">regex::Regex</span>) {
     <span class="kw">let</span> <span class="ident">my_file</span> <span class="op">=</span> <span class="ident">File::open</span>(<span class="string">&quot;/dev/stdin&quot;</span>).<span class="ident">expect</span>(<span class="string">&quot;Could not open file&quot;</span>);
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">my_buffer</span> <span class="op">=</span> <span class="ident">BufReader::new</span>(<span class="ident">my_file</span>);

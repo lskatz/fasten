@@ -32,15 +32,16 @@
 //!
 //! The fields will be found on the defline of the sequence and include:
 //!
-//! | key | type | example | note |
-//! | --- | ---   | ---  | -----  |
-//! | id-at | boolean (1 or 0) | id-at:1 | | 
-//! | seq-invalid-chars | string | seq-invalid-chars:'$$%' | |
-//! | qual-invalid-chars | string | qual-invalid-chars:'[]' | |
-//! | seq-length | int | seq-length:100 | |
-//! | id-plus | boolean | id-plus:1 | Whether or not the plus sign was found on 3rd line |
-//! | avg-qual | float | avg-qual:17.52 | |
-//! | qual-length | int | qual-length:100 | Length of the quality score line |
+//!| key | type  | example | note   |
+//!| --- | ----- | ------- | ------ |
+//!| id-at | boolean (1 or 0) | id-at:1 | Whether or not the `@` was first character, first line | 
+//!| seq-invalid-chars | string | seq-invalid-chars:$$% | |
+//!| qual-invalid-chars | string | qual-invalid-chars:[< | |
+//!| seq-length | int | seq-length:100 | |
+//!| id-plus | boolean | id-plus:1 | Whether or not the `+` was first character, 3rd line |
+//!| avg-qual | float | avg-qual:17.52 | |
+//!| qual-length | int | qual-length:100 | Length of the quality score line |
+//!
 //!
 
 // TODO add points that were validated into the sequence deflines: length, is-paired, seq-regex=1, and anything else

@@ -31,20 +31,22 @@
 //!
 //! # Methods of repair
 //!
+//! # Repair mode
+//!
 //! If you choose `--mode repair`, then this is the expected behavior
 //!
 //! * Mismatched seq and qual lengths: seq or qual length will be truncated
+//! * R1 or R2 not passing: then the other (R1 or R2) will also not pass and they will not be
+//! printed.
 //!
-//! # Panic
+//! # Panic mode
 //!
-//! If the sequences are not repaired but there is still an issue, the program might still panic:
-//!
-//! * seq length < min length (TODO when implementing PE reads)
-//! * avg qual < min qual (TODO when implementing PE reads)
-//! * invalid characters in seq (TODO when implementing PE reads)
-//! * invalid characters in qual (TODO when implementing PE reads)
-//! * `@` not present in first character of the entry (TODO when implementing PE reads)
-//! * `+` not present in the first character of the third line (TODO when implementing PE reads)
+//! * seq length < min length 
+//! * avg qual < min qual 
+//! * invalid characters in seq 
+//! * invalid characters in qual 
+//! * `@` not present in first character of the entry 
+//! * `+` not present in the first character of the third line 
 //! 
 
 extern crate getopts;

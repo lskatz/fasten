@@ -17,5 +17,8 @@ jobs:
       - uses: actions-rs/cargo@v1
         with:
           command: build
-          args: --release --all-features
+          #args: --release --all-features
+      - name: tests
+        run: |
+          for i in tests/fasten_*.sh; do echo $i; echo ===; bash $i; echo; done;
 

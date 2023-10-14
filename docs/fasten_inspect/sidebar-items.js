@@ -1,1 +1,1 @@
-initSidebarItems({"fn":[["main",""],["validate_reads",""]]});
+initSidebarItems({"fn":[["main",""],["validate_reads","marks up reads from stdin"]]});
