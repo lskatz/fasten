@@ -54,8 +54,10 @@ use regex::Regex;
 
 use fasten::fasten_base_options;
 use fasten::fasten_base_options_matches;
+use fasten::logmsg;
 
 fn main(){
+    logmsg("NOTE: fasten_validate is deprecated starting in v0.6 in favor of fasten_inspect and fasten_repair");
     let mut opts = fasten_base_options();
     // Options specific to this script
     opts.optopt("","min-length","Minimum read length allowed","INT");

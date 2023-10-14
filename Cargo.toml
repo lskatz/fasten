@@ -1,6 +1,6 @@
 [package]
 name    = "fasten"
-version = "0.5.0"
+version = "0.6.0"
 authors = ["Lee Katz <gzu2@cdc.gov>"]
 #license-file  = "LICENSE"
 license       = "MIT"
@@ -74,6 +74,14 @@ path = "src/bin/fasten_sample.rs"
 [[bin]]
 name = "fasten_validate"
 path = "src/bin/fasten_validate.rs"
+
+[[bin]]
+name = "fasten_inspect"
+path = "src/bin/fasten_inspect.rs"
+
+[[bin]]
+name = "fasten_repair"
+path = "src/bin/fasten_repair.rs"
 
 [[bin]]
 name = "fasten_progress"
