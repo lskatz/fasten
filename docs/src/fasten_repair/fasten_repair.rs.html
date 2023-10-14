@@ -347,22 +347,22 @@
 <span class="doccomment">//!</span>
 <span class="doccomment">//! # Methods of repair</span>
 <span class="doccomment">//!</span>
+<span class="doccomment">//! # Repair mode</span>
+<span class="doccomment">//!</span>
 <span class="doccomment">//! If you choose `--mode repair`, then this is the expected behavior</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! * Mismatched seq and qual lengths: seq or qual length will be truncated</span>
 <span class="doccomment">//! * R1 or R2 not passing: then the other (R1 or R2) will also not pass and they will not be</span>
 <span class="doccomment">//! printed.</span>
 <span class="doccomment">//!</span>
-<span class="doccomment">//! # Panic</span>
+<span class="doccomment">//! # Panic mode</span>
 <span class="doccomment">//!</span>
-<span class="doccomment">//! If the sequences are not repaired but there is still an issue, the program might still panic:</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! * seq length &lt; min length (TODO when implementing PE reads)</span>
-<span class="doccomment">//! * avg qual &lt; min qual (TODO when implementing PE reads)</span>
-<span class="doccomment">//! * invalid characters in seq (TODO when implementing PE reads)</span>
-<span class="doccomment">//! * invalid characters in qual (TODO when implementing PE reads)</span>
-<span class="doccomment">//! * `@` not present in first character of the entry (TODO when implementing PE reads)</span>
-<span class="doccomment">//! * `+` not present in the first character of the third line (TODO when implementing PE reads)</span>
+<span class="doccomment">//! * seq length &lt; min length </span>
+<span class="doccomment">//! * avg qual &lt; min qual </span>
+<span class="doccomment">//! * invalid characters in seq </span>
+<span class="doccomment">//! * invalid characters in qual </span>
+<span class="doccomment">//! * `@` not present in first character of the entry </span>
+<span class="doccomment">//! * `+` not present in the first character of the third line </span>
 <span class="doccomment">//! </span>
 
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">getopts</span>;

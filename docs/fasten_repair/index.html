@@ -18,22 +18,21 @@ Options:
                        Minimum quality allowed
        --remove-info   Remove fasten_inspect headers
    -m, --mode STRING   Either repair or panic. If panic, then the binary will
-                       panic when the first issue comes up. Default:repair</code></pre></div><h2 id="methods-of-repair" class="section-header"><a href="#methods-of-repair">Methods of repair</a></h2>
+                       panic when the first issue comes up. Default:repair</code></pre></div><h2 id="methods-of-repair" class="section-header"><a href="#methods-of-repair">Methods of repair</a></h2><h2 id="repair-mode" class="section-header"><a href="#repair-mode">Repair mode</a></h2>
 <p>If you choose <code>--mode repair</code>, then this is the expected behavior</p>
 <ul>
 <li>Mismatched seq and qual lengths: seq or qual length will be truncated</li>
 <li>R1 or R2 not passing: then the other (R1 or R2) will also not pass and they will not be
 printed.</li>
 </ul>
-<h2 id="panic" class="section-header"><a href="#panic">Panic</a></h2>
-<p>If the sequences are not repaired but there is still an issue, the program might still panic:</p>
+<h2 id="panic-mode" class="section-header"><a href="#panic-mode">Panic mode</a></h2>
 <ul>
-<li>seq length &lt; min length (TODO when implementing PE reads)</li>
-<li>avg qual &lt; min qual (TODO when implementing PE reads)</li>
-<li>invalid characters in seq (TODO when implementing PE reads)</li>
-<li>invalid characters in qual (TODO when implementing PE reads)</li>
-<li><code>@</code> not present in first character of the entry (TODO when implementing PE reads)</li>
-<li><code>+</code> not present in the first character of the third line (TODO when implementing PE reads)</li>
+<li>seq length &lt; min length </li>
+<li>avg qual &lt; min qual </li>
+<li>invalid characters in seq </li>
+<li>invalid characters in qual </li>
+<li><code>@</code> not present in first character of the entry </li>
+<li><code>+</code> not present in the first character of the third line </li>
 </ul>
 </div></details><h2 id="functions" class="small-section-header"><a href="#functions">Functions</a></h2>
 <div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="fn" href="fn.main.html" title="fasten_repair::main fn">main</a></div><div class="item-right docblock-short"></div></div><div class="item-row"><div class="item-left module-item"><a class="fn" href="fn.repair_one_read.html" title="fasten_repair::repair_one_read fn">repair_one_read</a></div><div class="item-right docblock-short"><p>Repair exactly one read</p>
