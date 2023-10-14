@@ -1,6 +1,4 @@
-on: 
-  push:
-    branches: [master,main,unit-test,fasten_normalize]
+on: push
 
 
 name: CI
