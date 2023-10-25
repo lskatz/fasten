@@ -160,7 +160,16 @@ fn trim_worker(seqs:Vec<Seq>, first_base:usize, last_base:usize, tx:std::sync::m
     }
     // The last position is either the last_base parameter
     // or the last position in the string, whichever is less.
-    let last_base_tmp = min(seq.seq.len(), last_base);
+    let last_base_tmp = match last_base {
+        // But if the position is not specified, then it is the seq length
+        0 => {
+            // zero based
+            seq.seq.len()-1
+        },
+        _ => {
+            min(seq.seq.len()-1, last_base)
+        }
+    };
 
     let sequence = &seq.seq[first_base..last_base_tmp];
     let quality  = &seq.qual[first_base..last_base_tmp];

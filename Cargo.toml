@@ -1,6 +1,6 @@
 [package]
 name    = "fasten"
-version = "0.4.4"
+version = "0.6.0"
 authors = ["Lee Katz <gzu2@cdc.gov>"]
 #license-file  = "LICENSE"
 license       = "MIT"
@@ -76,6 +76,14 @@ name = "fasten_validate"
 path = "src/bin/fasten_validate.rs"
 
 [[bin]]
+name = "fasten_inspect"
+path = "src/bin/fasten_inspect.rs"
+
+[[bin]]
+name = "fasten_repair"
+path = "src/bin/fasten_repair.rs"
+
+[[bin]]
 name = "fasten_progress"
 path = "src/bin/fasten_progress.rs"
 
@@ -83,10 +91,14 @@ path = "src/bin/fasten_progress.rs"
 name = "fasten_sort"
 path = "src/bin/fasten_sort.rs"
 
+[[bin]]
+name = "fasten_normalize"
+path = "src/bin/fasten_normalize.rs"
+
 [dependencies]
-regex        = "0.2.10"
+regex        = "1.10"
 getopts      = "0.2.21"
-statistical  = "0.1.1"
+statistical  = "1.0"
 multiqueue   = "0.3.2"
 rand         = "0.4"
 fastq        = "0.6"

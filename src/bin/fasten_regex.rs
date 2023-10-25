@@ -153,14 +153,14 @@ fn main(){
               }
             }, 
             "ID" => {
-              if regex.is_match(&all_seq) {
+              if regex.is_match(&all_id) {
                 true
               } else {
                 false
               }
             },
             "QUAL" => {
-              if regex.is_match(&all_seq) {
+              if regex.is_match(&all_qual) {
                 true
               } else {
                 false

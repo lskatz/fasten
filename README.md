@@ -1,4 +1,3 @@
-[![Build Status](https://travis-ci.org/lskatz/fasten.svg?branch=master)](https://travis-ci.org/lskatz/fasten)
 [![Crates.io](https://img.shields.io/badge/crates.io-v0.1-green.svg)](https://crates.io/crates/fasten)
 
 # Fasten
@@ -36,7 +35,7 @@ After downloading, use the Rust executable `cargo` like so:
 
     cd fasten
     cargo build --release
-    export PATH=$PATH:$(pwd)/fasten/target/release
+    export PATH=$PATH:$(pwd)/target/release
 
 All executables will be in the directory `fasten/target/release`.
 
@@ -72,9 +71,12 @@ This documentation was built with `cargo docs --no-deps`
 |[`fasten_randomize`](https://lskatz.github.io/fasten/fasten_randomize) | Randomizes reads from input |
 |[`fasten_combine`](https://lskatz.github.io/fasten/fasten_combine)   | Combines identical reads and updates quality scores.|
 |[`fasten_kmer`](https://lskatz.github.io/fasten/fasten_kmer)      | Kmer counting.|
+|[`fasten_normalize`](https://lskatz.github.io/fasten/fasten_normalize)      | Normalize read depth by using kmer counting.|
 |[`fasten_sample`](https://lskatz.github.io/fasten/fasten_sample)    | Downsamples reads.|
 |[`fasten_shuffle`](https://lskatz.github.io/fasten/fasten_shuffle)   | Shuffles or deshuffles paired end reads.|
-|[`fasten_validate`](https://lskatz.github.io/fasten/fasten_validate)  | Validates your reads|
+|[`fasten_validate`](https://lskatz.github.io/fasten/fasten_validate)  | Validates your reads (deprecated in favor of `fasten_inspect` and `fasten_repair`|
+|[`fasten_inspect`](https://lskatz.github.io/fasten/fasten_inspect)  | adds information to read IDs such as seqlength |
+|[`fasten_repair`](https://lskatz.github.io/fasten/fasten_repair)  | Repairs corrupted reads |
 |[`fasten_quality_filter`](https://lskatz.github.io/fasten/fasten_quality_filter) | Transforms nucleotides to "N" if the quality is low | |
 |[`fasten_trim`](https://lskatz.github.io/fasten/fasten_trim)      | Blunt-end trims reads | |
 |[`fasten_replace`](https://lskatz.github.io/fasten/fasten_replace)   | Find and replace using regex | |

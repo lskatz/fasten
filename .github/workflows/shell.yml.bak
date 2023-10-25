@@ -1,0 +1,39 @@
+on: 
+  push:
+    branches: [master,benchmarking]
+
+
+name: shell
+
+jobs:
+  build_and_test:
+    name: Rust project
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+      - uses: actions-rs/cargo@v1
+        with:
+          command: build
+          args: --release --all-features
+      - name: shell
+        run: |
+          export PATH=fasten/target/release:$PATH
+          bash tests/fasten_clean.sh
+          bash tests/fasten_combine.sh
+          bash tests/fasten_kmer.sh
+          bash tests/fasten_metrics.sh
+          bash tests/fasten_pe.sh
+          bash tests/fasten_quality_filter.sh
+          bash tests/fasten_randomize.sh
+          bash tests/fasten_regex.sh
+          bash tests/fasten_replace.sh
+          bash tests/fasten_sample.sh
+          bash tests/fasten_shuffle.sh
+          bash tests/fasten_straighten.sh
+          bash tests/fasten_trim.sh
+          bash tests/fasten_validate.sh
+
+

@@ -1,0 +1,67 @@
+on: 
+  push:
+    branches: [master,benchmarking,fasten_normalize]
+
+
+name: benchmarking
+
+jobs:
+  build_and_test:
+    name: Benchmark with ${{matrix.os}} and python ${{ matrix.python-version }}
+    runs-on: ${{matrix.os}}
+    strategy:
+      matrix:
+        os: ["ubuntu-latest"]
+        python-version: ["3.7"]
+    steps:
+      - name: install hyperfine
+        run:  |
+          wget https://github.com/sharkdp/hyperfine/releases/download/v1.13.0/hyperfine-v1.13.0-x86_64-unknown-linux-gnu.tar.gz
+          tar zxvf hyperfine-v1.13.0-x86_64-unknown-linux-gnu.tar.gz
+          echo
+          ls -Fd hyperfine-v1.13.0-x86_64-unknown-linux-gnu/*
+          echo hyperfine-v1.13.0-x86_64-unknown-linux-gnu >> $GITHUB_PATH
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          auto-update-conda: true
+          python-version: ${{ matrix.python-version }}
+          mamba-version: "*"
+          channels: bioconda,conda-forge,defaults
+          activate-environment: benchmarking
+      - name: Conda info
+        shell: bash -l {0}
+        run: conda info
+      - name: create conda env
+        shell: bash -l {0}
+        run:  |
+          conda info
+          conda env list
+          mamba install -n benchmarking seqkit seqtk
+      - name: env
+        shell: bash -l {0}
+        run:  |
+          which seqkit
+          tree -d
+      - uses: actions/checkout@v3
+        with:
+          path: fasten
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+      #- uses: actions-rs/cargo@v1
+      #  with:
+      #    command: build
+      #    args: --release --all-features
+      - name: cargo build
+        run: |
+          cd fasten && cargo build --release
+          tree -d
+          echo "fasten/target/release" >> $GITHUB_PATH
+      - name: benchmark
+        shell: bash -l {0}
+        run:  |
+          export PATH=$PATH:fasten/target/release
+          which fasten_clean
+          bash fasten/tests/10_benchmark.sh
+
+

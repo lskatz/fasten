@@ -27,6 +27,7 @@ fn test_cleanable() {
 
 
 /// A sequence struct that contains the ID, sequence, and quality cigar line
+#[derive(Debug)]
 pub struct Seq {
   pub id:     String,
   pub seq:    String,
