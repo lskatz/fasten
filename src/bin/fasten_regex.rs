@@ -146,26 +146,14 @@ fn main(){
           // Print if it's a match
           let should_print:bool = match the_field.as_str(){
             "SEQ" => {
-              if regex.is_match(&all_seq) {
-                true
-              } else {
-                false
-              }
-            }, 
+                regex.is_match(&all_seq)
+            },
             "ID" => {
-              if regex.is_match(&all_id) {
-                true
-              } else {
-                false
-              }
+                regex.is_match(&all_id)
             },
             "QUAL" => {
-              if regex.is_match(&all_qual) {
-                true
-              } else {
-                false
-              }
-            }
+                regex.is_match(&all_qual)
+            },
             _ => {
               panic!("{} is not a valid key to match on", &the_field);
             }

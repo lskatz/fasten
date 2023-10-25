@@ -29,8 +29,7 @@ use std::fs::File;
 use std::io::BufReader;
 use std::io::BufRead;
 
-use rand::thread_rng;
-use rand::Rng;
+use rand::prelude::*;
 
 use fasten::fasten_base_options;
 use fasten::fasten_base_options_matches;
@@ -61,7 +60,7 @@ fn main(){
         }
     };
 
-    let mut rng = thread_rng();
+    let mut rng = rand::thread_rng();
 
     let my_file = File::open("/dev/stdin").expect("Could not open file");
     let my_buffer=BufReader::new(my_file);
@@ -76,8 +75,9 @@ fn main(){
 
         // Action if we have a full entry when mod 0
         if line_counter % lines_per_read == 0 {
+            let r:f32 = rng.gen();
             // Should we print?
-            if rng.gen_range(0.0,1.0) < frequency {
+            if r < frequency {
                 print!("{}",entry);
             }
             // reset the entry string
