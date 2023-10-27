@@ -15,7 +15,8 @@ hyperfine --export-json=$reportsDir/convertToFasta.json --warmup 2 --shell $SHEL
   -n "Fasten convert" "zcat $large_sorted | fasten_convert -i fastq -o fasta " \
   -n "Seqkit fq2fa -w 0" "zcat $large_sorted | seqkit fq2fa " \
   -n "Seqtk seq -A" "zcat $large_sorted | seqtk seq -A - " \
-  -n "fastx convert" "zcat $large_sorted | fastq_to_fasta -i - -o - -Q33" 
+  -n "fastx convert" "zcat $large_sorted | fastq_to_fasta -i - -o - -Q33" \
+  -n "seqfu cat" "zcat $large_sorted | seqfu cat - --fasta"
 
 plot_whisker.py --title "Converting fastq to fasta (reps=$num_runs)" --output $reportsDir/convertToFasta.json.png $reportsDir/convertToFasta.json
 

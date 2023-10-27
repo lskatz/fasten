@@ -14,7 +14,7 @@ hyperfine --export-json=$reportsDir/sort.json --warmup 2 --shell $SHELL --runs $
   -n "Seqkit sort id" "cat $large_R1 | seqkit sort > /dev/null" \
   -n "Seqkit sort seq" "cat $large_R1 | seqkit sort --by-seq > /dev/null" \
   -n "unix pipe sort id" "cat $large_R1 | paste - - - - | sort -k 1 | tr '\t' '\n' > /dev/null" \
-  -n "unix pipe sort seq" "cat $large_R1 | paste - - - - | sort -k 2 | tr '\t' '\n' > /dev/null" \
+  -n "unix pipe sort seq" "cat $large_R1 | paste - - - - | sort -k 2 | tr '\t' '\n' > /dev/null" 
 
 plot_whisker.py --title "Sort sequences (reps=$num_runs)" --output $reportsDir/sort.json.png $reportsDir/sort.json
 

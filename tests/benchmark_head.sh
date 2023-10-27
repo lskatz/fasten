@@ -11,7 +11,8 @@ export PATH=$thisDir/../target/release:$PATH
 hyperfine --export-json=$reportsDir/straighten.json --warmup 2 --shell $SHELL --runs $num_runs \
   -n "fasten_straighten" "cat $large_R1 | fasten_straighten | head -n 400" \
   -n "seqkit head" "cat $large_R1 | seqkit head --number 100" \
-  -n "seqtk seq straighten" "seqtk seq -l0 $large_R1 | head -n 400"
+  -n "seqtk seq straighten" "seqtk seq -l0 $large_R1 | head -n 400" \
+  -n "seqfu head" "cat $large_R1 | seqfu head --num 100"
 
 plot_whisker.py --title "Get first 100 reads from fastq (reps=$num_runs)" --output $reportsDir/straighten.json.png $reportsDir/straighten.json
 
