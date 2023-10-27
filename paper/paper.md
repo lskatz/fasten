@@ -44,7 +44,7 @@ Benchmarking was performed against other mainstream packages using `hyperfine` u
 
 Documentation, the container, and code are available at GitHub. Benchmarking results were graphed into Figure \autoref{fig:benchmarks}.
 
-![Benchmarks comparing fasten with other analagous tools. From left to right, then to bottom: Trimming with a minimum quality score; Searching for a sequence in a fastq file; sorting fastq entries by either sequence or ID; blunt-end trimming; converting fastq to fasta; normalizing read depth using kmer coverage; downsampling reads; and converting nonstandard fastq files to a format whose entries are four lines each, and selecting the first 100.\label{fig:benchmarks}](benchmarks.png)
+![Benchmarks comparing fasten with other analagous tools. From left to right, then to bottom: Trimming with a minimum quality score; converting fastq to fasta; interleaving R1 and R2 reads; kmer counting; normalizing read depth using kmer coverage; Searching for a sequence in a fastq file; downsampling reads; sorting fastq entries by either sequence or ID; and converting nonstandard fastq files to a format whose entries are four lines each, and selecting the first 100.\label{fig:benchmarks}](benchmarks.png)
 
 ## Conclusions
 
