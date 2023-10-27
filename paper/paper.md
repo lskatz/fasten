@@ -24,6 +24,7 @@ bibliography: paper.bib
 There are still many gaps in basic command line bioinformatics for standard file formats.
 Bioinformaticians have been able to use many tools to manipulate sequence data files in the fastq format, such as `seqkit` [@seqkit], `seqtk` [@seqtk] or FASTX-Toolkit [@fastx].
 These tools only accept paired end (PE) sequence data when split into multiple files per sample.
+Additionally, these tools do not always allow for Unix-style pipe file control. Sometimes they require explicity input/output options instead of using `stdin` and `stdout`.
 However, some bioinformaticians prefer to combine PE data from a single sample into one file using the interleaved fastq file format, but this format is not always well supported in mainstream tools.
 Here, we provide Fasten to the community to address these needs.
 
@@ -41,15 +42,19 @@ Benchmarking was performed against other mainstream packages using `hyperfine` u
 
 ## Results
 
-Documentation, the container, and code are available at GitHub. Benchmarking results were graphed into \autoref{fig:benchmarks}.
+Documentation, the container, and code are available at GitHub. Benchmarking results were graphed into Figure \autoref{fig:benchmarks}.
 
-[!Benchmarks comparing fasten with other analagous tools. From left to right, then to bottom: Trimming with a minimum quality score; Searching for a sequence in a fastq file; sorting fastq entries by either sequence or ID; blunt-end trimming; converting fastq to fasta; normalizing read depth using kmer coverage; downsampling reads; and converting nonstandard fastq files to a format whose entries are four lines each, and selecting the first 100.\label{fig:benchmarks}](benchmarks.png)
+![Benchmarks comparing fasten with other analagous tools. From left to right, then to bottom: Trimming with a minimum quality score; Searching for a sequence in a fastq file; sorting fastq entries by either sequence or ID; blunt-end trimming; converting fastq to fasta; normalizing read depth using kmer coverage; downsampling reads; and converting nonstandard fastq files to a format whose entries are four lines each, and selecting the first 100.\label{fig:benchmarks}](benchmarks.png)
 
 ## Conclusions
 
 Fasten is a powerful manipulation suite for interleaved fastq files, written in Rust.
 We benchmarked Fasten on several categories.
 It has strengths as shown in Figure 1 but it does not occupy the fastest position in all cases.
+Its major strengths include its competetive speeds, 
+Unix-style pipes,
+paired-end handling,
+and the advantages afforded by the Rust language including documentation and stability.
 
 Fasten touts a comprehensive manual, continuous integration, and integration into the command line with unix pipes.
 It is well poised to be a crucial module for daily work on the command line.
