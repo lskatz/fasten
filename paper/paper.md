@@ -38,7 +38,7 @@ There are 20 executables including but not limited to read metric generation, re
 
 We have also taken advantage of Rust to make comprehensive and standardized documentation.
 Continuous integration was implemented in GitHub Actions for unit testing, containerizing, and benchmarking.
-Benchmarking was performed against other mainstream packages using `hyperfine` using 100 replicates and 2 burn-ins [@Peter_hyperfine_2023].
+Benchmarking was performed against other mainstream packages using `hyperfine` using 20 replicates and 2 burn-ins [@Peter_hyperfine_2023].
 
 ## Results
 
@@ -51,7 +51,7 @@ Documentation, the container, and code are available at GitHub. Benchmarking res
 Fasten is a powerful manipulation suite for interleaved fastq files, written in Rust.
 We benchmarked Fasten on several categories.
 It has strengths as shown in Figure 1 but it does not occupy the fastest position in all cases.
-Its major strengths include its competetive speeds, 
+Its major strengths include its competetive speeds,
 Unix-style pipes,
 paired-end handling,
 and the advantages afforded by the Rust language including documentation and stability.
@@ -61,4 +61,6 @@ It is well poised to be a crucial module for daily work on the command line.
 
 ## Acknowledgements
 
-Thank you John Phan for creating the Docker container.
+Thank you, John Phan, for creating the Docker container.
+
+## References
