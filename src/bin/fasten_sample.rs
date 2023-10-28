@@ -29,8 +29,7 @@ use std::fs::File;
 use std::io::BufReader;
 use std::io::BufRead;
 
-use rand::thread_rng;
-use rand::Rng;
+use rand::prelude::*;
 
 use fasten::fasten_base_options;
 use fasten::fasten_base_options_matches;
@@ -61,12 +60,11 @@ fn main(){
         }
     };
 
-    let mut rng = thread_rng();
-
     let my_file = File::open("/dev/stdin").expect("Could not open file");
     let my_buffer=BufReader::new(my_file);
     let mut line_counter =0;
     let mut entry = String::new();
+    let mut randoms :Vec<f32> = vec![];
     for line in my_buffer.lines() {
         // unwrap the line here and shadow-set the variable.
         let line=line.expect("ERROR: did not get a line");
@@ -76,13 +74,28 @@ fn main(){
 
         // Action if we have a full entry when mod 0
         if line_counter % lines_per_read == 0 {
+            if randoms.len() < 1 {
+                randoms = rand_32();
+            }
+            let r:f32 = randoms.pop().unwrap();
             // Should we print?
-            if rng.gen_range(0.0,1.0) < frequency {
+            if r < frequency {
                 print!("{}",entry);
             }
             // reset the entry string
             entry = String::new();
         }
     }
+}
+
+/// Generate a set of random floats
+fn rand_32() -> Vec<f32> {
+  let mut rng = rand::thread_rng();
+
+  let floats :Vec<f32> = (0..10000)
+      .map(|_| rng.gen::<f32>())
+      .collect();
+
+  return floats;
 }
 

@@ -56,8 +56,7 @@ This documentation was built with `cargo docs --no-deps`
 
 ## Other documentation
 
-* Some workflows are shown in the [one-liners](./docs/one-liners.md) page.
-* Some wrapper scripts are noted in the [scripts](./docs/scripts.md) page.
+* Some wrapper scripts are noted in the [scripts](./scripts.md) page.
 
 ## Fasten script descriptions
 
