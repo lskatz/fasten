@@ -4,7 +4,7 @@ name: paper formatting
 jobs:
   immem:
     runs-on: ubuntu-latest
-    name: Paper Draft
+    name: IMMEM Draft
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -28,7 +28,7 @@ jobs:
           path: paper/paper.pdf
   joss:
     runs-on: ubuntu-latest
-    name: Paper Draft
+    name: JOSS Draft
     steps:
       - name: Checkout
         uses: actions/checkout@v2
