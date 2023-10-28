@@ -10,3 +10,12 @@ Cargo.lock
 **/*.rs.bk
 
 tests/hyperfine
+
+paper/*.docx
+paper/*.pptx
+paper/*.html
+
+# vim
+.*.swp
+.*.swo
+
