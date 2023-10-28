@@ -40,7 +40,7 @@ use std::fs::File;
 use std::io::BufReader;
 use std::io::BufRead;
 
-use rand::{Rng,thread_rng};
+use rand::seq::SliceRandom;
 
 use fasten::fasten_base_options;
 use fasten::fasten_base_options_matches;
@@ -83,8 +83,9 @@ fn print_reads_from_stdin(lines_per_read :u32) -> () {
     }
 
     // choose random reads
-    let mut rng = thread_rng();
-    rng.shuffle(&mut seqs);
+    let mut rng = rand::thread_rng();
+    //rng.shuffle(&mut seqs);
+    seqs.shuffle(&mut rng);
     for seq in seqs {
         println!("{}",seq);
     }

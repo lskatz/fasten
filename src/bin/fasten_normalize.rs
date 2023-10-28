@@ -48,7 +48,7 @@ use std::io::BufRead;
 use std::io::stdin;
 use std::io::Stdin;
 use std::cmp::min;
-use rand::Rng;
+use rand::prelude::*;
 
 use fasten::fasten_base_options;
 use fasten::fasten_base_options_matches;
@@ -111,7 +111,7 @@ fn normalize_coverage (stdin:Stdin, target_depth:u32, paired_end:bool) {
         //println!("target depth:{} count:{} num reads:{} = {}", target_depth, count, f.len(), num_reads_to_keep);
         
         // shuffle the reads in place
-        rng.shuffle(&mut f);
+        f.shuffle(&mut rng);
         // take the top X reads
         let reads_to_keep :Vec<&str> = f.splice(0..num_reads_to_keep, vec![]).collect();
 

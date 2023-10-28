@@ -30,7 +30,8 @@ use std::fs::File;
 use std::io::BufReader;
 use std::io::BufRead;
 
-use rand::distributions::{IndependentSample, Range};
+use rand::Rng;
+use rand::seq::SliceRandom;
 
 use fasten::fasten_base_options;
 use fasten::fasten_base_options_matches;
@@ -70,7 +71,6 @@ fn main(){
     //let nts = vec!['a', 'c', 'g', 't'];
 
     // Make this one time outside the loop to keep overhead low
-    //let mut rng = rand::thread_rng();
 
     let my_file = File::open("/dev/stdin").expect("Could not open file");
     let my_buffer=BufReader::new(my_file);
@@ -100,14 +100,11 @@ fn mutate(seq: &str, nts: &Vec<char>, num_snps: u8, mark:bool) -> String {
     if mark {
         sequence.make_ascii_lowercase();
     }
-    let length = sequence.len();
-    let between = Range::new(0, length);
-    let nt_range= Range::new(0, nts.len());
     let mut rng = rand::thread_rng();
     for _ in 0..num_snps {
-        let pos = between.ind_sample(&mut rng);
-        let nt  = nts[nt_range.ind_sample(&mut rng)];
-        sequence[pos] = nt as u8;
+        let pos = rng.gen_range(0..sequence.len());
+        let nt  = nts.choose(&mut rng).unwrap();
+        sequence[pos] = *nt as u8;
     }
     return String::from_utf8_lossy(&sequence).to_string();
 }
