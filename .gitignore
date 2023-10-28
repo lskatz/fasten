@@ -10,4 +10,3 @@ Cargo.lock
 **/*.rs.bk
 
 tests/hyperfine
-
