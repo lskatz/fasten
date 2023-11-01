@@ -42,25 +42,9 @@ Benchmarking was performed against other mainstream packages using `hyperfine` u
 
 ## Results
 
-Documentation, the container, and code are available at GitHub. Benchmarking results were graphed into \autoref{fig:clean} - \autoref{fig:straighten}.
+Documentation, the container, and code are available at GitHub. Benchmarking results were graphed into \autoref{fig:benchmarks}.
 
-![Trimming with a minimum quality score \label{fig:clean}](clean.json.png)
-
-![converting fastq to fasta \label{fig:convertToFasta}](convertToFasta.json.png)
-
-![interleaving R1 and R2 reads \label{fig:interleave}](interleave.json.png)
-
-![kmer counting \label{fig:kmer}](kmer.json.png)
-
-![normalizing read depth using kmer coverage \label{fig:normalize}](normalize.json.png)
-
-![Searching for a sequence in a fastq file \label{fig:regex}](regex.json.png)
-
-![downsampling reads \label{fig:sample}](sample.json.png)
-
-![sorting fastq entries by either sequence or ID \label{fig:sort}](sort.json.png)
-
-![converting nonstandard fastq files to a format whose entries are four lines each, and selecting the first 100 \label{fig:straighten}](straighten.json.png)
+![Benchmarks comparing fasten with other analagous tools. From left to right, then to bottom: Trimming with a minimum quality score; converting fastq to fasta; interleaving R1 and R2 reads; kmer counting; normalizing read depth using kmer coverage; Searching for a sequence in a fastq file; downsampling reads; sorting fastq entries by either sequence or ID; and converting nonstandard fastq files to a format whose entries are four lines each, and selecting the first 100.\label{fig:benchmarks}](benchmarks.png)
 
 ## Conclusions
 
