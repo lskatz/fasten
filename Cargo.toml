@@ -10,10 +10,12 @@ repository    = "https://github.com/lskatz/fasten"
 categories    = ["command-line-utilities", "science"]
 keywords      = ["bioinformatics","fastq","streaming"]
 readme        = "./README.md"
-# Docs have been copied over for the purposes of github pages
-# and should not be included in the package
 exclude = [
+    # Docs have been copied over for the purposes of github pages
+    # and should not be included in the package
     "docs/*",
+    # Do not include the manuscript in the package
+    "paper/*",
 ]
 
 [[bin]]
