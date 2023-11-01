@@ -42,7 +42,7 @@ Benchmarking was performed against other mainstream packages using `hyperfine` u
 
 ## Results
 
-Documentation, the container, and code are available at GitHub. Benchmarking results were graphed into Figures \autoref{fig:clean} - \autoref{fig:straighten}.
+Documentation, the container, and code are available at GitHub. Benchmarking results were graphed into \autoref{fig:clean} - \autoref{fig:straighten}.
 
 ![Trimming with a minimum quality score \label{fig:clean}](clean.json.png)
 
