@@ -1,5 +1,5 @@
 ---
-title: 'Fasten with Pipes'
+title: 'Fasten: a toolkit for streaming operations on fastq files'
 tags:
   - command line
   - fastq manipulation
@@ -12,16 +12,16 @@ authors:
     orcid: 0000-0002-4086-1580
     affiliation: 1
 affiliations:
- - name: Enteric Diseases Laboratory Branch (EDLB), Centers for Disease Control and Prevention, Atlanta, GA, USA
+ - name: Enteric Diseases Laboratory Branch (EDLB), Centers for Disease Control and Prevention, Atlanta, GA, United States of America
    index: 1
- - name: Center for Food Safety, University of Georgia, Griffin, GA, USA
+ - name: Center for Food Safety, University of Georgia, Griffin, GA, United States of America
    index: 2
 bibliography: paper.bib
 ---
 
-## Background
+## Statement of need
 
-There are still many gaps in basic command line bioinformatics for standard file formats.
+There are still many gaps in basic command line tools for the handling of standard file formats in the field of bioinformatics.
 Bioinformaticians have been able to use many tools to manipulate sequence data files in the fastq format, such as `seqkit` [@seqkit], `seqtk` [@seqtk] or FASTX-Toolkit [@fastx].
 These tools only accept paired end (PE) sequence data when split into multiple files per sample.
 Additionally, these tools do not always allow for Unix-style pipe file control. Sometimes they require explicity input/output options instead of using `stdin` and `stdout`.
@@ -42,9 +42,25 @@ Benchmarking was performed against other mainstream packages using `hyperfine` u
 
 ## Results
 
-Documentation, the container, and code are available at GitHub. Benchmarking results were graphed into Figure \autoref{fig:benchmarks}.
+Documentation, the container, and code are available at GitHub. Benchmarking results were graphed into Figures \label{fig:clean} - \label{fig:straighten}.
 
-![Benchmarks comparing fasten with other analagous tools. From left to right, then to bottom: Trimming with a minimum quality score; converting fastq to fasta; interleaving R1 and R2 reads; kmer counting; normalizing read depth using kmer coverage; Searching for a sequence in a fastq file; downsampling reads; sorting fastq entries by either sequence or ID; and converting nonstandard fastq files to a format whose entries are four lines each, and selecting the first 100.\label{fig:benchmarks}](benchmarks.png)
+![Trimming with a minimum quality score \label{fig:clean}](../tests/hyperfine/clean.json.png)
+
+![converting fastq to fasta \label{fig:convertToFasta}](../tests/hyperfine/convertToFasta.json.png)
+
+![interleaving R1 and R2 reads \label{fig:interleave}](../tests/hyperfine/interleave.json.png)
+
+![kmer counting \label{fig:kmer}](../tests/hyperfine/kmer.json.png)
+
+![normalizing read depth using kmer coverage \label{fig:normalize}](../tests/hyperfine/normalize.json.png)
+
+![Searching for a sequence in a fastq file \label{fig:regex}](../tests/hyperfine/regex.json.png)
+
+![downsampling reads \label{fig:sample}](../tests/hyperfine/sample.json.png)
+
+![sorting fastq entries by either sequence or ID \label{fig:sort}](../tests/hyperfine/sort.json.png)
+
+![converting nonstandard fastq files to a format whose entries are four lines each, and selecting the first 100 \label{fig:straighten}](../tests/hyperfine/straighten.json.png)
 
 ## Conclusions
 
