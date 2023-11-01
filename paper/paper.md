@@ -38,29 +38,13 @@ There are 20 executables including but not limited to read metric generation, re
 
 We have also taken advantage of Rust to make comprehensive and standardized documentation.
 Continuous integration was implemented in GitHub Actions for unit testing, containerizing, and benchmarking.
-Benchmarking was performed against other mainstream packages using `hyperfine` using 20 replicates and 2 burn-ins [@Peter_hyperfine_2023].
+Benchmarking was performed against other mainstream packages using `hyperfine` using 100 replicates and 2 burn-ins [@Peter_hyperfine_2023].
 
 ## Results
 
-Documentation, the container, and code are available at GitHub. Benchmarking results were graphed into Figures \label{fig:clean} - \label{fig:straighten}.
+Documentation, the container, and code are available at GitHub. Benchmarking results were graphed into \autoref{fig:benchmarks}.
 
-![Trimming with a minimum quality score \label{fig:clean}](../tests/hyperfine/clean.json.png)
-
-![converting fastq to fasta \label{fig:convertToFasta}](../tests/hyperfine/convertToFasta.json.png)
-
-![interleaving R1 and R2 reads \label{fig:interleave}](../tests/hyperfine/interleave.json.png)
-
-![kmer counting \label{fig:kmer}](../tests/hyperfine/kmer.json.png)
-
-![normalizing read depth using kmer coverage \label{fig:normalize}](../tests/hyperfine/normalize.json.png)
-
-![Searching for a sequence in a fastq file \label{fig:regex}](../tests/hyperfine/regex.json.png)
-
-![downsampling reads \label{fig:sample}](../tests/hyperfine/sample.json.png)
-
-![sorting fastq entries by either sequence or ID \label{fig:sort}](../tests/hyperfine/sort.json.png)
-
-![converting nonstandard fastq files to a format whose entries are four lines each, and selecting the first 100 \label{fig:straighten}](../tests/hyperfine/straighten.json.png)
+![Benchmarks comparing fasten with other analagous tools. From left to right, then to bottom: Trimming with a minimum quality score; converting fastq to fasta; interleaving R1 and R2 reads; kmer counting; normalizing read depth using kmer coverage; Searching for a sequence in a fastq file; downsampling reads; sorting fastq entries by either sequence or ID; and converting nonstandard fastq files to a format whose entries are four lines each, and selecting the first 100.\label{fig:benchmarks}](benchmarks.png)
 
 ## Conclusions
 
