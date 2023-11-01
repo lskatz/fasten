@@ -38,11 +38,11 @@ There are 20 executables including but not limited to read metric generation, re
 
 We have also taken advantage of Rust to make comprehensive and standardized documentation.
 Continuous integration was implemented in GitHub Actions for unit testing, containerizing, and benchmarking.
-Benchmarking was performed against other mainstream packages using `hyperfine` using 20 replicates and 2 burn-ins [@Peter_hyperfine_2023].
+Benchmarking was performed against other mainstream packages using `hyperfine` using 100 replicates and 2 burn-ins [@Peter_hyperfine_2023].
 
 ## Results
 
-Documentation, the container, and code are available at GitHub. Benchmarking results were graphed into Figures \label{fig:clean} - \label{fig:straighten}.
+Documentation, the container, and code are available at GitHub. Benchmarking results were graphed into Figures \autoref{fig:clean} - \autoref{fig:straighten}.
 
 ![Trimming with a minimum quality score \label{fig:clean}](clean.json.png)
 
