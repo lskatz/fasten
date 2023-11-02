@@ -54,9 +54,13 @@ Please see the inline documentation at https://lskatz.github.io/fasten/fasten
 
 This documentation was built with `cargo docs --no-deps`
 
-## Other documentation
+### Other documentation
 
 * Some wrapper scripts are noted in the [scripts](./scripts.md) page.
+
+### Contributing
+
+Instructions for how to contribute can be found in [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Fasten script descriptions
 
