@@ -16,7 +16,7 @@ LABEL maintainer2="John Phan"
 RUN apt-get update
 RUN apt-get install \
         ca-certificates \
-        linux-headers \
+        linux-headers-amd64 \
         git \
         libcurl4-openssl-dev \
         libseccomp-dev 
