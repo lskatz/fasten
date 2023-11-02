@@ -30,6 +30,7 @@ RUN mkdir -p /usr/src/app \
 RUN cd /usr/src/app/fasten && cargo build --release
 
 RUN cd /usr/src/app/fasten \
+    && cargo build \
     && (set -e; for i in tests/fasten*.sh; do bash $i; done;)
 
 # build final container
