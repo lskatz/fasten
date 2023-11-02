@@ -16,11 +16,9 @@ LABEL maintainer2="John Phan"
 RUN apt-get update
 RUN apt-get install \
         ca-certificates \
-        build-base \
         linux-headers \
         git \
-        openssl-dev \
-        util-linux-dev \
+        libcurl4-openssl-dev \
         libseccomp-dev 
 
 RUN mkdir -p /usr/src/app \
