@@ -12,23 +12,27 @@ LABEL license="https://github.com/lskatz/fasten/LICENSE"
 LABEL maintainer="Lee Katz"
 LABEL maintainer.email="gzu2@cdc.gov"
 LABEL maintainer2="John Phan"
+LABEL tag="${SOFTWARE_VER}"
 
-RUN apk update
-RUN apk add --no-cache \
+RUN apt-get update
+RUN apt-get install -y \
         ca-certificates \
-        build-base \
-        linux-headers \
+        linux-headers-amd64 \
         git \
-        openssl-dev \
-        util-linux-dev \
+        bc \
+        libcurl4-openssl-dev \
         libseccomp-dev 
 
 RUN mkdir -p /usr/src/app \
     && cd /usr/src/app \
     && git clone https://github.com/lskatz/fasten \
     && cd /usr/src/app/fasten \
+    && git checkout v${SOFTWARE_VER}
 RUN cd /usr/src/app/fasten && cargo build --release
 
+RUN cd /usr/src/app/fasten \
+    && cargo build \
+    && (set -ex; for i in tests/fasten*.sh; do bash $i; done;)
 
 # build final container
 
