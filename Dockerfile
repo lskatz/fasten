@@ -14,7 +14,7 @@ LABEL maintainer.email="gzu2@cdc.gov"
 LABEL maintainer2="John Phan"
 
 RUN apt-get update
-RUN apt-get install \
+RUN apt-get install -y \
         ca-certificates \
         linux-headers-amd64 \
         git \
