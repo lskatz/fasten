@@ -29,6 +29,8 @@ RUN mkdir -p /usr/src/app \
     && git checkout v${SOFTWARE_VER}
 RUN cd /usr/src/app/fasten && cargo build --release
 
+RUN cd /usr/src/app/fasten \
+    && (set -e; for i in tests/fasten*.sh; do bash $i; done;)
 
 # build final container
 
