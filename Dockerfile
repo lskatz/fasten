@@ -12,6 +12,7 @@ LABEL license="https://github.com/lskatz/fasten/LICENSE"
 LABEL maintainer="Lee Katz"
 LABEL maintainer.email="gzu2@cdc.gov"
 LABEL maintainer2="John Phan"
+LABEL tag="${SOFTWARE_VER}"
 
 RUN apt-get update
 RUN apt-get install -y \
