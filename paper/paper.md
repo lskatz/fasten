@@ -28,7 +28,7 @@ Additionally, these tools do not always allow for Unix-style pipe file control. 
 However, some bioinformaticians prefer to combine PE data from a single sample into one file using the interleaved fastq file format, but this format is not always well supported in mainstream tools.
 Here, we provide Fasten to the community to address these needs.
 
-## Materials
+## Implementation
 
 We leveraged the Cargo packaging system in Rust to create a basic framework for interleaved fastq file manipulation.
 Each executable reads from `stdin` and prints reads to `stdout` and only performs one function at a time.
@@ -36,13 +36,15 @@ The core executables perform these fundamental functions: 1) converting to and f
 
 There are 20 executables including but not limited to read metric generation, read cleaning, kmer counting, read validation, and regular expressions for interleaved fastq files.
 
-We have also taken advantage of Rust to make comprehensive and standardized documentation.
-Continuous integration was implemented in GitHub Actions for unit testing, containerizing, and benchmarking.
-Benchmarking was performed against other mainstream packages using `hyperfine` using 100 replicates and 2 burn-ins [@Peter_hyperfine_2023].
+## Documentation, testing, and benchmarking
 
-## Results
-
-Documentation, the container, and code are available at GitHub. Benchmarking results were graphed into \autoref{fig:benchmarks}.
+Benchmarking scripts, documentation, the container, and code are available at GitHub. Benchmarking results were graphed into \autoref{fig:benchmarks}.
+Analogous subcommands from widely used tools were timed and compared against Fasten using the Hyperfine framework [@Peter_hyperfine_2023].
+Hyperfine options were kept as default, except using 100 replicates and 2 burn-ins.
+We added inline documentation in the Rust code, which helped make comprehensive and standardized documentation.
+Continuous integration was implemented in GitHub Actions for unit testing.
+Each executable is tested to make sure the expected output is obtained with each `git push` event.
+We also used GitHub Actions to automatically create a Docker container which is also available on the GitHub repo.
 
 ![Benchmarks comparing fasten with other analagous tools. From left to right, then to bottom: Trimming with a minimum quality score; converting fastq to fasta; interleaving R1 and R2 reads; kmer counting; normalizing read depth using kmer coverage; Searching for a sequence in a fastq file; downsampling reads; sorting fastq entries by either sequence or ID; and converting nonstandard fastq files to a format whose entries are four lines each, and selecting the first 100.\label{fig:benchmarks}](benchmarks.png)
 
