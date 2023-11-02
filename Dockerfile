@@ -24,8 +24,8 @@ RUN apt-get install -y \
 RUN mkdir -p /usr/src/app \
     && cd /usr/src/app \
     && git clone https://github.com/lskatz/fasten \
-    && git checkout v${SOFTWARE_VER} \
     && cd /usr/src/app/fasten \
+    && git checkout v${SOFTWARE_VER} \
 RUN cd /usr/src/app/fasten && cargo build --release
 
 
