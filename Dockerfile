@@ -19,6 +19,7 @@ RUN apt-get install -y \
         ca-certificates \
         linux-headers-amd64 \
         git \
+        bc \
         libcurl4-openssl-dev \
         libseccomp-dev 
 
@@ -31,7 +32,7 @@ RUN cd /usr/src/app/fasten && cargo build --release
 
 RUN cd /usr/src/app/fasten \
     && cargo build \
-    && (set -e; for i in tests/fasten*.sh; do bash $i; done;)
+    && (set -ex; for i in tests/fasten*.sh; do bash $i; done;)
 
 # build final container
 
