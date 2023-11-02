@@ -1,4 +1,4 @@
-FROM rust:1.59.0-alpine3.14 as builder 
+FROM rust:1.73.0-alpine3.14 as builder 
 
 ARG SOFTWARE_VER="0.4"
 
