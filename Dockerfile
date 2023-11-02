@@ -1,6 +1,6 @@
 FROM rust:1.73.0-bullseye as builder 
 
-ARG SOFTWARE_VER="0.4"
+ARG SOFTWARE_VER="0.7.2"
 
 LABEL base.image="alpine-3.14"
 LABEL dockerfile.version="1"
