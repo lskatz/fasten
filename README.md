@@ -1,4 +1,4 @@
-[![Crates.io](https://img.shields.io/badge/crates.io-v0.1-green.svg)](https://crates.io/crates/fasten)
+[![Crates.io](https://img.shields.io/crates/v/fasten)](https://crates.io/crates/fasten)
 
 # Fasten
 
