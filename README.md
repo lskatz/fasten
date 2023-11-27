@@ -29,6 +29,8 @@ _etc_
 
 ## Installation
 
+### Installation from source
+
 Fasten is programmed in the Rust programming language.  More information about Rust, including installation and the executable `cargo`, can be found at [rust-lang.org](https://www.rust-lang.org).
 
 After downloading, use the Rust executable `cargo` like so:
@@ -38,6 +40,14 @@ After downloading, use the Rust executable `cargo` like so:
     export PATH=$PATH:$(pwd)/target/release
 
 All executables will be in the directory `fasten/target/release`.
+
+### Installation without `git`
+
+You can also install Fasten straight from <https://crates.io> using the following command: 
+
+    cargo install fasten
+
+Detailed information on how this works can be found in the cargo handbook at <https://doc.rust-lang.org/cargo/commands/cargo-install.html>.
 
 ## General usage
 
