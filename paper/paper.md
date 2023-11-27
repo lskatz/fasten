@@ -22,7 +22,7 @@ bibliography: paper.bib
 ## Statement of need
 
 There are still many gaps in basic command line tools for the handling of standard file formats in the field of bioinformatics.
-Bioinformaticians have been able to use many tools to manipulate sequence data files in the fastq format, such as `seqkit` [@seqkit], `seqtk` [@seqtk], FASTX-Toolkit [@fastx], or `seqfu` [@seqfu].
+Bioinformaticians have been able to use many tools to manipulate sequence data files in the fastq format, such as `seqkit` [@seqkit], `seqtk` [@seqtk], FASTX-Toolkit [@fastx], `seqfu` [@seqfu], `jellyfish` [@marcais2012jellyfish], or BBTools [@bushnell2014bbmap].
 These tools only accept paired-end (PE) sequence data when split into multiple files per sample.
 Additionally, these tools do not always allow for Unix-style pipe file control. Sometimes they require explicitly input/output options instead of using `stdin` and `stdout`.
 However, some bioinformaticians prefer to combine PE data from a single sample into one file using the interleaved fastq file format, but this format is not always well supported in mainstream tools.
