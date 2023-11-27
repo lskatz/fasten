@@ -2,7 +2,9 @@
 
 # Fasten
 
-Perform random operations on fastq files, using unix streaming.  Secure your analysis with Fasten!
+A powerful manipulation suite for interleaved fastq files.
+Executables can read/write to `stdin` and `stdout`, and they are compatible with the interleaved fastq format.
+This makes it much easier to perform streaming operations using unix pipes.
 
 ## Synopsis
 
