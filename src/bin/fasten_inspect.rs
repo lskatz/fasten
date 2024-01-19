@@ -61,7 +61,7 @@ use fasten::fasten_base_options_matches;
 fn main(){
     let opts = fasten_base_options();
     // Options specific to this script
-    // opts.optflag("","paired-end","The reads are interleaved paired-end");
+    //opts.optflag("","paired-end","The reads are interleaved paired-end");
 
     let matches = fasten_base_options_matches("Marks up your reads with useful information like read length", opts);
 
@@ -112,6 +112,7 @@ fn validate_reads(lines_per_read: u8, seq_regex: regex::Regex, qual_regex: regex
         qual.clear();
         my_buffer.read_line(&mut qual).expect("ERROR: failed to read 'qual' line");
         id   = id.trim().to_string();
+         
         seq  = seq.trim().to_string();
         plus = plus.trim().to_string();
         qual = qual.trim().to_string();
@@ -119,6 +120,10 @@ fn validate_reads(lines_per_read: u8, seq_regex: regex::Regex, qual_regex: regex
         // Test ID
         if id.chars().nth(0).unwrap() == '@' {
             id = format!("{} id-at:1", &id);
+        } else if id.chars().nth(0).unwrap() == '>' {
+            // FASTA: Not supported (exit with error)
+            fasten::logmsg("ERROR: FASTA is not supported. Please use FASTQ.");
+            std::process::exit(1);
         } else {
             id = format!("{} id-at:0", &id);
         }
