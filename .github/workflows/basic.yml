@@ -16,7 +16,7 @@ jobs:
         with:
           command: build
           #args: --release --all-features
-      - build
+      - name: build
         run: |
           make releasae
           make debug
