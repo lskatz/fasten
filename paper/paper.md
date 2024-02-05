@@ -46,13 +46,13 @@ Continuous integration was implemented in GitHub Actions for unit testing.
 Each executable is tested to make sure the expected output is obtained with each `git push` event.
 We also used GitHub Actions to automatically create a Docker container which is also available on the GitHub repo.
 
-![Benchmarks comparing fasten with other analogous tools. From left to right, then to bottom: Trimming with a minimum quality score; converting fastq to fasta; interleaving R1 and R2 reads; kmer counting; normalizing read depth using kmer coverage; Searching for a sequence in a fastq file; downsampling reads; sorting fastq entries by either sequence or ID; and converting nonstandard fastq files to a format whose entries are four lines each, and selecting the first 100.\label{fig:benchmarks}](benchmarks.png)
+![Benchmarks comparing fasten with other analogous tools. From left to right, then to bottom: Trimming with a minimum quality score; converting fastq to fasta; interleaving R1 and R2 reads; kmer counting; normalizing read depth using kmer coverage; searching for a sequence in a fastq file; downsampling reads; sorting fastq entries by either sequence or ID; and converting nonstandard fastq files to a format whose entries are four lines each, and selecting the first 100.\label{fig:benchmarks}](benchmarks.png)
 
 ## Conclusions
 
 Fasten is a powerful manipulation suite for interleaved fastq files, written in Rust.
 We benchmarked Fasten on several categories.
-It has strengths as shown in Figure 1 but it does not occupy the fastest position in all cases.
+It exhibits strengths as shown in Figure 1 but it does not consistently hold the fastest position in all cases.
 Its major strengths include its competitive speeds,
 Unix-style pipes,
 paired-end handling,
