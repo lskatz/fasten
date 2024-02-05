@@ -9,6 +9,7 @@
 //! ## Usage
 //!
 //! ```text
+//! 
 //! fasten_mutate: Introduces point mutations randomly. There is no
 //! evolutionary model; multiple hits are allowed. Therefore,
 //! the number of SNPs through --snps is an upper
