@@ -1,6 +1,6 @@
-[![Crates.io](https://img.shields.io/crates/v/fasten)](https://crates.io/crates/fasten)
-
 # Fasten
+
+[![Crates.io](https://img.shields.io/crates/v/fasten)](https://crates.io/crates/fasten)
 
 A powerful manipulation suite for interleaved fastq files.
 Executables can read/write to `stdin` and `stdout`, and they are compatible with the interleaved fastq format.
@@ -9,7 +9,7 @@ This makes it much easier to perform streaming operations using unix pipes.
 ## Synopsis
 
 ### read metrics
- 
+
     $ cat testdata/R1.fastq testdata/R2.fastq | \
         fasten_shuffle | fasten_metrics | column -t
     totalLength  numReads  avgReadLength  avgQual
@@ -27,8 +27,6 @@ This makes it much easier to perform streaming operations using unix pipes.
     800          8         100            19.53875
     # No reads were actually filtered with cleaning, with --min-length=2
 
-_etc_
-
 ## Installation
 
 ### Installation from source
@@ -43,7 +41,7 @@ After downloading, use the Rust executable `cargo` like so:
 
 All executables will be in the directory `fasten/target/release`.
 
-_note_: there are some `Makefile` methods to help including 
+_note_: there are some `Makefile` methods to help including
 
 * `make all` to make the following
   * `make release` install fast executables
@@ -51,10 +49,9 @@ _note_: there are some `Makefile` methods to help including
   * `make fasten/doc` compile lastest documents
 * `make clean` uninstall local binaries
 
-
 ### Installation without `git`
 
-You can also install Fasten straight from <https://crates.io> using the following command: 
+You can also install Fasten straight from <https://crates.io> using the following command:
 
     cargo install fasten
 
@@ -71,7 +68,7 @@ All scripts accept the parameters, read uncompressed fastq format from stdin, an
 
 ## Documentation
 
-Please see the inline documentation at https://lskatz.github.io/fasten/fasten
+Please see the inline documentation at <https://lskatz.github.io/fasten/fasten>
 
 This documentation was built with `cargo docs --no-deps`
 
@@ -121,4 +118,3 @@ that indicates that you are securing your analysis by "fasten"ing it (with a sil
 ## Acknowledgements
 
 Thank you Henk Den Bakker for many helpful discussions around Rust, helping me name this software, and many other things.
-
