@@ -19,3 +19,10 @@ paper/*.html
 .*.swp
 .*.swo
 
+# Some files that are made during testing
+fasten.sif
+testdata/R1.large.fastq
+testdata/R2.large.fastq
+testdata/shuffled.large.fastq.gz
+testdata/shuffled.sorted.fastq.gz
+
