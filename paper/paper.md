@@ -32,7 +32,7 @@ Here, we provide Fasten to the community to address these needs.
 
 We leveraged the Cargo packaging system in Rust to create a basic framework for interleaved fastq file manipulation.
 Each executable reads from `stdin` and prints reads to `stdout` and only performs one function at a time.
-The core executables perform these fundamental functions: 1) converting to and from interleaved format, 2) converting to and from other sequence file formats, 3) ‘straightening’ fastq files to a more standard 4-line-per-entry format.
+The core executables perform these fundamental functions: 1) converting to and from interleaved format, 2) converting to and from other sequence file formats, and 3) ‘straightening’ fastq files to a more standard 4-line-per-entry format.
 
 There are 20 executables including but not limited to read metric generation, read cleaning, kmer counting, read validation, and regular expressions for interleaved fastq files.
 
