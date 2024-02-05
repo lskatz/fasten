@@ -18,7 +18,7 @@ jobs:
           #args: --release --all-features
       - name: build
         run: |
-          make releasae
+          make release
           make debug
       - name: tests
         run: |
