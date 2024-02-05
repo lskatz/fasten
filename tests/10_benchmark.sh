@@ -5,6 +5,13 @@ set -e
 thisDir=$(dirname $0);
 export PATH=$thisDir/../target/release:$PATH
 
+# Check whether hyperfine is installed
+if ! command -v hyperfine &> /dev/null
+then
+    echo "hyperfine could not be found. It is required for benchmarking."
+    exit
+fi
+
 # Hyperfine parameters
 # Locally, just run one time per test but in the cloud, boost it to ten
 num_runs=10
