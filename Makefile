@@ -5,7 +5,7 @@ DEBUG_BINS := $(patsubst src/bin/%.rs, target/debug/%, $(wildcard src/bin/*.rs))
 # Bins: src/bin/*.rs -> target/release/*
 RELEASE_BINS := $(patsubst src/bin/%.rs, target/release/%, $(wildcard src/bin/*.rs))
 
-all: $(DEBUG_BINS) $(DEBUG_LIBS)
+all: $(DEBUG_BINS) $(DEBUG_LIBS) fasten/doc
 
 release: $(RELEASE_BINS)
 
@@ -28,11 +28,17 @@ test: $(DEBUG_BINS)
 		fi; \
 	done
 
+target/doc: 
+	cargo doc --no-deps
+
 # Clean target: removes the target directories if they exist
 clean:
 	if [[ -e ./target/debug ]]; then \
 		rm -rf ./target/debug; \
 	fi
-		if [[ -e ./target/release ]]; then \
+	if [[ -e ./target/release ]]; then \
 		rm -rf ./target/release; \
+	fi
+	if [[ -e ./target/doc ]]; then \
+		rm -rf ./target/doc; \
 	fi

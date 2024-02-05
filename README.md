@@ -43,6 +43,15 @@ After downloading, use the Rust executable `cargo` like so:
 
 All executables will be in the directory `fasten/target/release`.
 
+_note_: there are some `Makefile` methods to help including 
+
+* `make all` to make the following
+  * `make release` install fast executables
+  * `make debug` install executables quickly (although the executables will not be optimized)
+  * `make fasten/doc` compile lastest documents
+* `make clean` uninstall local binaries
+
+
 ### Installation without `git`
 
 You can also install Fasten straight from <https://crates.io> using the following command: 
