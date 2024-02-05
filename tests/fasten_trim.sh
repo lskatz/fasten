@@ -10,7 +10,7 @@ if [ "$reads_not_trimmed" != "$original_reads" ]; then
   exit 1
 fi
 
-onebase=$(./target/debug/fasten_trim --first-base 3 --last-base 4 < testdata/four_reads.pe.fastq | perl -lane 'print if($i++ % 4 == 1);' | paste -sd'_')
+onebase=$(./target/debug/fasten_trim --first-base 3 --last-base 4 < testdata/four_reads.pe.fastq | perl -lane 'print if($i++ % 4 == 1);' |awk 'NR > 1 { printf "_"; } { printf $1; } END { printf "\n"; }')
 shouldbe="T_T_G_A_C_A_C_A"
 if [ "$onebase" != "$shouldbe" ]; then
   echo "ERROR trimming to the third base"
