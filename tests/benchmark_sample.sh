@@ -13,5 +13,5 @@ hyperfine --export-json=$reportsDir/sample.json --warmup 2 --shell $SHELL --runs
   -n "Seqtk sample" "seqtk seq -f 0.1 $large_R1" \
   -n "Seqfu sample" "seqfu cat --skip 10 $large_R1"; 
 
-plot_whisker.py --title "subsample reads (reps=$num_runs)" --labels "fasten sample,seqkit sample,seqtk sample" --output $reportsDir/sample.json.png $reportsDir/sample.json
+plot_whisker.py --title "subsample reads (reps=$num_runs)" --labels "fasten sample,seqkit sample,seqtk sample,seqfu cat" --output $reportsDir/sample.json.png $reportsDir/sample.json
 

@@ -51,6 +51,7 @@ zcat $large_interleaved | fasten_sort --sort-by GC --paired-end | gzip -c > $lar
 
 which bbnorm.sh
 which fasten_clean
+which seqfu
 
 # Version information
 seqtk 2>&1 | grep -i version | sed 's/^/seqtk /'
@@ -58,5 +59,9 @@ seqkit version | grep -m 1 v
 fasten_clean --version
 fastq_to_fasta -h | grep "Part of FASTX"
 bbnorm.sh version 2>&1 | grep 'BBMap version'
+seqfu --version
 
+# hyperfine
+which hyperfine
+which plot_whisker.py || echo "WARNING: plot_whisker.py from hyperfine not found in path: will not be able to plot graphs."
 
