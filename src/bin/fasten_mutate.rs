@@ -9,17 +9,24 @@
 //! ## Usage
 //!
 //! ```text
+//! fasten_mutate: Introduces point mutations randomly. There is no
+//! evolutionary model; multiple hits are allowed. Therefore,
+//! the number of SNPs through --snps is an upper
+//! limit.
 //! 
-//! Usage: fasten_mutate [-h] [-n INT] [-p] [-v] [-s INT] [-m]
+//! Usage: fasten_mutate [-h] [-n INT] [-p] [--verbose] [--version] [-s INT] [-m]
 //! 
 //! Options:
 //!     -h, --help          Print this help menu.
 //!     -n, --numcpus INT   Number of CPUs (default: 1)
 //!     -p, --paired-end    The input reads are interleaved paired-end
-//!     -v, --verbose       Print more status messages
-//!     -s, --snps INT      Number of SNPs (point mutations) to include per read.
+//!         --verbose       Print more status messages
+//!         --version       Print the version of Fasten and exit
+//!     -s, --snps INT      Maximum number of SNPs (point mutations) to include
+//!                         per read.
 //!     -m, --mark          lowercase all reads but uppercase the SNPs (not yet
 //!                         implemented)
+//! 
 //! ```
 
 extern crate getopts;
@@ -37,14 +44,20 @@ use fasten::fasten_base_options;
 use fasten::fasten_base_options_matches;
 use fasten::logmsg;
 
+use regex::Regex;
 
 fn main(){
     let mut opts = fasten_base_options();
     // Options specific to this script
-    opts.optopt("s", "snps", "Number of SNPs (point mutations) to include per read.", "INT");
+    opts.optopt("s", "snps", "Maximum number of SNPs (point mutations) to include per read.", "INT");
     opts.optflag("m", "mark", "lowercase all reads but uppercase the SNPs (not yet implemented)");
 
-    let matches = fasten_base_options_matches("Mutates reads. There is no mutation model; only randomness.", opts);
+    let description = "Introduces point mutations randomly. There is no evolutionary model; multiple hits are allowed. Therefore, the number of SNPs through --snps is an upper limit."
+                      .to_string();
+    let regex = Regex::new(r"(.{1,60}\s+)").unwrap();
+    let wrapped_description = regex.replace_all(&description, "$1\n");
+
+    let matches = fasten_base_options_matches(&wrapped_description, opts);
 
     if matches.opt_present("paired-end") {
         logmsg("WARNING: --paired-end is not utilized in this script");
