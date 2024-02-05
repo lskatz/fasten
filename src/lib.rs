@@ -141,11 +141,11 @@ pub fn fasten_base_options_matches(brief:&str, opts:Options) -> Matches{
             .file_stem().unwrap()
             .to_str().unwrap();
         println!("{}: {}\n\n{}", 
-                 &prog_name,
-                 &brief,
-                 &opts.usage(
-                     &opts.short_usage(&prog_name)
-                 ),
+            &prog_name,
+            &brief,
+            &opts.usage(
+                &opts.short_usage(&prog_name)
+            ),
         );
         std::process::exit(0);
     }

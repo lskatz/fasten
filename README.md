@@ -85,7 +85,10 @@ Instructions for how to contribute can be found in [CONTRIBUTING.md](CONTRIBUTIN
 
 ## Fasten script descriptions
 
-|script             |Description|
+All executables read and write in the fastq format
+except `fasten_convert`.
+
+|executable         |Description|
 |-------------------|-----------|
 |[`fasten_clean`](https://lskatz.github.io/fasten/fasten_clean)     | Trims and cleans a fastq file.|
 |[`fasten_convert`](https://lskatz.github.io/fasten/fasten_convert)   | Converts between different sequence formats like fastq, sam, fasta.|
