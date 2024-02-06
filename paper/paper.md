@@ -8,14 +8,19 @@ authors:
   - name: Lee S. Katz
     affiliation: "1, 2"
     orcid: 0000-0002-2533-9161
+  - name: John Phan
+    affiliation: 3
+    orcid: 0000-0002-4670-2660
   - name: Henk C. den Bakker
-    orcid: 0000-0002-4086-1580
     affiliation: 1
+    orcid: 0000-0002-4086-1580
 affiliations:
- - name: Enteric Diseases Laboratory Branch (EDLB), Centers for Disease Control and Prevention, Atlanta, GA, United States of America
-   index: 1
- - name: Center for Food Safety, University of Georgia, Griffin, GA, United States of America
-   index: 2
+  - name: Enteric Diseases Laboratory Branch (EDLB), Centers for Disease Control and Prevention, Atlanta, GA, United States of America
+    index: 1
+  - name: Center for Food Safety, University of Georgia, Griffin, GA, United States of America
+    index: 2
+  - name: General Dynamics Information Technology Inc., Atlanta, GA, United States of America
+    index: 3 
 bibliography: paper.bib
 ---
 
