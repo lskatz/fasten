@@ -66,8 +66,4 @@ and the advantages afforded by the Rust language including documentation and sta
 Fasten touts a comprehensive manual, continuous integration, and integration into the command line with unix pipes.
 It is well poised to be a crucial module for daily work on the command line.
 
-## Acknowledgements
-
-Thank you, John Phan, for creating the Docker container.
-
 ## References
