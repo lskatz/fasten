@@ -117,6 +117,8 @@ Many of these scripts have inspiration from the fastx toolkit, and I wanted to m
 Therefore I cycled through other letters of the alphabet and came across "N."  So it is possible to pronounce this project like "Fast-N" or in a way
 that indicates that you are securing your analysis by "fasten"ing it (with a silent T).
 
-## Acknowledgements
+## Citation
 
-Thank you Henk Den Bakker for many helpful discussions around Rust, helping me name this software, and many other things.
+[![DOI](https://joss.theoj.org/papers/10.21105/joss.06030/status.svg)](https://doi.org/10.21105/joss.06030)
+
+To cite, please refer to Katz et al., (2024). Fasten: a toolkit for streaming operations on fastq files. Journal of Open Source Software, 9(94), 6030, https://doi.org/10.21105/joss.06030
