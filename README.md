@@ -1,6 +1,7 @@
 # Fasten
 
 [![Crates.io](https://img.shields.io/crates/v/fasten)](https://crates.io/crates/fasten)
+[![DOI](https://joss.theoj.org/papers/10.21105/joss.06030/status.svg)](https://doi.org/10.21105/joss.06030)
 
 A powerful manipulation suite for interleaved fastq files.
 Executables can read/write to `stdin` and `stdout`, and they are compatible with the interleaved fastq format.
