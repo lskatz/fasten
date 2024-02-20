@@ -246,7 +246,7 @@ fn sort_entries (unsorted:Vec<Seq>, which_field:&str, reverse_sort:bool) -> Vec<
                 a_seq.cmp(&b_seq)
             });
         },
-        "GC"  => {
+        "GC" | "CG"  => {
             sorted.sort_by(|a,b| {
                 let a_seq = format!("{}{}", a.seq1, a.seq2);
                 let b_seq = format!("{}{}", b.seq1, b.seq2);
@@ -255,6 +255,34 @@ fn sort_entries (unsorted:Vec<Seq>, which_field:&str, reverse_sort:bool) -> Vec<
                 let b_gc:f32  = b_seq.matches(&['G','g','C','c']).count() as f32 / b_seq.len() as f32;
                 //logmsg(format!("{} ({}) <=> {} ({})", a.id1, a_gc, b.id1, b_gc));
                 a_gc.partial_cmp(&b_gc).unwrap()
+            });
+        },
+        "A" | "C" | "G" | "T" | "N"  => {
+            let nt_lowercase = which_field.to_lowercase().chars().next().unwrap_or('\0');
+            let nt_uppercase = which_field.to_uppercase().chars().next().unwrap_or('\0');
+            let my_nts = vec![nt_uppercase, nt_lowercase];
+
+            sorted.sort_by(|a,b| {
+                let a_seq = format!("{}{}", a.seq1, a.seq2);
+                let b_seq = format!("{}{}", b.seq1, b.seq2);
+
+                let mut a_count: usize = 0;
+                let mut b_count: usize = 0;
+
+                for nt in &my_nts {
+                    for c in a_seq.chars() {
+                        if nt == &c {
+                            a_count += 1;
+                        }
+                    }
+                    for c in b_seq.chars() {
+                        if nt == &c {
+                            b_count += 1;
+                        }
+                    }
+                }
+
+                a_count.cmp(&b_count)
             });
         },
         _   => {
