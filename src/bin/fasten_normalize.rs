@@ -38,6 +38,29 @@
 //!     -t, --target-depth INT
 //!                         The target depth of kmer.
 //! ```
+//!
+//! # Algorithm
+//! 
+//! `fasten_normalize` will downsample reads pertaining to each kmer.
+//! For example, if `AAAA` is found in the `fasten_kmer` output 100
+//! times, but you request 10x coverage, it will remove 90% of the 
+//! reads pertaining to `AAAA`.
+//!
+//! Specifically:
+//!
+//! 1. `fasten_kmer` shows reads that begin with that kmer
+//! 2. `fasten_kmer` shows extra columns with R1/R2 if R1 begins with that kmer.
+//! If more than one read or read pair begins with that kmer, it will be displayed in
+//! subsequent columns.
+//! 3. `fasten_normalize` randomly selects reads that begin with that kmer
+//! and brings the number of reads down to that target coverage.
+//!
+//! # Choosing the correct k
+//!
+//! Choose a kmer length that is unique enough in the genome
+//! but that will not be long enough to run into read-level errors.
+//! In the examples above, k=3 is likely very short.
+//! Starting with something like k=31 is probably a good start.
     
 extern crate fasten;
 extern crate getopts;
