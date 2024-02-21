@@ -1,363 +1,359 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src&#x2F;bin&#x2F;fasten_inspect.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>fasten_inspect.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script src="../../crates.js"></script><script defer src="../../main.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script>
-    <noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu" role="button">&#9776;</div><a class="sidebar-logo" href="../../fasten_inspect/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.png" alt="logo"></div>
-        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../fasten_inspect/index.html"><img class="rust-logo" src="../../rust-logo.png" alt="logo"></a><nav class="sub"><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="18" height="18" alt="Pick another theme!" src="../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../settings.html" title="settings"><img width="18" height="18" alt="Change settings" src="../../wheel.svg"></a></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">  1</span>
-<span id="2">  2</span>
-<span id="3">  3</span>
-<span id="4">  4</span>
-<span id="5">  5</span>
-<span id="6">  6</span>
-<span id="7">  7</span>
-<span id="8">  8</span>
-<span id="9">  9</span>
-<span id="10"> 10</span>
-<span id="11"> 11</span>
-<span id="12"> 12</span>
-<span id="13"> 13</span>
-<span id="14"> 14</span>
-<span id="15"> 15</span>
-<span id="16"> 16</span>
-<span id="17"> 17</span>
-<span id="18"> 18</span>
-<span id="19"> 19</span>
-<span id="20"> 20</span>
-<span id="21"> 21</span>
-<span id="22"> 22</span>
-<span id="23"> 23</span>
-<span id="24"> 24</span>
-<span id="25"> 25</span>
-<span id="26"> 26</span>
-<span id="27"> 27</span>
-<span id="28"> 28</span>
-<span id="29"> 29</span>
-<span id="30"> 30</span>
-<span id="31"> 31</span>
-<span id="32"> 32</span>
-<span id="33"> 33</span>
-<span id="34"> 34</span>
-<span id="35"> 35</span>
-<span id="36"> 36</span>
-<span id="37"> 37</span>
-<span id="38"> 38</span>
-<span id="39"> 39</span>
-<span id="40"> 40</span>
-<span id="41"> 41</span>
-<span id="42"> 42</span>
-<span id="43"> 43</span>
-<span id="44"> 44</span>
-<span id="45"> 45</span>
-<span id="46"> 46</span>
-<span id="47"> 47</span>
-<span id="48"> 48</span>
-<span id="49"> 49</span>
-<span id="50"> 50</span>
-<span id="51"> 51</span>
-<span id="52"> 52</span>
-<span id="53"> 53</span>
-<span id="54"> 54</span>
-<span id="55"> 55</span>
-<span id="56"> 56</span>
-<span id="57"> 57</span>
-<span id="58"> 58</span>
-<span id="59"> 59</span>
-<span id="60"> 60</span>
-<span id="61"> 61</span>
-<span id="62"> 62</span>
-<span id="63"> 63</span>
-<span id="64"> 64</span>
-<span id="65"> 65</span>
-<span id="66"> 66</span>
-<span id="67"> 67</span>
-<span id="68"> 68</span>
-<span id="69"> 69</span>
-<span id="70"> 70</span>
-<span id="71"> 71</span>
-<span id="72"> 72</span>
-<span id="73"> 73</span>
-<span id="74"> 74</span>
-<span id="75"> 75</span>
-<span id="76"> 76</span>
-<span id="77"> 77</span>
-<span id="78"> 78</span>
-<span id="79"> 79</span>
-<span id="80"> 80</span>
-<span id="81"> 81</span>
-<span id="82"> 82</span>
-<span id="83"> 83</span>
-<span id="84"> 84</span>
-<span id="85"> 85</span>
-<span id="86"> 86</span>
-<span id="87"> 87</span>
-<span id="88"> 88</span>
-<span id="89"> 89</span>
-<span id="90"> 90</span>
-<span id="91"> 91</span>
-<span id="92"> 92</span>
-<span id="93"> 93</span>
-<span id="94"> 94</span>
-<span id="95"> 95</span>
-<span id="96"> 96</span>
-<span id="97"> 97</span>
-<span id="98"> 98</span>
-<span id="99"> 99</span>
-<span id="100">100</span>
-<span id="101">101</span>
-<span id="102">102</span>
-<span id="103">103</span>
-<span id="104">104</span>
-<span id="105">105</span>
-<span id="106">106</span>
-<span id="107">107</span>
-<span id="108">108</span>
-<span id="109">109</span>
-<span id="110">110</span>
-<span id="111">111</span>
-<span id="112">112</span>
-<span id="113">113</span>
-<span id="114">114</span>
-<span id="115">115</span>
-<span id="116">116</span>
-<span id="117">117</span>
-<span id="118">118</span>
-<span id="119">119</span>
-<span id="120">120</span>
-<span id="121">121</span>
-<span id="122">122</span>
-<span id="123">123</span>
-<span id="124">124</span>
-<span id="125">125</span>
-<span id="126">126</span>
-<span id="127">127</span>
-<span id="128">128</span>
-<span id="129">129</span>
-<span id="130">130</span>
-<span id="131">131</span>
-<span id="132">132</span>
-<span id="133">133</span>
-<span id="134">134</span>
-<span id="135">135</span>
-<span id="136">136</span>
-<span id="137">137</span>
-<span id="138">138</span>
-<span id="139">139</span>
-<span id="140">140</span>
-<span id="141">141</span>
-<span id="142">142</span>
-<span id="143">143</span>
-<span id="144">144</span>
-<span id="145">145</span>
-<span id="146">146</span>
-<span id="147">147</span>
-<span id="148">148</span>
-<span id="149">149</span>
-<span id="150">150</span>
-<span id="151">151</span>
-<span id="152">152</span>
-<span id="153">153</span>
-<span id="154">154</span>
-<span id="155">155</span>
-<span id="156">156</span>
-<span id="157">157</span>
-<span id="158">158</span>
-<span id="159">159</span>
-<span id="160">160</span>
-<span id="161">161</span>
-<span id="162">162</span>
-<span id="163">163</span>
-<span id="164">164</span>
-<span id="165">165</span>
-<span id="166">166</span>
-<span id="167">167</span>
-<span id="168">168</span>
-<span id="169">169</span>
-<span id="170">170</span>
-<span id="171">171</span>
-<span id="172">172</span>
-<span id="173">173</span>
-<span id="174">174</span>
-<span id="175">175</span>
-<span id="176">176</span>
-<span id="177">177</span>
-<span id="178">178</span>
-<span id="179">179</span>
-</pre><pre class="rust"><code><span class="doccomment">//! Marks up your reads with useful information like read length</span>
-<span class="doccomment">//! </span>
-<span class="doccomment">//! # Examples</span>
-<span class="doccomment">//! </span>
-<span class="doccomment">//! ## Quick validation with stderr message</span>
-<span class="doccomment">//! ```bash</span>
-<span class="doccomment">//! cat file.fastq | fasten_inspect &gt; markedup.fastq</span>
-<span class="doccomment">//! cat file.fastq | fasten_inspect --paired-end &gt; markedup-paired.fastq</span>
-<span class="doccomment">//! ```</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! The resulting marked-up fastq file will have deflines like</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! ```text</span>
-<span class="doccomment">//! @read0/1 id-at:1 seq-length:100 seq-invalid-chars: id-plus:1 qual-invalid-chars: avg-qual:20.93 qual-length:100 read-pair:1</span>
-<span class="doccomment">//! ```</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! # Usage</span>
-<span class="doccomment">//! </span>
-<span class="doccomment">//! ```text</span>
-<span class="doccomment">//!fasten_inspect: Marks up your reads with useful information like read length</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//!Usage: fasten_inspect [-h] [-n INT] [-p] [--verbose] [--version]</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//!Options:</span>
-<span class="doccomment">//!    -h, --help          Print this help menu.</span>
-<span class="doccomment">//!    -n, --numcpus INT   Number of CPUs (default: 1)</span>
-<span class="doccomment">//!    -p, --paired-end    The input reads are interleaved paired-end</span>
-<span class="doccomment">//!        --verbose       Print more status messages</span>
-<span class="doccomment">//!        --version       Print the version of Fasten and exit</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! ```</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! The fields will be found on the defline of the sequence and include:</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//!| key | type  | example | note   |</span>
-<span class="doccomment">//!| --- | ----- | ------- | ------ |</span>
-<span class="doccomment">//!| id-at | boolean (1 or 0) | id-at:1 | Whether or not the `@` was first character, first line | </span>
-<span class="doccomment">//!| seq-invalid-chars | string | seq-invalid-chars:$$% | |</span>
-<span class="doccomment">//!| qual-invalid-chars | string | qual-invalid-chars:[&lt; | |</span>
-<span class="doccomment">//!| seq-length | int | seq-length:100 | |</span>
-<span class="doccomment">//!| id-plus | boolean | id-plus:1 | Whether or not the `+` was first character, 3rd line |</span>
-<span class="doccomment">//!| avg-qual | float | avg-qual:17.52 | |</span>
-<span class="doccomment">//!| qual-length | int | qual-length:100 | Length of the quality score line |</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//!</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/bin/fasten_inspect.rs`."><title>fasten_inspect.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-cb6f1f67f1bcd037.css" id="mainThemeStyle"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="fasten_inspect" data-themes="" data-resource-suffix="" data-rustdoc-version="1.73.0 (cc66ad468 2023-10-03)" data-channel="1.73.0" data-search-js="search-6dfdfced5eff6596.js" data-settings-js="settings-de11bff964e9d4e5.js" data-settings-css="settings-8c76f75bfb6bd192.css" data-theme-light-css="light-1596385f77d47ef2.css" data-theme-dark-css="dark-0a43001d3fc2282c.css" data-theme-ayu-css="ayu-fd19013d6ce078bf.css" ><script src="../../static.files/storage-db41da1a38ea3cb8.js"></script><script defer src="../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-0795b7d26be81095.js"></script><noscript><link rel="stylesheet" media="(prefers-color-scheme:light)" href="../../static.files/light-1596385f77d47ef2.css"><link rel="stylesheet" media="(prefers-color-scheme:dark)" href="../../static.files/dark-0a43001d3fc2282c.css"><link rel="stylesheet" href="../../static.files/noscript-cffde32267a19fd6.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../fasten_inspect/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<a href="#2" id="2">2</a>
+<a href="#3" id="3">3</a>
+<a href="#4" id="4">4</a>
+<a href="#5" id="5">5</a>
+<a href="#6" id="6">6</a>
+<a href="#7" id="7">7</a>
+<a href="#8" id="8">8</a>
+<a href="#9" id="9">9</a>
+<a href="#10" id="10">10</a>
+<a href="#11" id="11">11</a>
+<a href="#12" id="12">12</a>
+<a href="#13" id="13">13</a>
+<a href="#14" id="14">14</a>
+<a href="#15" id="15">15</a>
+<a href="#16" id="16">16</a>
+<a href="#17" id="17">17</a>
+<a href="#18" id="18">18</a>
+<a href="#19" id="19">19</a>
+<a href="#20" id="20">20</a>
+<a href="#21" id="21">21</a>
+<a href="#22" id="22">22</a>
+<a href="#23" id="23">23</a>
+<a href="#24" id="24">24</a>
+<a href="#25" id="25">25</a>
+<a href="#26" id="26">26</a>
+<a href="#27" id="27">27</a>
+<a href="#28" id="28">28</a>
+<a href="#29" id="29">29</a>
+<a href="#30" id="30">30</a>
+<a href="#31" id="31">31</a>
+<a href="#32" id="32">32</a>
+<a href="#33" id="33">33</a>
+<a href="#34" id="34">34</a>
+<a href="#35" id="35">35</a>
+<a href="#36" id="36">36</a>
+<a href="#37" id="37">37</a>
+<a href="#38" id="38">38</a>
+<a href="#39" id="39">39</a>
+<a href="#40" id="40">40</a>
+<a href="#41" id="41">41</a>
+<a href="#42" id="42">42</a>
+<a href="#43" id="43">43</a>
+<a href="#44" id="44">44</a>
+<a href="#45" id="45">45</a>
+<a href="#46" id="46">46</a>
+<a href="#47" id="47">47</a>
+<a href="#48" id="48">48</a>
+<a href="#49" id="49">49</a>
+<a href="#50" id="50">50</a>
+<a href="#51" id="51">51</a>
+<a href="#52" id="52">52</a>
+<a href="#53" id="53">53</a>
+<a href="#54" id="54">54</a>
+<a href="#55" id="55">55</a>
+<a href="#56" id="56">56</a>
+<a href="#57" id="57">57</a>
+<a href="#58" id="58">58</a>
+<a href="#59" id="59">59</a>
+<a href="#60" id="60">60</a>
+<a href="#61" id="61">61</a>
+<a href="#62" id="62">62</a>
+<a href="#63" id="63">63</a>
+<a href="#64" id="64">64</a>
+<a href="#65" id="65">65</a>
+<a href="#66" id="66">66</a>
+<a href="#67" id="67">67</a>
+<a href="#68" id="68">68</a>
+<a href="#69" id="69">69</a>
+<a href="#70" id="70">70</a>
+<a href="#71" id="71">71</a>
+<a href="#72" id="72">72</a>
+<a href="#73" id="73">73</a>
+<a href="#74" id="74">74</a>
+<a href="#75" id="75">75</a>
+<a href="#76" id="76">76</a>
+<a href="#77" id="77">77</a>
+<a href="#78" id="78">78</a>
+<a href="#79" id="79">79</a>
+<a href="#80" id="80">80</a>
+<a href="#81" id="81">81</a>
+<a href="#82" id="82">82</a>
+<a href="#83" id="83">83</a>
+<a href="#84" id="84">84</a>
+<a href="#85" id="85">85</a>
+<a href="#86" id="86">86</a>
+<a href="#87" id="87">87</a>
+<a href="#88" id="88">88</a>
+<a href="#89" id="89">89</a>
+<a href="#90" id="90">90</a>
+<a href="#91" id="91">91</a>
+<a href="#92" id="92">92</a>
+<a href="#93" id="93">93</a>
+<a href="#94" id="94">94</a>
+<a href="#95" id="95">95</a>
+<a href="#96" id="96">96</a>
+<a href="#97" id="97">97</a>
+<a href="#98" id="98">98</a>
+<a href="#99" id="99">99</a>
+<a href="#100" id="100">100</a>
+<a href="#101" id="101">101</a>
+<a href="#102" id="102">102</a>
+<a href="#103" id="103">103</a>
+<a href="#104" id="104">104</a>
+<a href="#105" id="105">105</a>
+<a href="#106" id="106">106</a>
+<a href="#107" id="107">107</a>
+<a href="#108" id="108">108</a>
+<a href="#109" id="109">109</a>
+<a href="#110" id="110">110</a>
+<a href="#111" id="111">111</a>
+<a href="#112" id="112">112</a>
+<a href="#113" id="113">113</a>
+<a href="#114" id="114">114</a>
+<a href="#115" id="115">115</a>
+<a href="#116" id="116">116</a>
+<a href="#117" id="117">117</a>
+<a href="#118" id="118">118</a>
+<a href="#119" id="119">119</a>
+<a href="#120" id="120">120</a>
+<a href="#121" id="121">121</a>
+<a href="#122" id="122">122</a>
+<a href="#123" id="123">123</a>
+<a href="#124" id="124">124</a>
+<a href="#125" id="125">125</a>
+<a href="#126" id="126">126</a>
+<a href="#127" id="127">127</a>
+<a href="#128" id="128">128</a>
+<a href="#129" id="129">129</a>
+<a href="#130" id="130">130</a>
+<a href="#131" id="131">131</a>
+<a href="#132" id="132">132</a>
+<a href="#133" id="133">133</a>
+<a href="#134" id="134">134</a>
+<a href="#135" id="135">135</a>
+<a href="#136" id="136">136</a>
+<a href="#137" id="137">137</a>
+<a href="#138" id="138">138</a>
+<a href="#139" id="139">139</a>
+<a href="#140" id="140">140</a>
+<a href="#141" id="141">141</a>
+<a href="#142" id="142">142</a>
+<a href="#143" id="143">143</a>
+<a href="#144" id="144">144</a>
+<a href="#145" id="145">145</a>
+<a href="#146" id="146">146</a>
+<a href="#147" id="147">147</a>
+<a href="#148" id="148">148</a>
+<a href="#149" id="149">149</a>
+<a href="#150" id="150">150</a>
+<a href="#151" id="151">151</a>
+<a href="#152" id="152">152</a>
+<a href="#153" id="153">153</a>
+<a href="#154" id="154">154</a>
+<a href="#155" id="155">155</a>
+<a href="#156" id="156">156</a>
+<a href="#157" id="157">157</a>
+<a href="#158" id="158">158</a>
+<a href="#159" id="159">159</a>
+<a href="#160" id="160">160</a>
+<a href="#161" id="161">161</a>
+<a href="#162" id="162">162</a>
+<a href="#163" id="163">163</a>
+<a href="#164" id="164">164</a>
+<a href="#165" id="165">165</a>
+<a href="#166" id="166">166</a>
+<a href="#167" id="167">167</a>
+<a href="#168" id="168">168</a>
+<a href="#169" id="169">169</a>
+<a href="#170" id="170">170</a>
+<a href="#171" id="171">171</a>
+<a href="#172" id="172">172</a>
+<a href="#173" id="173">173</a>
+<a href="#174" id="174">174</a>
+<a href="#175" id="175">175</a>
+<a href="#176" id="176">176</a>
+<a href="#177" id="177">177</a>
+<a href="#178" id="178">178</a>
+<a href="#179" id="179">179</a>
+</pre></div><pre class="rust"><code><span class="doccomment">//! Marks up your reads with useful information like read length
+//! 
+//! # Examples
+//! 
+//! ## Quick validation with stderr message
+//! ```bash
+//! cat file.fastq | fasten_inspect &gt; markedup.fastq
+//! cat file.fastq | fasten_inspect --paired-end &gt; markedup-paired.fastq
+//! ```
+//!
+//! The resulting marked-up fastq file will have deflines like
+//!
+//! ```text
+//! @read0/1 id-at:1 seq-length:100 seq-invalid-chars: id-plus:1 qual-invalid-chars: avg-qual:20.93 qual-length:100 read-pair:1
+//! ```
+//!
+//! # Usage
+//! 
+//! ```text
+//!fasten_inspect: Marks up your reads with useful information like read length
+//!
+//!Usage: fasten_inspect [-h] [-n INT] [-p] [--verbose] [--version]
+//!
+//!Options:
+//!    -h, --help          Print this help menu.
+//!    -n, --numcpus INT   Number of CPUs (default: 1)
+//!    -p, --paired-end    The input reads are interleaved paired-end
+//!        --verbose       Print more status messages
+//!        --version       Print the version of Fasten and exit
+//!
+//! ```
+//!
+//! The fields will be found on the defline of the sequence and include:
+//!
+//!| key | type  | example | note   |
+//!| --- | ----- | ------- | ------ |
+//!| id-at | boolean (1 or 0) | id-at:1 | Whether or not the `@` was first character, first line | 
+//!| seq-invalid-chars | string | seq-invalid-chars:$$% | |
+//!| qual-invalid-chars | string | qual-invalid-chars:[&lt; | |
+//!| seq-length | int | seq-length:100 | |
+//!| id-plus | boolean | id-plus:1 | Whether or not the `+` was first character, 3rd line |
+//!| avg-qual | float | avg-qual:17.52 | |
+//!| qual-length | int | qual-length:100 | Length of the quality score line |
+//!
+//!
 
-<span class="comment">// TODO add points that were validated into the sequence deflines: length, is-paired, seq-regex=1, and anything else</span>
+</span><span class="comment">// TODO add points that were validated into the sequence deflines: length, is-paired, seq-regex=1, and anything else
 
-<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">getopts</span>;
-<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">fasten</span>;
-<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">regex</span>;
-<span class="kw">use</span> <span class="ident">std::fs::File</span>;
-<span class="comment">//use std::io::BufReader;</span>
-<span class="kw">use</span> <span class="ident">std::io</span>::{<span class="ident">BufRead</span>,<span class="ident">BufReader</span>};
+</span><span class="kw">extern crate </span>getopts;
+<span class="kw">extern crate </span>fasten;
+<span class="kw">extern crate </span>regex;
+<span class="kw">use </span>std::fs::File;
+<span class="comment">//use std::io::BufReader;
+</span><span class="kw">use </span>std::io::{BufRead,BufReader};
 
-<span class="kw">use</span> <span class="ident">regex::Regex</span>;
+<span class="kw">use </span>regex::Regex;
 
-<span class="kw">use</span> <span class="ident">fasten::fasten_base_options</span>;
-<span class="kw">use</span> <span class="ident">fasten::fasten_base_options_matches</span>;
+<span class="kw">use </span>fasten::fasten_base_options;
+<span class="kw">use </span>fasten::fasten_base_options_matches;
 
-<span class="kw">fn</span> <span class="ident">main</span>(){
-    <span class="kw">let</span> <span class="ident">opts</span> <span class="op">=</span> <span class="ident">fasten_base_options</span>();
-    <span class="comment">// Options specific to this script</span>
-    <span class="comment">// opts.optflag(&quot;&quot;,&quot;paired-end&quot;,&quot;The reads are interleaved paired-end&quot;);</span>
+<span class="kw">fn </span>main(){
+    <span class="kw">let </span>opts = fasten_base_options();
+    <span class="comment">// Options specific to this script
+    // opts.optflag(&quot;&quot;,&quot;paired-end&quot;,&quot;The reads are interleaved paired-end&quot;);
 
-    <span class="kw">let</span> <span class="ident">matches</span> <span class="op">=</span> <span class="ident">fasten_base_options_matches</span>(<span class="string">&quot;Marks up your reads with useful information like read length&quot;</span>, <span class="ident">opts</span>);
+    </span><span class="kw">let </span>matches = fasten_base_options_matches(<span class="string">&quot;Marks up your reads with useful information like read length&quot;</span>, opts);
 
-    <span class="kw">let</span> <span class="ident">lines_per_read</span> :<span class="ident">u8</span> <span class="op">=</span>{
-        <span class="kw">if</span> <span class="ident">matches</span>.<span class="ident">opt_present</span>(<span class="string">&quot;paired-end&quot;</span>) {
-            <span class="number">8</span>
-        }<span class="kw">else</span>{
-            <span class="number">4</span>
-        }
+    <span class="kw">let </span>lines_per_read :u8 ={
+        <span class="kw">if </span>matches.opt_present(<span class="string">&quot;paired-end&quot;</span>) {
+            <span class="number">8
+        </span>}<span class="kw">else</span>{
+            <span class="number">4
+        </span>}
     };
     
-    <span class="comment">// If there is a match on these, then mark invalid.</span>
-    <span class="comment">// In other words, we are looking for a pattern that</span>
-    <span class="comment">// is NOT the target seq or qual</span>
-    <span class="kw">let</span> <span class="ident">seq_regex</span> <span class="op">=</span> <span class="ident">Regex::new</span>(<span class="string">r&quot;[^a-zA-Z]&quot;</span>).<span class="ident">expect</span>(<span class="string">&quot;malformed seq regex&quot;</span>);
-    <span class="comment">//let qual_regex= Regex::new(r&quot;[^!-Za-z]&quot;).expect(&quot;malformed qual regex&quot;);</span>
-    <span class="kw">let</span> <span class="ident">qual_regex</span><span class="op">=</span> <span class="ident">Regex::new</span>(<span class="string">r&quot;\s&quot;</span>).<span class="ident">expect</span>(<span class="string">&quot;malformed qual regex&quot;</span>);
+    <span class="comment">// If there is a match on these, then mark invalid.
+    // In other words, we are looking for a pattern that
+    // is NOT the target seq or qual
+    </span><span class="kw">let </span>seq_regex = Regex::new(<span class="string">r&quot;[^a-zA-Z]&quot;</span>).expect(<span class="string">&quot;malformed seq regex&quot;</span>);
+    <span class="comment">//let qual_regex= Regex::new(r&quot;[^!-Za-z]&quot;).expect(&quot;malformed qual regex&quot;);
+    </span><span class="kw">let </span>qual_regex= Regex::new(<span class="string">r&quot;\s&quot;</span>).expect(<span class="string">&quot;malformed qual regex&quot;</span>);
 
-    <span class="ident">validate_reads</span>(<span class="ident">lines_per_read</span>, <span class="ident">seq_regex</span>, <span class="ident">qual_regex</span>);
+    validate_reads(lines_per_read, seq_regex, qual_regex);
 
-    <span class="kw">if</span> <span class="ident">matches</span>.<span class="ident">opt_present</span>(<span class="string">&quot;verbose&quot;</span>) {
-        <span class="ident">fasten::logmsg</span>(<span class="string">&quot;These reads have been validated!&quot;</span>);
+    <span class="kw">if </span>matches.opt_present(<span class="string">&quot;verbose&quot;</span>) {
+        fasten::logmsg(<span class="string">&quot;These reads have been validated!&quot;</span>);
     }
 }
 
-<span class="doccomment">/// marks up reads from stdin</span>
-<span class="kw">fn</span> <span class="ident">validate_reads</span>(<span class="ident">lines_per_read</span>: <span class="ident">u8</span>, <span class="ident">seq_regex</span>: <span class="ident">regex::Regex</span>, <span class="ident">qual_regex</span>: <span class="ident">regex::Regex</span>) {
-    <span class="kw">let</span> <span class="ident">my_file</span> <span class="op">=</span> <span class="ident">File::open</span>(<span class="string">&quot;/dev/stdin&quot;</span>).<span class="ident">expect</span>(<span class="string">&quot;Could not open file&quot;</span>);
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">my_buffer</span> <span class="op">=</span> <span class="ident">BufReader::new</span>(<span class="ident">my_file</span>);
+<span class="doccomment">/// marks up reads from stdin
+</span><span class="kw">fn </span>validate_reads(lines_per_read: u8, seq_regex: regex::Regex, qual_regex: regex::Regex) {
+    <span class="kw">let </span>my_file = File::open(<span class="string">&quot;/dev/stdin&quot;</span>).expect(<span class="string">&quot;Could not open file&quot;</span>);
+    <span class="kw">let </span><span class="kw-2">mut </span>my_buffer = BufReader::new(my_file);
 
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">id</span>   <span class="op">=</span> <span class="ident">String::new</span>();
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">seq</span>  <span class="op">=</span> <span class="ident">String::new</span>();
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">plus</span> <span class="op">=</span> <span class="ident">String::new</span>();
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">qual</span> <span class="op">=</span> <span class="ident">String::new</span>();
+    <span class="kw">let </span><span class="kw-2">mut </span>id   = String::new();
+    <span class="kw">let </span><span class="kw-2">mut </span>seq  = String::new();
+    <span class="kw">let </span><span class="kw-2">mut </span>plus = String::new();
+    <span class="kw">let </span><span class="kw-2">mut </span>qual = String::new();
 
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">i</span> :<span class="ident">u64</span> <span class="op">=</span> <span class="number">0</span>;
+    <span class="kw">let </span><span class="kw-2">mut </span>i :u64 = <span class="number">0</span>;
     <span class="kw">loop</span>{
 
-        <span class="ident">id</span>.<span class="ident">clear</span>();
-        <span class="kw">if</span> <span class="ident">my_buffer</span>.<span class="ident">read_line</span>(<span class="kw-2">&amp;mut</span> <span class="ident">id</span>).<span class="ident">expect</span>(<span class="string">&quot;Cannot read new line&quot;</span>) <span class="op">==</span> <span class="number">0</span> {
+        id.clear();
+        <span class="kw">if </span>my_buffer.read_line(<span class="kw-2">&amp;mut </span>id).expect(<span class="string">&quot;Cannot read new line&quot;</span>) == <span class="number">0 </span>{
             <span class="kw">break</span>;
         }
 
-        <span class="ident">seq</span>.<span class="ident">clear</span>();
-        <span class="ident">my_buffer</span>.<span class="ident">read_line</span>(<span class="kw-2">&amp;mut</span> <span class="ident">seq</span>).<span class="ident">expect</span>(<span class="string">&quot;ERROR: failed to read &#39;seq&#39; line&quot;</span>);
-        <span class="ident">plus</span>.<span class="ident">clear</span>();
-        <span class="ident">my_buffer</span>.<span class="ident">read_line</span>(<span class="kw-2">&amp;mut</span> <span class="ident">plus</span>).<span class="ident">expect</span>(<span class="string">&quot;ERROR: failed to read &#39;plus&#39; line&quot;</span>);
-        <span class="ident">qual</span>.<span class="ident">clear</span>();
-        <span class="ident">my_buffer</span>.<span class="ident">read_line</span>(<span class="kw-2">&amp;mut</span> <span class="ident">qual</span>).<span class="ident">expect</span>(<span class="string">&quot;ERROR: failed to read &#39;qual&#39; line&quot;</span>);
-        <span class="ident">id</span>   <span class="op">=</span> <span class="ident">id</span>.<span class="ident">trim</span>().<span class="ident">to_string</span>();
-        <span class="ident">seq</span>  <span class="op">=</span> <span class="ident">seq</span>.<span class="ident">trim</span>().<span class="ident">to_string</span>();
-        <span class="ident">plus</span> <span class="op">=</span> <span class="ident">plus</span>.<span class="ident">trim</span>().<span class="ident">to_string</span>();
-        <span class="ident">qual</span> <span class="op">=</span> <span class="ident">qual</span>.<span class="ident">trim</span>().<span class="ident">to_string</span>();
+        seq.clear();
+        my_buffer.read_line(<span class="kw-2">&amp;mut </span>seq).expect(<span class="string">&quot;ERROR: failed to read &#39;seq&#39; line&quot;</span>);
+        plus.clear();
+        my_buffer.read_line(<span class="kw-2">&amp;mut </span>plus).expect(<span class="string">&quot;ERROR: failed to read &#39;plus&#39; line&quot;</span>);
+        qual.clear();
+        my_buffer.read_line(<span class="kw-2">&amp;mut </span>qual).expect(<span class="string">&quot;ERROR: failed to read &#39;qual&#39; line&quot;</span>);
+        id   = id.trim().to_string();
+        seq  = seq.trim().to_string();
+        plus = plus.trim().to_string();
+        qual = qual.trim().to_string();
 
-        <span class="comment">// Test ID</span>
-        <span class="kw">if</span> <span class="ident">id</span>.<span class="ident">chars</span>().<span class="ident">nth</span>(<span class="number">0</span>).<span class="ident">unwrap</span>() <span class="op">==</span> <span class="string">&#39;@&#39;</span> {
-            <span class="ident">id</span> <span class="op">=</span> <span class="macro">format!</span>(<span class="string">&quot;{} id-at:1&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">id</span>);
-        } <span class="kw">else</span> {
-            <span class="ident">id</span> <span class="op">=</span> <span class="macro">format!</span>(<span class="string">&quot;{} id-at:0&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">id</span>);
+        <span class="comment">// Test ID
+        </span><span class="kw">if </span>id.chars().nth(<span class="number">0</span>).unwrap() == <span class="string">&#39;@&#39; </span>{
+            id = <span class="macro">format!</span>(<span class="string">&quot;{} id-at:1&quot;</span>, <span class="kw-2">&amp;</span>id);
+        } <span class="kw">else </span>{
+            id = <span class="macro">format!</span>(<span class="string">&quot;{} id-at:0&quot;</span>, <span class="kw-2">&amp;</span>id);
         }
 
-        <span class="comment">// Test Seq</span>
-        <span class="ident">id</span> <span class="op">=</span> <span class="macro">format!</span>(<span class="string">&quot;{} seq-length:{}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">id</span>, <span class="ident">seq</span>.<span class="ident">len</span>());
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">illegal_seq_chars</span>:<span class="ident">String</span> <span class="op">=</span> <span class="ident">String::new</span>();
-        <span class="kw">if</span> <span class="ident">seq_regex</span>.<span class="ident">is_match</span>(<span class="kw-2">&amp;</span><span class="ident">seq</span>) {
-            <span class="kw">for</span> <span class="ident">cap</span> <span class="kw">in</span> <span class="ident">seq_regex</span>.<span class="ident">captures_iter</span>(<span class="kw-2">&amp;</span><span class="ident">seq</span>) {
-                <span class="ident">illegal_seq_chars</span>.<span class="ident">push_str</span>(<span class="kw-2">&amp;</span><span class="ident">cap</span>[<span class="number">0</span>]);
+        <span class="comment">// Test Seq
+        </span>id = <span class="macro">format!</span>(<span class="string">&quot;{} seq-length:{}&quot;</span>, <span class="kw-2">&amp;</span>id, seq.len());
+        <span class="kw">let </span><span class="kw-2">mut </span>illegal_seq_chars:String = String::new();
+        <span class="kw">if </span>seq_regex.is_match(<span class="kw-2">&amp;</span>seq) {
+            <span class="kw">for </span>cap <span class="kw">in </span>seq_regex.captures_iter(<span class="kw-2">&amp;</span>seq) {
+                illegal_seq_chars.push_str(<span class="kw-2">&amp;</span>cap[<span class="number">0</span>]);
             }
         }
-        <span class="ident">id</span> <span class="op">=</span> <span class="macro">format!</span>(<span class="string">&quot;{} seq-invalid-chars:{}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">id</span>, <span class="kw-2">&amp;</span><span class="ident">illegal_seq_chars</span>);
+        id = <span class="macro">format!</span>(<span class="string">&quot;{} seq-invalid-chars:{}&quot;</span>, <span class="kw-2">&amp;</span>id, <span class="kw-2">&amp;</span>illegal_seq_chars);
 
-        <span class="comment">// Test plus</span>
-        <span class="kw">if</span> <span class="ident">plus</span>.<span class="ident">chars</span>().<span class="ident">nth</span>(<span class="number">0</span>).<span class="ident">unwrap</span>() <span class="op">==</span> <span class="string">&#39;+&#39;</span> {
-            <span class="ident">id</span> <span class="op">=</span> <span class="macro">format!</span>(<span class="string">&quot;{} id-plus:1&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">id</span>);
-        } <span class="kw">else</span> {
-            <span class="ident">id</span> <span class="op">=</span> <span class="macro">format!</span>(<span class="string">&quot;{} id-plus:0&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">id</span>);
+        <span class="comment">// Test plus
+        </span><span class="kw">if </span>plus.chars().nth(<span class="number">0</span>).unwrap() == <span class="string">&#39;+&#39; </span>{
+            id = <span class="macro">format!</span>(<span class="string">&quot;{} id-plus:1&quot;</span>, <span class="kw-2">&amp;</span>id);
+        } <span class="kw">else </span>{
+            id = <span class="macro">format!</span>(<span class="string">&quot;{} id-plus:0&quot;</span>, <span class="kw-2">&amp;</span>id);
         }
 
-        <span class="comment">// Test qual</span>
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">illegal_qual_chars</span>:<span class="ident">String</span> <span class="op">=</span> <span class="ident">String::new</span>();
-        <span class="kw">if</span> <span class="ident">qual_regex</span>.<span class="ident">is_match</span>(<span class="kw-2">&amp;</span><span class="ident">qual</span>) {
-            <span class="kw">for</span> <span class="ident">cap</span> <span class="kw">in</span> <span class="ident">qual_regex</span>.<span class="ident">captures_iter</span>(<span class="kw-2">&amp;</span><span class="ident">qual</span>) {
-                <span class="ident">illegal_qual_chars</span>.<span class="ident">push_str</span>(<span class="kw-2">&amp;</span><span class="ident">cap</span>[<span class="number">0</span>]);
+        <span class="comment">// Test qual
+        </span><span class="kw">let </span><span class="kw-2">mut </span>illegal_qual_chars:String = String::new();
+        <span class="kw">if </span>qual_regex.is_match(<span class="kw-2">&amp;</span>qual) {
+            <span class="kw">for </span>cap <span class="kw">in </span>qual_regex.captures_iter(<span class="kw-2">&amp;</span>qual) {
+                illegal_qual_chars.push_str(<span class="kw-2">&amp;</span>cap[<span class="number">0</span>]);
             }
         }
-        <span class="ident">id</span> <span class="op">=</span> <span class="macro">format!</span>(<span class="string">&quot;{} qual-invalid-chars:{}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">id</span>, <span class="kw-2">&amp;</span><span class="ident">illegal_qual_chars</span>);
+        id = <span class="macro">format!</span>(<span class="string">&quot;{} qual-invalid-chars:{}&quot;</span>, <span class="kw-2">&amp;</span>id, <span class="kw-2">&amp;</span>illegal_qual_chars);
 
-        <span class="comment">// quality score regex</span>
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">qual_total</span> :<span class="ident">usize</span> <span class="op">=</span> <span class="number">0</span>;
-        <span class="kw">for</span> <span class="ident">q</span> <span class="kw">in</span> <span class="ident">qual</span>.<span class="ident">chars</span>() {
-            <span class="ident">qual_total</span> <span class="op">+</span><span class="op">=</span> <span class="ident">q</span> <span class="kw">as</span> <span class="ident">usize</span>;
+        <span class="comment">// quality score regex
+        </span><span class="kw">let </span><span class="kw-2">mut </span>qual_total :usize = <span class="number">0</span>;
+        <span class="kw">for </span>q <span class="kw">in </span>qual.chars() {
+            qual_total += q <span class="kw">as </span>usize;
         }
-        <span class="kw">let</span> <span class="ident">avg_qual</span> :<span class="ident">f32</span> <span class="op">=</span> {
-            <span class="kw">if</span> <span class="ident">qual</span>.<span class="ident">len</span>() <span class="op">==</span> <span class="number">0</span> {
-                <span class="op">-</span><span class="number">1.0</span>
-            } <span class="kw">else</span> {            
-                <span class="ident">qual_total</span> <span class="kw">as</span> <span class="ident">f32</span> <span class="op">/</span> <span class="ident">qual</span>.<span class="ident">len</span>() <span class="kw">as</span> <span class="ident">f32</span> <span class="op">-</span> <span class="number">33.0</span>
-            }
+        <span class="kw">let </span>avg_qual :f32 = {
+            <span class="kw">if </span>qual.len() == <span class="number">0 </span>{
+                -<span class="number">1.0
+            </span>} <span class="kw">else </span>{            
+                qual_total <span class="kw">as </span>f32 / qual.len() <span class="kw">as </span>f32 - <span class="number">33.0
+            </span>}
         };
-        <span class="ident">id</span> <span class="op">=</span> <span class="macro">format!</span>(<span class="string">&quot;{} avg-qual:{:.2}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">id</span>, <span class="ident">avg_qual</span>);
-        <span class="ident">id</span> <span class="op">=</span> <span class="macro">format!</span>(<span class="string">&quot;{} qual-length:{}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">id</span>, <span class="ident">qual</span>.<span class="ident">len</span>());
+        id = <span class="macro">format!</span>(<span class="string">&quot;{} avg-qual:{:.2}&quot;</span>, <span class="kw-2">&amp;</span>id, avg_qual);
+        id = <span class="macro">format!</span>(<span class="string">&quot;{} qual-length:{}&quot;</span>, <span class="kw-2">&amp;</span>id, qual.len());
 
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">read_pair</span>:<span class="ident">u8</span> <span class="op">=</span> ((<span class="ident">i</span> <span class="kw">as</span> <span class="ident">u64</span> <span class="op">%</span> <span class="ident">lines_per_read</span> <span class="kw">as</span> <span class="ident">u64</span>) <span class="op">+</span> <span class="number">1</span>) <span class="kw">as</span> <span class="ident">u8</span>;
-        <span class="kw">if</span> <span class="ident">read_pair</span> <span class="op">&gt;</span> <span class="number">1</span> {
-            <span class="ident">read_pair</span> <span class="op">=</span> <span class="number">2</span>;
+        <span class="kw">let </span><span class="kw-2">mut </span>read_pair:u8 = ((i <span class="kw">as </span>u64 % lines_per_read <span class="kw">as </span>u64) + <span class="number">1</span>) <span class="kw">as </span>u8;
+        <span class="kw">if </span>read_pair &gt; <span class="number">1 </span>{
+            read_pair = <span class="number">2</span>;
         }
-        <span class="ident">id</span> <span class="op">=</span> <span class="macro">format!</span>(<span class="string">&quot;{} read-pair:{}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">id</span>, <span class="kw-2">&amp;</span><span class="ident">read_pair</span>);
+        id = <span class="macro">format!</span>(<span class="string">&quot;{} read-pair:{}&quot;</span>, <span class="kw-2">&amp;</span>id, <span class="kw-2">&amp;</span>read_pair);
 
-        <span class="ident">i</span> <span class="op">+</span><span class="op">=</span> <span class="number">4</span>;
+        i += <span class="number">4</span>;
 
-        <span class="macro">println!</span>(<span class="string">&quot;{}\n{}\n{}\n{}&quot;</span>, <span class="ident">id</span>, <span class="ident">seq</span>, <span class="ident">plus</span>, <span class="ident">qual</span>);
+        <span class="macro">println!</span>(<span class="string">&quot;{}\n{}\n{}\n{}&quot;</span>, id, seq, plus, qual);
     }
 }
 
 
-</code></pre></div>
-</section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="fasten_inspect" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.59.0 (9d1b2106e 2022-02-23)" ></div>
-</body></html>
+</code></pre></div></section></main></body></html>

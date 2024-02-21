@@ -1,1 +1,1 @@
-initSidebarItems({"fn":[["main",""],["validate_reads","marks up reads from stdin"]]});
+window.SIDEBAR_ITEMS = {"fn":["main","validate_reads"]};

@@ -1,1 +1,1 @@
-initSidebarItems({"fn":[["main",""],["print_reads_from_stdin","Read fastq from stdin, add the reads to a vector, then print them to stdout in random order"]]});
+window.SIDEBAR_ITEMS = {"fn":["main","print_reads_from_stdin"]};

@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["FastqReader","A FastQ reader"]]});
+window.SIDEBAR_ITEMS = {"struct":["FastqReader"]};

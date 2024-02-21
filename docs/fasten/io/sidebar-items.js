@@ -1,1 +1,1 @@
-initSidebarItems({"mod":[["fastq",""],["seq",""]]});
+window.SIDEBAR_ITEMS = {"mod":["fastq","seq"]};

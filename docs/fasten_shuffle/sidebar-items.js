@@ -1,1 +1,1 @@
-initSidebarItems({"fn":[["deshuffle","Read from stdin and deshuffle reads into files"],["main",""],["read_seqs","Read fastq entries from a filename"],["shuffle","Read fastq from stdin and interleave"]]});
+window.SIDEBAR_ITEMS = {"fn":["deshuffle","main","read_seqs","shuffle"]};

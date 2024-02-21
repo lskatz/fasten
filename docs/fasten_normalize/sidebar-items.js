@@ -1,1 +1,1 @@
-initSidebarItems({"constant":[["READ_SEPARATOR","Glues together paired end reads internally and is a character not expected in any read"]],"fn":[["main",""],["normalize_coverage","Normalize the coverage to a certain target and print as a fastq"],["print_reads","Print the reads in fastq format when given in a single line with `~`"]]});
+window.SIDEBAR_ITEMS = {"constant":["READ_SEPARATOR"],"fn":["main","normalize_coverage","print_reads"]};

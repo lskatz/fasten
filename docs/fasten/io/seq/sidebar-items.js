@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["Seq","A sequence struct that contains the ID, sequence, and quality cigar line"]],"trait":[["Cleanable","A sequence that can be cleaned"]]});
+window.SIDEBAR_ITEMS = {"struct":["Seq"],"trait":["Cleanable"]};
