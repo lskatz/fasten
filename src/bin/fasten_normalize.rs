@@ -108,25 +108,35 @@ fn normalize_coverage (stdin:Stdin, target_depth:u32, paired_end:bool) {
     // read the file
     let my_buffer=BufReader::new(stdin);
     let mut buffer_iter = my_buffer.lines();
+
+    // Iterate over each line in the buffer
     while let Some(line_opt) = buffer_iter.next() {
         let line = line_opt.expect("read the next line");
 
-        // get the fields: kmer, count, reads...
+        // Split the line into fields separated by tabs
+        // get the fields: kmer, count, read1[, read2...]
         let mut f :Vec<&str> = line.split("\t").collect();
         // No need to normalize if there are no reads and therefore nothing in field 3
         if f.len() < 3 {
             continue;
         }
 
+        // Extract kmer and count fields
+        // and remove them from the fields vector f.
         let kmer_count :Vec<&str> = f.splice(0..2, vec![]).collect();
-        //let _kmer = kmer_count[0];
-        let count :u32 = kmer_count[1].parse().unwrap();
+        let _count :u32 = kmer_count[1].parse().unwrap();
+        let num_reads_orig :usize = f.len();
 
         // number of reads to keep is the target depth / kmer coverage * number of reads present
         let mut num_reads_to_keep :usize = min(
-            (target_depth as f32 / count as f32 * f.len() as f32).ceil() as usize,
-            f.len() as usize
+            //(target_depth as f32 / count as f32 * f.len() as f32).ceil() as usize,
+            //(target_depth as f32 / num_reads_orig as f32).ceil() as usize,
+            target_depth,
+            num_reads_orig as u32
         ) as usize;
+        //fasten::logmsg(format!("{} = {} <=> {}", num_reads_to_keep, &target_depth, &num_reads_orig));
+
+        // If paired end, cut this number in two
         if paired_end {
             num_reads_to_keep = (num_reads_to_keep as f32 / 2.0).ceil() as usize;
         }
@@ -135,14 +145,17 @@ fn normalize_coverage (stdin:Stdin, target_depth:u32, paired_end:bool) {
         
         // shuffle the reads in place
         f.shuffle(&mut rng);
+
         // take the top X reads
         let reads_to_keep :Vec<&str> = f.splice(0..num_reads_to_keep, vec![]).collect();
+
+        //fasten::logmsg(format!("Reads to keep: {} vs {}", &num_reads_to_keep, &count));
 
         print_reads(reads_to_keep);
     }
 }
 
-/// Print the reads in fastq format when given in a single line with `~`
+/// Print the reads in fastq format when given in a single line with `READ_SEPARATOR`
 fn print_reads (reads:Vec<&str>) {
     for entry in reads{
         let entry_string = entry.replace(READ_SEPARATOR, "\n");
