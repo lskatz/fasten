@@ -1,4 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/bin/fasten_convert.rs`."><title>fasten_convert.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-cb6f1f67f1bcd037.css" id="mainThemeStyle"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="fasten_convert" data-themes="" data-resource-suffix="" data-rustdoc-version="1.73.0 (cc66ad468 2023-10-03)" data-channel="1.73.0" data-search-js="search-6dfdfced5eff6596.js" data-settings-js="settings-de11bff964e9d4e5.js" data-settings-css="settings-8c76f75bfb6bd192.css" data-theme-light-css="light-1596385f77d47ef2.css" data-theme-dark-css="dark-0a43001d3fc2282c.css" data-theme-ayu-css="ayu-fd19013d6ce078bf.css" ><script src="../../static.files/storage-db41da1a38ea3cb8.js"></script><script defer src="../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-0795b7d26be81095.js"></script><noscript><link rel="stylesheet" media="(prefers-color-scheme:light)" href="../../static.files/light-1596385f77d47ef2.css"><link rel="stylesheet" media="(prefers-color-scheme:dark)" href="../../static.files/dark-0a43001d3fc2282c.css"><link rel="stylesheet" href="../../static.files/noscript-cffde32267a19fd6.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../fasten_convert/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/bin/fasten_convert.rs`."><title>fasten_convert.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-5bc39a1768837dd0.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="fasten_convert" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.0 (aedd173a2 2024-03-17)" data-channel="1.77.0" data-search-js="search-dd67cee4cfa65049.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-48f368f3872407c8.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+            <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../fasten_convert/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -390,10 +392,10 @@
   }
   <span class="doccomment">/// Return a formatted string as a fastq entry
   </span><span class="kw">fn </span>as_fastq(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; String {
-    <span class="kw">let </span><span class="kw-2">mut </span>entry:String = <span class="macro">format!</span>(<span class="string">&quot;@{}\n{}\n+\n{}&quot;</span>,
+    <span class="kw">let </span><span class="kw-2">mut </span>entry:String = <span class="macro">format!</span>(<span class="string">"@{}\n{}\n+\n{}"</span>,
                              <span class="self">self</span>.id1, <span class="self">self</span>.seq1, <span class="self">self</span>.qual1);
     <span class="kw">if </span>!<span class="self">self</span>.id2.is_empty() {
-      entry = <span class="macro">format!</span>(<span class="string">&quot;{}\n@{}\n{}\n+\n{}&quot;</span>,
+      entry = <span class="macro">format!</span>(<span class="string">"{}\n@{}\n{}\n+\n{}"</span>,
                 entry, <span class="self">self</span>.id2, <span class="self">self</span>.seq2, <span class="self">self</span>.qual2);
     }
     <span class="kw">return </span>entry;
@@ -401,10 +403,10 @@
 
   <span class="doccomment">/// Return a formatted string as a fasta entry
   </span><span class="kw">fn </span>as_fasta(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; String {
-    <span class="kw">let </span><span class="kw-2">mut </span>entry:String = <span class="macro">format!</span>(<span class="string">&quot;&gt;{}\n{}&quot;</span>,
+    <span class="kw">let </span><span class="kw-2">mut </span>entry:String = <span class="macro">format!</span>(<span class="string">"&gt;{}\n{}"</span>,
                              <span class="self">self</span>.id1, <span class="self">self</span>.seq1);
     <span class="kw">if </span>!<span class="self">self</span>.id2.is_empty() {
-      entry = <span class="macro">format!</span>(<span class="string">&quot;{}\n&gt;{}\n{}&quot;</span>,
+      entry = <span class="macro">format!</span>(<span class="string">"{}\n&gt;{}\n{}"</span>,
                 entry, <span class="self">self</span>.id2, <span class="self">self</span>.seq2);
     }
     <span class="kw">return </span>entry;
@@ -412,16 +414,16 @@
 
   <span class="doccomment">/// Return a formatted string as a sam entry
   </span><span class="kw">fn </span>as_sam(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; String {
-    <span class="kw">let </span><span class="kw-2">mut </span>flag = <span class="string">&quot;4&quot;</span>; <span class="comment">// unmapped
+    <span class="kw">let </span><span class="kw-2">mut </span>flag = <span class="string">"4"</span>; <span class="comment">// unmapped
 
     </span><span class="kw">if </span>!<span class="self">self</span>.id2.is_empty() {
-      flag = <span class="string">&quot;77&quot;</span>; <span class="comment">// unmapped + pair unmapped + has pair + first in pair
+      flag = <span class="string">"77"</span>; <span class="comment">// unmapped + pair unmapped + has pair + first in pair
     </span>}
 
-    <span class="kw">let </span><span class="kw-2">mut </span>entry:String = <span class="macro">vec!</span>[<span class="self">self</span>.id1.as_str(), flag, <span class="string">&quot;*&quot;</span>, <span class="string">&quot;0&quot;</span>, <span class="string">&quot;0&quot;</span>, <span class="string">&quot;*&quot;</span>, <span class="string">&quot;*&quot;</span>, <span class="string">&quot;0&quot;</span>, <span class="string">&quot;0&quot;</span>, <span class="self">self</span>.seq1.as_str(), <span class="self">self</span>.qual1.as_str()].join(<span class="string">&quot;\t&quot;</span>);
+    <span class="kw">let </span><span class="kw-2">mut </span>entry:String = <span class="macro">vec!</span>[<span class="self">self</span>.id1.as_str(), flag, <span class="string">"*"</span>, <span class="string">"0"</span>, <span class="string">"0"</span>, <span class="string">"*"</span>, <span class="string">"*"</span>, <span class="string">"0"</span>, <span class="string">"0"</span>, <span class="self">self</span>.seq1.as_str(), <span class="self">self</span>.qual1.as_str()].join(<span class="string">"\t"</span>);
     <span class="kw">if </span>!<span class="self">self</span>.id2.is_empty() {
-      <span class="kw">let </span>entry2:String  = <span class="macro">vec!</span>[<span class="self">self</span>.id2.as_str(), <span class="string">&quot;141&quot;</span>, <span class="string">&quot;*&quot;</span>, <span class="string">&quot;0&quot;</span>, <span class="string">&quot;0&quot;</span>, <span class="string">&quot;*&quot;</span>, <span class="string">&quot;*&quot;</span>, <span class="string">&quot;0&quot;</span>, <span class="string">&quot;0&quot;</span>, <span class="self">self</span>.seq2.as_str(), <span class="self">self</span>.qual2.as_str()].join(<span class="string">&quot;\t&quot;</span>);
-      entry = <span class="macro">format!</span>(<span class="string">&quot;{}\n{}&quot;</span>, entry, entry2);
+      <span class="kw">let </span>entry2:String  = <span class="macro">vec!</span>[<span class="self">self</span>.id2.as_str(), <span class="string">"141"</span>, <span class="string">"*"</span>, <span class="string">"0"</span>, <span class="string">"0"</span>, <span class="string">"*"</span>, <span class="string">"*"</span>, <span class="string">"0"</span>, <span class="string">"0"</span>, <span class="self">self</span>.seq2.as_str(), <span class="self">self</span>.qual2.as_str()].join(<span class="string">"\t"</span>);
+      entry = <span class="macro">format!</span>(<span class="string">"{}\n{}"</span>, entry, entry2);
     }
 
     <span class="kw">return </span>entry;
@@ -435,27 +437,27 @@ fn test_fastq_to () {
     let (tx, rx):(std::sync::mpsc::Sender&lt;FastenSeq&gt;,std::sync::mpsc::Receiver&lt;FastenSeq&gt;) = channel();
     read_fastq(tx.clone(), false);
 
-    //assert_eq!(obs_fasta_string, expected_fasta_string, &quot;Convert fastq=&gt;fasta&quot;);
-    //assert_eq!(obs_sam_string, expected_sam_string, &quot;Convert fastq=&gt;sam&quot;);
-    //assert_eq!(obs_fastq_string, expected_fastq_string, &quot;Convert fastq=&gt;fastq (self to self)&quot;);
+    //assert_eq!(obs_fasta_string, expected_fasta_string, "Convert fastq=&gt;fasta");
+    //assert_eq!(obs_sam_string, expected_sam_string, "Convert fastq=&gt;sam");
+    //assert_eq!(obs_fastq_string, expected_fastq_string, "Convert fastq=&gt;fastq (self to self)");
 }
 */
       
 </span><span class="kw">fn </span>main(){
     <span class="kw">let </span><span class="kw-2">mut </span>opts = fasten_base_options();
-    opts.optopt(<span class="string">&quot;i&quot;</span>, <span class="string">&quot;in-format&quot;</span>,  <span class="string">&quot;The input format for stdin. FORMAT can be: fastq, fasta, sam.&quot;</span>,  <span class="string">&quot;FORMAT&quot;</span>);
-    opts.optopt(<span class="string">&quot;o&quot;</span>, <span class="string">&quot;out-format&quot;</span>, <span class="string">&quot;The output format for stdin. See --in-format for FORMAT options.&quot;</span>, <span class="string">&quot;FORMAT&quot;</span>);
+    opts.optopt(<span class="string">"i"</span>, <span class="string">"in-format"</span>,  <span class="string">"The input format for stdin. FORMAT can be: fastq, fasta, sam."</span>,  <span class="string">"FORMAT"</span>);
+    opts.optopt(<span class="string">"o"</span>, <span class="string">"out-format"</span>, <span class="string">"The output format for stdin. See --in-format for FORMAT options."</span>, <span class="string">"FORMAT"</span>);
 
-    <span class="kw">let </span>description:String = <span class="macro">format!</span>(<span class="string">&quot;Converts between sequence formats.&quot;</span>);
+    <span class="kw">let </span>description:String = <span class="macro">format!</span>(<span class="string">"Converts between sequence formats."</span>);
     <span class="kw">let </span>matches = fasten_base_options_matches(<span class="kw-2">&amp;</span>description, opts);
 
-    <span class="kw">let </span>paired_end = matches.opt_present(<span class="string">&quot;paired-end&quot;</span>);
+    <span class="kw">let </span>paired_end = matches.opt_present(<span class="string">"paired-end"</span>);
 
-    <span class="kw">let </span>in_format  = matches.opt_default(<span class="string">&quot;in-format&quot;</span>, <span class="string">&quot;fastq&quot;</span>)
-                       .unwrap_or(String::from(<span class="string">&quot;fastq&quot;</span>))
+    <span class="kw">let </span>in_format  = matches.opt_default(<span class="string">"in-format"</span>, <span class="string">"fastq"</span>)
+                       .unwrap_or(String::from(<span class="string">"fastq"</span>))
                        .to_lowercase();
-    <span class="kw">let </span>out_format = matches.opt_default(<span class="string">&quot;out-format&quot;</span>,<span class="string">&quot;fastq&quot;</span>)
-                       .unwrap_or(String::from(<span class="string">&quot;fastq&quot;</span>))
+    <span class="kw">let </span>out_format = matches.opt_default(<span class="string">"out-format"</span>,<span class="string">"fastq"</span>)
+                       .unwrap_or(String::from(<span class="string">"fastq"</span>))
                        .to_lowercase();
 
     <span class="kw">let </span>(tx, rx):(std::sync::mpsc::Sender&lt;FastenSeq&gt;,std::sync::mpsc::Receiver&lt;FastenSeq&gt;) = channel();
@@ -464,27 +466,27 @@ fn test_fastq_to () {
 
     //TODO (?) multithread this 
     </span><span class="kw">match </span>in_format.as_str() {
-      <span class="string">&quot;fastq&quot; </span>=&gt; {read_fastq(tx, paired_end);}
-      <span class="string">&quot;sam&quot;   </span>=&gt; {read_sam(tx, paired_end);}
-      <span class="string">&quot;fasta&quot; </span>=&gt; {read_fasta(tx, paired_end);}
-      <span class="kw">_ </span>=&gt; {<span class="macro">panic!</span>(<span class="string">&quot;Unknown input format {}&quot;</span>, in_format);}
+      <span class="string">"fastq" </span>=&gt; {read_fastq(tx, paired_end);}
+      <span class="string">"sam"   </span>=&gt; {read_sam(tx, paired_end);}
+      <span class="string">"fasta" </span>=&gt; {read_fasta(tx, paired_end);}
+      <span class="kw">_ </span>=&gt; {<span class="macro">panic!</span>(<span class="string">"Unknown input format {}"</span>, in_format);}
     };
 
     <span class="kw">match </span>out_format.as_str() {
-      <span class="string">&quot;fastq&quot; </span>=&gt; {write_fastq(rx);}
-      <span class="string">&quot;fasta&quot; </span>=&gt; {write_fasta(rx);}
-      <span class="string">&quot;sam&quot;   </span>=&gt; {write_sam(rx);}
-      <span class="kw">_ </span>=&gt; {<span class="macro">panic!</span>(<span class="string">&quot;Unknown output format {}&quot;</span>, out_format);}
+      <span class="string">"fastq" </span>=&gt; {write_fastq(rx);}
+      <span class="string">"fasta" </span>=&gt; {write_fasta(rx);}
+      <span class="string">"sam"   </span>=&gt; {write_sam(rx);}
+      <span class="kw">_ </span>=&gt; {<span class="macro">panic!</span>(<span class="string">"Unknown output format {}"</span>, out_format);}
     };
 
 }
 
-<span class="comment">// I wasn&#39;t satisfied with the existing fasta parsers and how they might
+<span class="comment">// I wasn't satisfied with the existing fasta parsers and how they might
 // read stdin and so I rolled out my own
 </span><span class="doccomment">/// Read fasta from stdin and transmit it to a channel
 </span><span class="kw">fn </span>read_fasta(tx:std::sync::mpsc::Sender&lt;FastenSeq&gt;, paired_end:bool){
     <span class="kw">if </span>paired_end {
-        logmsg(<span class="string">&quot;--paired-end was given but it is ignored in a fasta context&quot;</span>);
+        logmsg(<span class="string">"--paired-end was given but it is ignored in a fasta context"</span>);
     }
 
     <span class="comment">// Read the fasta through stdin
@@ -496,12 +498,12 @@ fn test_fastq_to () {
     <span class="kw">let </span>bytes = stdin.read_line(<span class="kw-2">&amp;mut </span>seq.id1).unwrap();
     seq.id1 = seq.id1.trim().to_string();
     <span class="kw">if </span>bytes == <span class="number">0 </span>{
-        <span class="macro">panic!</span>(<span class="string">&quot;Zero byte stdin&quot;</span>);
+        <span class="macro">panic!</span>(<span class="string">"Zero byte stdin"</span>);
     }
-    <span class="comment">// remove &quot;&gt;&quot;
+    <span class="comment">// remove "&gt;"
     </span><span class="kw">let </span>gt_sign = seq.id1.remove(<span class="number">0</span>);
-    <span class="kw">if </span>gt_sign != <span class="string">&#39;&gt;&#39; </span>{
-        <span class="macro">panic!</span>(<span class="string">&quot;ERROR: first character of first line of stdin is not &#39;&gt;&#39; as expected. Found {}&quot;</span>, gt_sign);
+    <span class="kw">if </span>gt_sign != <span class="string">'&gt;' </span>{
+        <span class="macro">panic!</span>(<span class="string">"ERROR: first character of first line of stdin is not '&gt;' as expected. Found {}"</span>, gt_sign);
     }
 
     <span class="kw">loop</span>{
@@ -512,29 +514,29 @@ fn test_fastq_to () {
         </span><span class="kw">if </span>bytes == <span class="number">0 </span>{
             <span class="comment">// Send the last sequence
             // The quality line will be fake and as long as the sequence length
-            </span>seq.qual1 = (<span class="number">0</span>..seq.seq1.len()).map(|<span class="kw">_</span>| <span class="string">&quot;I&quot;</span>).collect::&lt;String&gt;();
-            tx.send(seq).expect(<span class="string">&quot;Sending seq object to writer&quot;</span>);
+            </span>seq.qual1 = (<span class="number">0</span>..seq.seq1.len()).map(|<span class="kw">_</span>| <span class="string">"I"</span>).collect::&lt;String&gt;();
+            tx.send(seq).expect(<span class="string">"Sending seq object to writer"</span>);
             <span class="kw">break</span>;
         }
-        <span class="comment">// if we&#39;re looking at the next sequence identifier,
+        <span class="comment">// if we're looking at the next sequence identifier,
         // send off the current sequence and start fresh with
         // the new identifier.
-        </span><span class="kw">else if </span><span class="kw-2">&amp;</span>buffer[<span class="number">0</span>..<span class="number">1</span>]==<span class="string">&quot;&gt;&quot; </span>{
+        </span><span class="kw">else if </span><span class="kw-2">&amp;</span>buffer[<span class="number">0</span>..<span class="number">1</span>]==<span class="string">"&gt;" </span>{
             <span class="comment">// The quality line will be fake and as long as the sequence length
-            </span>seq.qual1 = (<span class="number">0</span>..seq.seq1.len()).map(|<span class="kw">_</span>| <span class="string">&quot;I&quot;</span>).collect::&lt;String&gt;();
+            </span>seq.qual1 = (<span class="number">0</span>..seq.seq1.len()).map(|<span class="kw">_</span>| <span class="string">"I"</span>).collect::&lt;String&gt;();
             <span class="comment">// Send off the sequence
-            </span>tx.send(seq).expect(<span class="string">&quot;Sending seq object to writer&quot;</span>);
+            </span>tx.send(seq).expect(<span class="string">"Sending seq object to writer"</span>);
 
             seq = FastenSeq::new();
             seq.id1 = buffer;
-            <span class="comment">// remove &quot;&gt;&quot;
+            <span class="comment">// remove "&gt;"
             </span><span class="kw">let </span>gt_sign = seq.id1.remove(<span class="number">0</span>);
-            <span class="kw">if </span>gt_sign != <span class="string">&#39;&gt;&#39; </span>{
-                <span class="macro">panic!</span>(<span class="string">&quot;ERROR: first character of first line of stdin is not &#39;&gt;&#39; as expected. Found {}&quot;</span>, gt_sign);
+            <span class="kw">if </span>gt_sign != <span class="string">'&gt;' </span>{
+                <span class="macro">panic!</span>(<span class="string">"ERROR: first character of first line of stdin is not '&gt;' as expected. Found {}"</span>, gt_sign);
             }
         }
         <span class="kw">else </span>{
-            seq.seq1 = <span class="macro">format!</span>(<span class="string">&quot;{}{}&quot;</span>, seq.seq1, buffer);
+            seq.seq1 = <span class="macro">format!</span>(<span class="string">"{}{}"</span>, seq.seq1, buffer);
         }
     }
 
@@ -543,12 +545,12 @@ fn test_fastq_to () {
 <span class="doccomment">/// Read sam from stdin and transmit it to a channel
 </span><span class="kw">fn </span>read_sam(tx:std::sync::mpsc::Sender&lt;FastenSeq&gt;, paired_end:bool){
   <span class="kw">if </span>paired_end {
-    logmsg(<span class="string">&quot;--paired-end given but paired-endedness will be determined by sam format flags&quot;</span>);
+    logmsg(<span class="string">"--paired-end given but paired-endedness will be determined by sam format flags"</span>);
   }
 
   <span class="comment">// TODO check if sorted by name so that the pairs are next to each other
 
-  </span><span class="kw">let </span><span class="kw-2">mut </span>reader = bam::SamReader::from_path(<span class="string">&quot;/dev/stdin&quot;</span>).unwrap();
+  </span><span class="kw">let </span><span class="kw-2">mut </span>reader = bam::SamReader::from_path(<span class="string">"/dev/stdin"</span>).unwrap();
   <span class="kw">let </span><span class="kw-2">mut </span>r      = bam::Record::new();
 
   <span class="kw">loop </span>{
@@ -557,7 +559,7 @@ fn test_fastq_to () {
     <span class="kw">match </span>reader.read_into(<span class="kw-2">&amp;mut </span>r) {
       <span class="prelude-val">Ok</span>(<span class="bool-val">false</span>) =&gt; <span class="kw">break</span>,
       <span class="prelude-val">Ok</span>(<span class="bool-val">true</span>)  =&gt; {},
-      <span class="prelude-val">Err</span>(e)    =&gt; <span class="macro">panic!</span>(<span class="string">&quot;{}&quot;</span>, e),
+      <span class="prelude-val">Err</span>(e)    =&gt; <span class="macro">panic!</span>(<span class="string">"{}"</span>, e),
     }
     seq.id1    = String::from(std::str::from_utf8(r.name()).unwrap());
     seq.seq1   = String::from_utf8(r.sequence().to_vec()).unwrap();
@@ -568,14 +570,14 @@ fn test_fastq_to () {
       <span class="kw">match </span>reader.read_into(<span class="kw-2">&amp;mut </span>r) {
         <span class="prelude-val">Ok</span>(<span class="bool-val">false</span>) =&gt; <span class="kw">break</span>,
         <span class="prelude-val">Ok</span>(<span class="bool-val">true</span>)  =&gt; {},
-        <span class="prelude-val">Err</span>(e)    =&gt; <span class="macro">panic!</span>(<span class="string">&quot;{}&quot;</span>, e),
+        <span class="prelude-val">Err</span>(e)    =&gt; <span class="macro">panic!</span>(<span class="string">"{}"</span>, e),
       }
       seq.id2    = String::from(std::str::from_utf8(r.name()).unwrap());
       seq.seq2   = String::from_utf8(r.sequence().to_vec()).unwrap();
       seq.qual2  = String::from_utf8(r.qualities().to_readable()).unwrap();
     }
 
-    tx.send(seq).expect(<span class="string">&quot;Sending seq object to writer&quot;</span>);
+    tx.send(seq).expect(<span class="string">"Sending seq object to writer"</span>);
   }
 }
 
@@ -585,7 +587,7 @@ fn test_fastq_to () {
   <span class="kw">let </span>parser = Parser::new(stdin());
 
   <span class="kw">let </span><span class="kw-2">mut </span>parser_getter = parser.ref_iter();
-  parser_getter.advance().expect(<span class="string">&quot;Could not read the first fastq entry&quot;</span>);
+  parser_getter.advance().expect(<span class="string">"Could not read the first fastq entry"</span>);
   <span class="kw">while let </span><span class="prelude-val">Some</span>(record1) = parser_getter.get() {
     <span class="kw">let </span><span class="kw-2">mut </span>seq:FastenSeq = FastenSeq::new();
     seq.id1   = std::str::from_utf8(record1.head()).unwrap().to_string();
@@ -596,16 +598,16 @@ fn test_fastq_to () {
       </span><span class="kw">match </span><span class="kw-2">&amp;</span>parser_getter.advance() {
         <span class="prelude-val">Ok</span>(<span class="kw">_</span>) =&gt; {},
         <span class="prelude-val">Err</span>(err) =&gt; {
-          <span class="macro">panic!</span>(<span class="string">&quot;ERROR: could not read the second entry in a paired end read: {}&quot;</span>, err);
+          <span class="macro">panic!</span>(<span class="string">"ERROR: could not read the second entry in a paired end read: {}"</span>, err);
         }
       };
-      <span class="kw">let </span>record2 = <span class="kw-2">&amp;</span>parser_getter.get().expect(<span class="string">&quot;ERROR parsing second pair in a paired end read&quot;</span>);
+      <span class="kw">let </span>record2 = <span class="kw-2">&amp;</span>parser_getter.get().expect(<span class="string">"ERROR parsing second pair in a paired end read"</span>);
       seq.id2   = std::str::from_utf8(record2.head()).unwrap().to_string();
       seq.seq2  = std::str::from_utf8(record2.seq()).unwrap().to_string();
       seq.qual2 = std::str::from_utf8(record2.qual()).unwrap().to_string();
     }
 
-    tx.send(seq).expect(<span class="string">&quot;Sending seq object to writer&quot;</span>);
+    tx.send(seq).expect(<span class="string">"Sending seq object to writer"</span>);
 
     <span class="kw">match </span><span class="kw-2">&amp;</span>parser_getter.advance() {
       <span class="prelude-val">Ok</span>(<span class="kw">_</span>) =&gt; {},
@@ -618,7 +620,7 @@ fn test_fastq_to () {
 </span><span class="kw">fn </span>write_fastq(rx:std::sync::mpsc::Receiver&lt;FastenSeq&gt;){
   <span class="kw">let </span>receiver = rx.iter();
   <span class="kw">for </span>seq <span class="kw">in </span>receiver {
-    <span class="macro">println!</span>(<span class="string">&quot;{}&quot;</span>, seq.as_fastq());
+    <span class="macro">println!</span>(<span class="string">"{}"</span>, seq.as_fastq());
   }
 }
 
@@ -626,7 +628,7 @@ fn test_fastq_to () {
 </span><span class="kw">fn </span>write_fasta(rx:std::sync::mpsc::Receiver&lt;FastenSeq&gt;){
   <span class="kw">let </span>receiver = rx.iter();
   <span class="kw">for </span>seq <span class="kw">in </span>receiver {
-    <span class="macro">println!</span>(<span class="string">&quot;{}&quot;</span>, seq.as_fasta());
+    <span class="macro">println!</span>(<span class="string">"{}"</span>, seq.as_fasta());
   }
 }
 
@@ -634,7 +636,7 @@ fn test_fastq_to () {
 </span><span class="kw">fn </span>write_sam(rx:std::sync::mpsc::Receiver&lt;FastenSeq&gt;){
   <span class="kw">let </span>receiver = rx.iter();
   <span class="kw">for </span>seq <span class="kw">in </span>receiver {
-    <span class="macro">println!</span>(<span class="string">&quot;{}&quot;</span>, seq.as_sam());
+    <span class="macro">println!</span>(<span class="string">"{}"</span>, seq.as_sam());
   }
 }
 

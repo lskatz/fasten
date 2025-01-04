@@ -1,4 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/bin/fasten_repair.rs`."><title>fasten_repair.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-cb6f1f67f1bcd037.css" id="mainThemeStyle"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="fasten_repair" data-themes="" data-resource-suffix="" data-rustdoc-version="1.73.0 (cc66ad468 2023-10-03)" data-channel="1.73.0" data-search-js="search-6dfdfced5eff6596.js" data-settings-js="settings-de11bff964e9d4e5.js" data-settings-css="settings-8c76f75bfb6bd192.css" data-theme-light-css="light-1596385f77d47ef2.css" data-theme-dark-css="dark-0a43001d3fc2282c.css" data-theme-ayu-css="ayu-fd19013d6ce078bf.css" ><script src="../../static.files/storage-db41da1a38ea3cb8.js"></script><script defer src="../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-0795b7d26be81095.js"></script><noscript><link rel="stylesheet" media="(prefers-color-scheme:light)" href="../../static.files/light-1596385f77d47ef2.css"><link rel="stylesheet" media="(prefers-color-scheme:dark)" href="../../static.files/dark-0a43001d3fc2282c.css"><link rel="stylesheet" href="../../static.files/noscript-cffde32267a19fd6.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../fasten_repair/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/bin/fasten_repair.rs`."><title>fasten_repair.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-5bc39a1768837dd0.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="fasten_repair" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.0 (aedd173a2 2024-03-17)" data-channel="1.77.0" data-search-js="search-dd67cee4cfa65049.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-48f368f3872407c8.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+            <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../fasten_repair/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -377,43 +379,43 @@
 <span class="kw">fn </span>main(){
     <span class="kw">let </span><span class="kw-2">mut </span>opts = fasten_base_options();
     <span class="comment">// Options specific to this script
-    </span>opts.optopt(<span class="string">&quot;&quot;</span>,<span class="string">&quot;min-length&quot;</span>,<span class="string">&quot;Minimum read length allowed&quot;</span>,<span class="string">&quot;INT&quot;</span>);
-    opts.optopt(<span class="string">&quot;&quot;</span>,<span class="string">&quot;min-quality&quot;</span>,<span class="string">&quot;Minimum quality allowed&quot;</span>,<span class="string">&quot;FLOAT&quot;</span>);
-    opts.optflag(<span class="string">&quot;&quot;</span>, <span class="string">&quot;remove-info&quot;</span>, <span class="string">&quot;Remove fasten_inspect headers&quot;</span>);
-    opts.optopt(<span class="string">&quot;m&quot;</span>, <span class="string">&quot;mode&quot;</span>, <span class="string">&quot; Either repair or panic. If panic, then the binary will panic when the first issue comes up. Default:repair&quot;</span>, <span class="string">&quot;STRING&quot;</span>);
+    </span>opts.optopt(<span class="string">""</span>,<span class="string">"min-length"</span>,<span class="string">"Minimum read length allowed"</span>,<span class="string">"INT"</span>);
+    opts.optopt(<span class="string">""</span>,<span class="string">"min-quality"</span>,<span class="string">"Minimum quality allowed"</span>,<span class="string">"FLOAT"</span>);
+    opts.optflag(<span class="string">""</span>, <span class="string">"remove-info"</span>, <span class="string">"Remove fasten_inspect headers"</span>);
+    opts.optopt(<span class="string">"m"</span>, <span class="string">"mode"</span>, <span class="string">" Either repair or panic. If panic, then the binary will panic when the first issue comes up. Default:repair"</span>, <span class="string">"STRING"</span>);
 
-    <span class="kw">let </span>matches = fasten_base_options_matches(<span class="string">&quot;Repairs reads&quot;</span>, opts);
+    <span class="kw">let </span>matches = fasten_base_options_matches(<span class="string">"Repairs reads"</span>, opts);
 
-    <span class="kw">let </span>paired_end = matches.opt_present(<span class="string">&quot;paired-end&quot;</span>);
+    <span class="kw">let </span>paired_end = matches.opt_present(<span class="string">"paired-end"</span>);
 
     <span class="kw">let </span>min_length :usize={
-        <span class="kw">if </span>matches.opt_present(<span class="string">&quot;min-length&quot;</span>) {
-            matches.opt_str(<span class="string">&quot;min-length&quot;</span>)
-                .expect(<span class="string">&quot;ERROR parsing min-length&quot;</span>)
+        <span class="kw">if </span>matches.opt_present(<span class="string">"min-length"</span>) {
+            matches.opt_str(<span class="string">"min-length"</span>)
+                .expect(<span class="string">"ERROR parsing min-length"</span>)
                 .parse()
-                .expect(<span class="string">&quot;ERROR parsing min-length as INT&quot;</span>)
+                .expect(<span class="string">"ERROR parsing min-length as INT"</span>)
         } <span class="kw">else </span>{
             <span class="number">0
         </span>}
     };
     <span class="kw">let </span>min_qual :f32={
-        <span class="kw">if </span>matches.opt_present(<span class="string">&quot;min-quality&quot;</span>) {
-            matches.opt_str(<span class="string">&quot;min-quality&quot;</span>)
-                .expect(<span class="string">&quot;ERROR parsing min-quality&quot;</span>)
+        <span class="kw">if </span>matches.opt_present(<span class="string">"min-quality"</span>) {
+            matches.opt_str(<span class="string">"min-quality"</span>)
+                .expect(<span class="string">"ERROR parsing min-quality"</span>)
                 .parse()
-                .expect(<span class="string">&quot;ERROR parsing min-quality as FLOAT&quot;</span>)
+                .expect(<span class="string">"ERROR parsing min-quality as FLOAT"</span>)
         } <span class="kw">else </span>{
             <span class="number">0.0
         </span>}
     };
 
-    <span class="kw">let </span>remove_info :bool = matches.opt_present(<span class="string">&quot;remove-info&quot;</span>);
+    <span class="kw">let </span>remove_info :bool = matches.opt_present(<span class="string">"remove-info"</span>);
     <span class="kw">let </span>mode :String = {
-        <span class="kw">if </span>matches.opt_present(<span class="string">&quot;mode&quot;</span>) {
-            matches.opt_str(<span class="string">&quot;mode&quot;</span>)
-                .expect(<span class="string">&quot;ERROR parsing mode&quot;</span>)
+        <span class="kw">if </span>matches.opt_present(<span class="string">"mode"</span>) {
+            matches.opt_str(<span class="string">"mode"</span>)
+                .expect(<span class="string">"ERROR parsing mode"</span>)
         } <span class="kw">else </span>{
-            <span class="string">&quot;repair&quot;</span>.to_string()
+            <span class="string">"repair"</span>.to_string()
         }
     };
 
@@ -424,14 +426,14 @@
 </span><span class="kw">fn </span>repair_reads(paired_end:bool, min_length: usize, min_qual: f32, remove_info: bool, mode: <span class="kw-2">&amp;</span>str) {
     <span class="comment">//behavior
     </span><span class="kw">let </span>should_repair :bool = {
-        <span class="kw">if </span>mode == <span class="string">&quot;repair&quot; </span>{
+        <span class="kw">if </span>mode == <span class="string">"repair" </span>{
             <span class="bool-val">true
         </span>} <span class="kw">else </span>{
             <span class="bool-val">false
         </span>}
     };
 
-    <span class="kw">let </span>my_file = File::open(<span class="string">&quot;/dev/stdin&quot;</span>).expect(<span class="string">&quot;Could not open file&quot;</span>);
+    <span class="kw">let </span>my_file = File::open(<span class="string">"/dev/stdin"</span>).expect(<span class="string">"Could not open file"</span>);
     <span class="kw">let </span><span class="kw-2">mut </span>my_buffer = BufReader::new(my_file);
 
     <span class="kw">let </span><span class="kw-2">mut </span>id   = String::new();
@@ -443,17 +445,17 @@
     </span><span class="kw">loop</span>{
 
         id.clear();
-        <span class="kw">if </span>my_buffer.read_line(<span class="kw-2">&amp;mut </span>id).expect(<span class="string">&quot;Cannot read new line&quot;</span>) == <span class="number">0 </span>{
+        <span class="kw">if </span>my_buffer.read_line(<span class="kw-2">&amp;mut </span>id).expect(<span class="string">"Cannot read new line"</span>) == <span class="number">0 </span>{
             <span class="kw">break</span>;
         }
         <span class="kw">let </span>r1_id = id.clone();
         
         seq.clear();
-        my_buffer.read_line(<span class="kw-2">&amp;mut </span>seq).expect(<span class="string">&quot;ERROR: failed to read &#39;seq&#39; line&quot;</span>);
+        my_buffer.read_line(<span class="kw-2">&amp;mut </span>seq).expect(<span class="string">"ERROR: failed to read 'seq' line"</span>);
         plus.clear();
-        my_buffer.read_line(<span class="kw-2">&amp;mut </span>plus).expect(<span class="string">&quot;ERROR: failed to read &#39;plus&#39; line&quot;</span>);
+        my_buffer.read_line(<span class="kw-2">&amp;mut </span>plus).expect(<span class="string">"ERROR: failed to read 'plus' line"</span>);
         qual.clear();
-        my_buffer.read_line(<span class="kw-2">&amp;mut </span>qual).expect(<span class="string">&quot;ERROR: failed to read &#39;qual&#39; line&quot;</span>);
+        my_buffer.read_line(<span class="kw-2">&amp;mut </span>qual).expect(<span class="string">"ERROR: failed to read 'qual' line"</span>);
         id   = id.trim().to_string();
         seq  = seq.trim().to_string();
         plus = plus.trim().to_string();
@@ -463,22 +465,22 @@
         <span class="comment">//i += 4;
 
         </span><span class="kw">let </span><span class="kw-2">mut </span>is_r2_good = <span class="bool-val">true</span>;
-        <span class="kw">let </span><span class="kw-2">mut </span>r2 = <span class="string">&quot;&quot;</span>.to_string();
-        <span class="kw">let </span><span class="kw-2">mut </span>err2 = <span class="string">&quot;&quot;</span>.to_string();
-        <span class="kw">let </span><span class="kw-2">mut </span>r2_id :String = <span class="string">&quot;&quot;</span>.to_string();
+        <span class="kw">let </span><span class="kw-2">mut </span>r2 = <span class="string">""</span>.to_string();
+        <span class="kw">let </span><span class="kw-2">mut </span>err2 = <span class="string">""</span>.to_string();
+        <span class="kw">let </span><span class="kw-2">mut </span>r2_id :String = <span class="string">""</span>.to_string();
         <span class="kw">if </span>paired_end {
             id.clear();
-            <span class="kw">if </span>my_buffer.read_line(<span class="kw-2">&amp;mut </span>id).expect(<span class="string">&quot;Cannot read new line&quot;</span>) == <span class="number">0 </span>{
-                <span class="macro">panic!</span>(<span class="string">&quot;ERROR: paired end expected but not found after R1 {}&quot;</span>, r1_id);
+            <span class="kw">if </span>my_buffer.read_line(<span class="kw-2">&amp;mut </span>id).expect(<span class="string">"Cannot read new line"</span>) == <span class="number">0 </span>{
+                <span class="macro">panic!</span>(<span class="string">"ERROR: paired end expected but not found after R1 {}"</span>, r1_id);
             }
             r2_id = id.clone();
             
             seq.clear();
-            my_buffer.read_line(<span class="kw-2">&amp;mut </span>seq).expect(<span class="string">&quot;ERROR: failed to read &#39;seq&#39; line&quot;</span>);
+            my_buffer.read_line(<span class="kw-2">&amp;mut </span>seq).expect(<span class="string">"ERROR: failed to read 'seq' line"</span>);
             plus.clear();
-            my_buffer.read_line(<span class="kw-2">&amp;mut </span>plus).expect(<span class="string">&quot;ERROR: failed to read &#39;plus&#39; line&quot;</span>);
+            my_buffer.read_line(<span class="kw-2">&amp;mut </span>plus).expect(<span class="string">"ERROR: failed to read 'plus' line"</span>);
             qual.clear();
-            my_buffer.read_line(<span class="kw-2">&amp;mut </span>qual).expect(<span class="string">&quot;ERROR: failed to read &#39;qual&#39; line&quot;</span>);
+            my_buffer.read_line(<span class="kw-2">&amp;mut </span>qual).expect(<span class="string">"ERROR: failed to read 'qual' line"</span>);
             id   = id.trim().to_string();
             seq  = seq.trim().to_string();
             plus = plus.trim().to_string();
@@ -490,29 +492,29 @@
         <span class="kw">if </span>is_r1_good &amp;&amp; is_r2_good{
             <span class="comment">// Start with R1 for printing.
             </span><span class="kw">let </span><span class="kw-2">mut </span>to_print = r1.clone();
-            <span class="comment">// If we&#39;re looking at a paired end, then add R2 to R1 for printing.
+            <span class="comment">// If we're looking at a paired end, then add R2 to R1 for printing.
             </span><span class="kw">if </span>paired_end {
-                to_print.push_str(<span class="string">&quot;\n&quot;</span>);
+                to_print.push_str(<span class="string">"\n"</span>);
                 to_print.push_str(<span class="kw-2">&amp;</span>r2);
             } 
-            <span class="macro">println!</span>(<span class="string">&quot;{}&quot;</span>, to_print);
+            <span class="macro">println!</span>(<span class="string">"{}"</span>, to_print);
 
-            <span class="comment">// If R1 and R2 are good, then any &quot;errors&quot; are warnings.
+            <span class="comment">// If R1 and R2 are good, then any "errors" are warnings.
             // Print the warnings.
-            </span><span class="kw">if </span>err1.as_str() != <span class="string">&quot;&quot; </span>{
-                logmsg(<span class="macro">format!</span>(<span class="string">&quot;WARNING(s) on R1: {}&quot;</span>, err1));
+            </span><span class="kw">if </span>err1.as_str() != <span class="string">"" </span>{
+                logmsg(<span class="macro">format!</span>(<span class="string">"WARNING(s) on R1: {}"</span>, err1));
             }
-            <span class="kw">if </span>err2.as_str() != <span class="string">&quot;&quot; </span>{
-                logmsg(<span class="macro">format!</span>(<span class="string">&quot;WARNING(s) on R2: {}&quot;</span>, err2));
+            <span class="kw">if </span>err2.as_str() != <span class="string">"" </span>{
+                logmsg(<span class="macro">format!</span>(<span class="string">"WARNING(s) on R2: {}"</span>, err2));
             }
         } <span class="kw">else </span>{
             
             <span class="comment">// Print the errors.
-            </span><span class="kw">if </span>err1.as_str() != <span class="string">&quot;&quot; </span>{
-                logmsg(<span class="macro">format!</span>(<span class="string">&quot;SKIP R1 {}\n=&gt; {}\n&quot;</span>, r1_id.trim(), err1));
+            </span><span class="kw">if </span>err1.as_str() != <span class="string">"" </span>{
+                logmsg(<span class="macro">format!</span>(<span class="string">"SKIP R1 {}\n=&gt; {}\n"</span>, r1_id.trim(), err1));
             }
-            <span class="kw">if </span>err2.as_str() != <span class="string">&quot;&quot; </span>{
-                logmsg(<span class="macro">format!</span>(<span class="string">&quot;SKIP R2 {}\n=&gt; {}\n&quot;</span>, r2_id.trim(), err2));
+            <span class="kw">if </span>err2.as_str() != <span class="string">"" </span>{
+                logmsg(<span class="macro">format!</span>(<span class="string">"SKIP R2 {}\n=&gt; {}\n"</span>, r2_id.trim(), err2));
             }
         }
     }
@@ -530,29 +532,29 @@
     </span><span class="kw">let </span><span class="kw-2">mut </span>f:HashMap&lt;<span class="kw-2">&amp;</span>str, <span class="kw-2">&amp;</span>str&gt; = HashMap::new();
     <span class="comment">// Get that information from the defline
     </span><span class="kw">for </span>field <span class="kw">in </span>id.split_whitespace() {
-        <span class="kw">match </span>field.find(<span class="string">&quot;:&quot;</span>) {
+        <span class="kw">match </span>field.find(<span class="string">":"</span>) {
             <span class="prelude-val">None </span>=&gt; {
                 identifier.push_str(<span class="kw-2">&amp;</span>field);
                 <span class="kw">continue</span>;
             },
             <span class="prelude-val">Some</span>(<span class="kw">_</span>) =&gt; {},
         };
-        <span class="kw">let </span><span class="kw-2">mut </span>key_value = field.split(<span class="string">&#39;:&#39;</span>);
-        <span class="kw">let </span>key   :<span class="kw-2">&amp;</span>str = key_value.next().expect(<span class="string">&quot;key not found&quot;</span>);
-        <span class="kw">let </span>value :<span class="kw-2">&amp;</span>str = key_value.next().expect(<span class="string">&quot;value not found&quot;</span>);
+        <span class="kw">let </span><span class="kw-2">mut </span>key_value = field.split(<span class="string">':'</span>);
+        <span class="kw">let </span>key   :<span class="kw-2">&amp;</span>str = key_value.next().expect(<span class="string">"key not found"</span>);
+        <span class="kw">let </span>value :<span class="kw-2">&amp;</span>str = key_value.next().expect(<span class="string">"value not found"</span>);
         f.insert(key, value);
     }
 
     <span class="comment">// get some variables out of the hash
-    </span><span class="kw">let </span>seq_length  :usize = f.entry(<span class="string">&quot;seq-length&quot;</span>).or_insert(<span class="string">&quot;0&quot;</span>).parse::&lt;usize&gt;().unwrap();
-    <span class="kw">let </span>qual_length :usize = f.entry(<span class="string">&quot;qual-length&quot;</span>).or_insert(<span class="string">&quot;0&quot;</span>).parse::&lt;usize&gt;().unwrap();
-    <span class="kw">let </span>avg_qual    :f32   = f.entry(<span class="string">&quot;avg-qual&quot;</span>).or_insert(<span class="string">&quot;0&quot;</span>).parse::&lt;f32&gt;().unwrap();
-    <span class="kw">let </span>seq_invalid_chars :<span class="kw-2">&amp;</span>str  = f.entry(<span class="string">&quot;seq-invalid-chars&quot;</span>).or_insert(<span class="string">&quot;&quot;</span>);
-    <span class="kw">let </span>qual_invalid_chars :<span class="kw-2">&amp;</span>str = f.entry(<span class="string">&quot;qual-invalid-chars&quot;</span>).or_insert(<span class="string">&quot;&quot;</span>);
-    <span class="kw">let </span>_read_pair :u8 = f.entry(<span class="string">&quot;read-pair&quot;</span>).or_insert(<span class="string">&quot;1&quot;</span>).parse::&lt;u8&gt;().unwrap(); <span class="comment">// either 1 or 2
+    </span><span class="kw">let </span>seq_length  :usize = f.entry(<span class="string">"seq-length"</span>).or_insert(<span class="string">"0"</span>).parse::&lt;usize&gt;().unwrap();
+    <span class="kw">let </span>qual_length :usize = f.entry(<span class="string">"qual-length"</span>).or_insert(<span class="string">"0"</span>).parse::&lt;usize&gt;().unwrap();
+    <span class="kw">let </span>avg_qual    :f32   = f.entry(<span class="string">"avg-qual"</span>).or_insert(<span class="string">"0"</span>).parse::&lt;f32&gt;().unwrap();
+    <span class="kw">let </span>seq_invalid_chars :<span class="kw-2">&amp;</span>str  = f.entry(<span class="string">"seq-invalid-chars"</span>).or_insert(<span class="string">""</span>);
+    <span class="kw">let </span>qual_invalid_chars :<span class="kw-2">&amp;</span>str = f.entry(<span class="string">"qual-invalid-chars"</span>).or_insert(<span class="string">""</span>);
+    <span class="kw">let </span>_read_pair :u8 = f.entry(<span class="string">"read-pair"</span>).or_insert(<span class="string">"1"</span>).parse::&lt;u8&gt;().unwrap(); <span class="comment">// either 1 or 2
     // these are either 1 (true) or 0 (false)
-    </span><span class="kw">let </span>id_at :u8 = f.entry(<span class="string">&quot;id-at&quot;</span>).or_insert(<span class="string">&quot;0&quot;</span>).parse::&lt;u8&gt;().unwrap();
-    <span class="kw">let </span>id_plus :u8 = f.entry(<span class="string">&quot;id-plus&quot;</span>).or_insert(<span class="string">&quot;0&quot;</span>).parse::&lt;u8&gt;().unwrap();
+    </span><span class="kw">let </span>id_at :u8 = f.entry(<span class="string">"id-at"</span>).or_insert(<span class="string">"0"</span>).parse::&lt;u8&gt;().unwrap();
+    <span class="kw">let </span>id_plus :u8 = f.entry(<span class="string">"id-plus"</span>).or_insert(<span class="string">"0"</span>).parse::&lt;u8&gt;().unwrap();
 
     <span class="comment">// Check seq length and qual length
     </span><span class="kw">if </span>seq_length != qual_length {
@@ -561,38 +563,38 @@
             seq  = seq[..new_length].to_string();
             qual = qual[..new_length].to_string();
             error.push_str(
-                <span class="kw-2">&amp;</span><span class="macro">format!</span>(<span class="string">&quot;Repaired sequence and qual length\n&quot;</span>)
+                <span class="kw-2">&amp;</span><span class="macro">format!</span>(<span class="string">"Repaired sequence and qual length\n"</span>)
             );
-            <span class="comment">// Don&#39;t count this as an actual error and so don&#39;t increment.
+            <span class="comment">// Don't count this as an actual error and so don't increment.
         </span>} <span class="kw">else </span>{
-            <span class="macro">panic!</span>(<span class="string">&quot;ERROR: seq length({}) did not match qual length({}) on seqid {}\n&quot;</span>, <span class="kw-2">&amp;</span>seq_length, <span class="kw-2">&amp;</span>qual_length, <span class="kw-2">&amp;</span>id);
+            <span class="macro">panic!</span>(<span class="string">"ERROR: seq length({}) did not match qual length({}) on seqid {}\n"</span>, <span class="kw-2">&amp;</span>seq_length, <span class="kw-2">&amp;</span>qual_length, <span class="kw-2">&amp;</span>id);
         }
     }
     <span class="kw">if </span>seq_length &lt; min_length {
         error.push_str(
-            <span class="kw-2">&amp;</span><span class="macro">format!</span>(<span class="string">&quot;seq length({}) is less than min length specified ({})\n&quot;</span>, <span class="kw-2">&amp;</span>seq_length, <span class="kw-2">&amp;</span>min_length)
+            <span class="kw-2">&amp;</span><span class="macro">format!</span>(<span class="string">"seq length({}) is less than min length specified ({})\n"</span>, <span class="kw-2">&amp;</span>seq_length, <span class="kw-2">&amp;</span>min_length)
         );
         num_errors += <span class="number">1</span>;
     }
     <span class="comment">// Check quality score
     </span><span class="kw">if </span>avg_qual &lt; min_qual {
         error.push_str(
-            <span class="kw-2">&amp;</span><span class="macro">format!</span>(<span class="string">&quot;average quality ({}) is less than min quality ({})\n&quot;</span>, <span class="kw-2">&amp;</span>avg_qual, <span class="kw-2">&amp;</span>min_qual)
+            <span class="kw-2">&amp;</span><span class="macro">format!</span>(<span class="string">"average quality ({}) is less than min quality ({})\n"</span>, <span class="kw-2">&amp;</span>avg_qual, <span class="kw-2">&amp;</span>min_qual)
         );
         num_errors += <span class="number">1</span>;
     }
 
     <span class="comment">// check key seq-invalid-chars
-    </span><span class="kw">if </span>seq_invalid_chars != <span class="string">&quot;&quot; </span>{
+    </span><span class="kw">if </span>seq_invalid_chars != <span class="string">"" </span>{
         error.push_str(
-            <span class="kw-2">&amp;</span><span class="macro">format!</span>(<span class="string">&quot;invalid seq characters found in {}\n&quot;</span>, <span class="kw-2">&amp;</span>id)
+            <span class="kw-2">&amp;</span><span class="macro">format!</span>(<span class="string">"invalid seq characters found in {}\n"</span>, <span class="kw-2">&amp;</span>id)
         );
         num_errors += <span class="number">1</span>;
     }
     <span class="comment">// check key qual-invalid-chars
-    </span><span class="kw">if </span>qual_invalid_chars != <span class="string">&quot;&quot; </span>{
+    </span><span class="kw">if </span>qual_invalid_chars != <span class="string">"" </span>{
         error.push_str(
-            <span class="kw-2">&amp;</span><span class="macro">format!</span>(<span class="string">&quot;invalid qual characters found in {}\n&quot;</span>, <span class="kw-2">&amp;</span>id)
+            <span class="kw-2">&amp;</span><span class="macro">format!</span>(<span class="string">"invalid qual characters found in {}\n"</span>, <span class="kw-2">&amp;</span>id)
         );
         num_errors += <span class="number">1</span>;
     }
@@ -600,14 +602,14 @@
     <span class="comment">// check key id-at
     </span><span class="kw">if </span>id_at &lt; <span class="number">1 </span>{
         error.push_str(
-            <span class="kw-2">&amp;</span><span class="macro">format!</span>(<span class="string">&quot;no @ found at position 1 on line 1 for {}\n&quot;</span>, <span class="kw-2">&amp;</span>id)
+            <span class="kw-2">&amp;</span><span class="macro">format!</span>(<span class="string">"no @ found at position 1 on line 1 for {}\n"</span>, <span class="kw-2">&amp;</span>id)
         );    
         num_errors += <span class="number">1</span>;
     }
     <span class="comment">// check key id-plus 
     </span><span class="kw">if </span>id_plus &lt; <span class="number">1 </span>{
         error.push_str(
-            <span class="kw-2">&amp;</span><span class="macro">format!</span>(<span class="string">&quot;no + found at position 1 on line 3 for {}\n&quot;</span>, <span class="kw-2">&amp;</span>id)
+            <span class="kw-2">&amp;</span><span class="macro">format!</span>(<span class="string">"no + found at position 1 on line 3 for {}\n"</span>, <span class="kw-2">&amp;</span>id)
         );
         num_errors += <span class="number">1</span>;
     }
@@ -617,7 +619,7 @@
         id = identifier.clone();
     }
     
-    <span class="kw">let </span>entry :String = <span class="macro">format!</span>(<span class="string">&quot;{}\n{}\n{}\n{}&quot;</span>, <span class="kw-2">&amp;</span>id, <span class="kw-2">&amp;</span>seq, <span class="kw-2">&amp;</span>plus, <span class="kw-2">&amp;</span>qual);
+    <span class="kw">let </span>entry :String = <span class="macro">format!</span>(<span class="string">"{}\n{}\n{}\n{}"</span>, <span class="kw-2">&amp;</span>id, <span class="kw-2">&amp;</span>seq, <span class="kw-2">&amp;</span>plus, <span class="kw-2">&amp;</span>qual);
 
     <span class="kw">let </span><span class="kw-2">mut </span>is_good = <span class="bool-val">true</span>;
     <span class="kw">if </span>num_errors &gt; <span class="number">0 </span>{

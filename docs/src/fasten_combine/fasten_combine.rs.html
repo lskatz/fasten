@@ -1,4 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/bin/fasten_combine.rs`."><title>fasten_combine.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-cb6f1f67f1bcd037.css" id="mainThemeStyle"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="fasten_combine" data-themes="" data-resource-suffix="" data-rustdoc-version="1.73.0 (cc66ad468 2023-10-03)" data-channel="1.73.0" data-search-js="search-6dfdfced5eff6596.js" data-settings-js="settings-de11bff964e9d4e5.js" data-settings-css="settings-8c76f75bfb6bd192.css" data-theme-light-css="light-1596385f77d47ef2.css" data-theme-dark-css="dark-0a43001d3fc2282c.css" data-theme-ayu-css="ayu-fd19013d6ce078bf.css" ><script src="../../static.files/storage-db41da1a38ea3cb8.js"></script><script defer src="../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-0795b7d26be81095.js"></script><noscript><link rel="stylesheet" media="(prefers-color-scheme:light)" href="../../static.files/light-1596385f77d47ef2.css"><link rel="stylesheet" media="(prefers-color-scheme:dark)" href="../../static.files/dark-0a43001d3fc2282c.css"><link rel="stylesheet" href="../../static.files/noscript-cffde32267a19fd6.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../fasten_combine/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/bin/fasten_combine.rs`."><title>fasten_combine.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-5bc39a1768837dd0.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="fasten_combine" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.0 (aedd173a2 2024-03-17)" data-channel="1.77.0" data-search-js="search-dd67cee4cfa65049.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-48f368f3872407c8.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+            <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../fasten_combine/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -324,7 +326,7 @@
 //!        --min-qual-char CHAR
 //!                        Minimum quality character (default: !)
 //!
-//!    NOTE: range of quality scores is !&quot;#$%&amp;&#39;()*+,-./0123456789:;&lt;=&gt;?@ABCDEFGHI
+//!    NOTE: range of quality scores is !"#$%&amp;'()*+,-./0123456789:;&lt;=&gt;?@ABCDEFGHI
 //!```
 
 </span><span class="kw">extern crate </span>fasten;
@@ -350,14 +352,14 @@
 </span><span class="kw">const </span>TEN: f32 = <span class="number">10.0</span>;
 <span class="doccomment">/// Glues together paired end reads internally and is a
 /// character not expected in any read
-</span><span class="kw">const </span>READ_SEPARATOR :char = <span class="string">&#39;~&#39;</span>;
+</span><span class="kw">const </span>READ_SEPARATOR :char = <span class="string">'~'</span>;
 
 <span class="kw">fn </span>main(){
     <span class="kw">let </span><span class="kw-2">mut </span>opts = fasten_base_options();
 
-    <span class="comment">// make a string of characters like !&quot;#...GHI to represent all quals
-    </span><span class="kw">let </span>default_phred_min_char:char = <span class="string">&#39;!&#39;</span>;
-    <span class="kw">let </span>default_phred_max_char:char = <span class="string">&#39;I&#39;</span>;
+    <span class="comment">// make a string of characters like !"#...GHI to represent all quals
+    </span><span class="kw">let </span>default_phred_min_char:char = <span class="string">'!'</span>;
+    <span class="kw">let </span>default_phred_max_char:char = <span class="string">'I'</span>;
     <span class="kw">let </span>default_phred_min:u8 = default_phred_min_char <span class="kw">as </span>u8 - <span class="number">33</span>;
     <span class="kw">let </span>default_phred_max:u8 = default_phred_max_char <span class="kw">as </span>u8 - <span class="number">33</span>;
     <span class="kw">let </span><span class="kw-2">mut </span>qual_range_string = String::with_capacity((default_phred_max - default_phred_min + <span class="number">1</span>) <span class="kw">as </span>usize);
@@ -366,28 +368,28 @@
     }
 
 
-    opts.optopt(<span class="string">&quot;&quot;</span>,<span class="string">&quot;max-qual-char&quot;</span>,
-      <span class="macro">format!</span>(<span class="string">&quot;Maximum quality character (default: {})&quot;</span>, default_phred_max_char).as_str(),
-      <span class="string">&quot;CHAR&quot;</span>);
-    opts.optopt(<span class="string">&quot;&quot;</span>,<span class="string">&quot;min-qual-char&quot;</span>,
-      <span class="macro">format!</span>(<span class="string">&quot;Minimum quality character (default: {})&quot;</span>, default_phred_min_char).as_str(),
-      <span class="string">&quot;CHAR&quot;</span>);
+    opts.optopt(<span class="string">""</span>,<span class="string">"max-qual-char"</span>,
+      <span class="macro">format!</span>(<span class="string">"Maximum quality character (default: {})"</span>, default_phred_max_char).as_str(),
+      <span class="string">"CHAR"</span>);
+    opts.optopt(<span class="string">""</span>,<span class="string">"min-qual-char"</span>,
+      <span class="macro">format!</span>(<span class="string">"Minimum quality character (default: {})"</span>, default_phred_min_char).as_str(),
+      <span class="string">"CHAR"</span>);
 
-    <span class="kw">let </span>description:String = <span class="macro">format!</span>(<span class="string">&quot;Collapse identical reads into single reads, recalculating quality values. If paired end, then each set of reads must be identical to be collapsed. Warning: due to multiple reads collapsing into one, read identifiers will be reconstituted. NOTE: range of quality scores is {}&quot;</span>, qual_range_string);
+    <span class="kw">let </span>description:String = <span class="macro">format!</span>(<span class="string">"Collapse identical reads into single reads, recalculating quality values. If paired end, then each set of reads must be identical to be collapsed. Warning: due to multiple reads collapsing into one, read identifiers will be reconstituted. NOTE: range of quality scores is {}"</span>, qual_range_string);
     <span class="kw">let </span>matches = fasten_base_options_matches(<span class="kw-2">&amp;</span>description, opts);
 
-    <span class="kw">let </span>max_qual_char:char = matches.opt_default(<span class="string">&quot;max-qual-char&quot;</span>, <span class="kw-2">&amp;</span>default_phred_max_char.to_string())
+    <span class="kw">let </span>max_qual_char:char = matches.opt_default(<span class="string">"max-qual-char"</span>, <span class="kw-2">&amp;</span>default_phred_max_char.to_string())
                      .unwrap_or(String::from(default_phred_max_char))
                      .parse()
-                     .expect(<span class="string">&quot;ERROR converting --max-qual-int value to integer&quot;</span>);
+                     .expect(<span class="string">"ERROR converting --max-qual-int value to integer"</span>);
 
     <span class="kw">let </span><span class="kw-2">mut </span>min_qual_char:char =
-          matches.opt_default(<span class="string">&quot;min-qual-char&quot;</span>, <span class="kw-2">&amp;</span>default_phred_min_char.to_string())
+          matches.opt_default(<span class="string">"min-qual-char"</span>, <span class="kw-2">&amp;</span>default_phred_min_char.to_string())
                      .unwrap_or(String::from(default_phred_min_char))
                      .parse()
-                     .expect(<span class="string">&quot;ERROR converting --min-qual-int value to integer&quot;</span>);
+                     .expect(<span class="string">"ERROR converting --min-qual-int value to integer"</span>);
     <span class="kw">if </span>min_qual_char &lt; default_phred_min_char {
-      logmsg(<span class="string">&quot;--min-qual-char was less than the default minimum and so it will be set to the default&quot;</span>);
+      logmsg(<span class="string">"--min-qual-char was less than the default minimum and so it will be set to the default"</span>);
       min_qual_char = default_phred_min_char;
     }
 
@@ -395,10 +397,10 @@
     </span><span class="kw">let </span>min_qual:u8 = min_qual_char <span class="kw">as </span>u8;
     <span class="kw">let </span>max_qual:u8 = max_qual_char <span class="kw">as </span>u8;
 
-    <span class="kw">let </span>paired_end = matches.opt_present(<span class="string">&quot;paired-end&quot;</span>);
+    <span class="kw">let </span>paired_end = matches.opt_present(<span class="string">"paired-end"</span>);
     <span class="kw">let </span>_num_cpus:usize = {
-      <span class="kw">if </span>matches.opt_present(<span class="string">&quot;numcpus&quot;</span>) {
-        logmsg(<span class="string">&quot;Warning: This script does not make use of --numcpus&quot;</span>);
+      <span class="kw">if </span>matches.opt_present(<span class="string">"numcpus"</span>) {
+        logmsg(<span class="string">"Warning: This script does not make use of --numcpus"</span>);
         <span class="number">1 </span><span class="kw">as </span>usize
       } <span class="kw">else </span>{
         <span class="number">1 </span><span class="kw">as </span>usize
@@ -412,7 +414,7 @@
 
     <span class="kw">let </span>parser = Parser::new(stdin());
     <span class="kw">let </span><span class="kw-2">mut </span>parser_getter = parser.ref_iter();
-    parser_getter.advance().expect(<span class="string">&quot;Could not read the first fastq entry&quot;</span>);
+    parser_getter.advance().expect(<span class="string">"Could not read the first fastq entry"</span>);
     <span class="kw">while let </span><span class="prelude-val">Some</span>(record1) = parser_getter.get() {
         <span class="kw">let </span><span class="kw-2">mut </span>id:Vec&lt;u8&gt;     = record1.head().to_vec();
         <span class="kw">let </span><span class="kw-2">mut </span>seq:Vec&lt;u8&gt;    = record1.seq().to_vec(); 
@@ -422,10 +424,10 @@
           </span><span class="kw">match </span>parser_getter.advance() {
             <span class="prelude-val">Ok</span>(<span class="kw">_</span>) =&gt; {},
             <span class="prelude-val">Err</span>(err) =&gt; {
-              <span class="macro">panic!</span>(<span class="string">&quot;ERROR: could not read the second entry in a paired end read: {}&quot;</span>, err);
+              <span class="macro">panic!</span>(<span class="string">"ERROR: could not read the second entry in a paired end read: {}"</span>, err);
             }
           };
-          <span class="kw">let </span>record2 = <span class="kw-2">&amp;</span>parser_getter.get().expect(<span class="string">&quot;ERROR parsing second pair in a paired end read&quot;</span>);
+          <span class="kw">let </span>record2 = <span class="kw-2">&amp;</span>parser_getter.get().expect(<span class="string">"ERROR parsing second pair in a paired end read"</span>);
           <span class="kw">let </span>id2:<span class="kw-2">&amp;</span>[u8]  = record2.head();
           <span class="kw">let </span>seq2:<span class="kw-2">&amp;</span>[u8] = record2.seq();
           <span class="kw">let </span>qual2:<span class="kw-2">&amp;</span>[u8]= record2.qual();
@@ -440,28 +442,28 @@
           seq.extend_from_slice(seq2);
           qual.extend_from_slice(qual2);
         }
-        <span class="comment">//println!(&quot;{:?}&quot;, qual);
+        <span class="comment">//println!("{:?}", qual);
 
         // Keep track of the counts of identical sequence
         </span><span class="kw">let </span>seq_string:String = String::from(
                                    std::str::from_utf8(<span class="kw-2">&amp;</span>seq[..])
-                                   .expect(<span class="string">&quot;ERROR converting slice to str&quot;</span>)
+                                   .expect(<span class="string">"ERROR converting slice to str"</span>)
                                 );
         <span class="comment">/*
         let id_string:String = String::from(
                                   std::str::from_utf8(&amp;id[..])
-                                 .expect(&quot;ERROR converting slice to str&quot;)
+                                 .expect("ERROR converting slice to str")
                                );
         */
         </span><span class="kw">let </span>count = seq_count.entry(seq_string.clone()).or_insert(<span class="number">0</span>);
         <span class="kw-2">*</span>count += <span class="number">1 </span><span class="kw">as </span>u32;
 
-        <span class="comment">// If this sequence hasn&#39;t been seen yet,
+        <span class="comment">// If this sequence hasn't been seen yet,
         // then instantiate the probabilities.
         </span><span class="kw">if </span>!seq_error_rate.contains_key(<span class="kw-2">&amp;</span>seq_string) {
             <span class="kw">let </span><span class="kw-2">mut </span>qual_vec:Vec&lt;f32&gt; = <span class="macro">vec!</span>[];
             <span class="kw">for </span>q <span class="kw">in </span>qual {
-                <span class="comment">// Don&#39;t mess with the read separator character
+                <span class="comment">// Don't mess with the read separator character
                 </span><span class="kw">if </span>q == READ_SEPARATOR <span class="kw">as </span>u8 {
                   qual_vec.push(q <span class="kw">as </span>u8 <span class="kw">as </span>f32);
                   <span class="kw">continue</span>;
@@ -472,7 +474,7 @@
             }
             seq_error_rate.insert(seq_string.clone(), qual_vec);
         }
-        <span class="comment">//println!(&quot;{:?}&quot;, seq_error_rate.entry(seq_string));
+        <span class="comment">//println!("{:?}", seq_error_rate.entry(seq_string));
         
         // If this sequence has been seen yet, then
         // start combining the error rates.
@@ -481,7 +483,7 @@
             </span><span class="kw">let </span>qual_vec = seq_error_rate.entry(seq_string.clone()).or_insert(Vec::new());
 
             <span class="kw">let </span>these_errors = qual.into_iter().map(|qual_char|{
-                <span class="comment">// Don&#39;t mess with the read separator character
+                <span class="comment">// Don't mess with the read separator character
                 </span><span class="kw">if </span>qual_char == READ_SEPARATOR <span class="kw">as </span>u8 {
                   <span class="kw">return </span>qual_char <span class="kw">as </span>u8 <span class="kw">as </span>f32;
                 }
@@ -502,7 +504,7 @@
     <span class="kw">let </span><span class="kw-2">mut </span>seq_counter=<span class="number">0</span>;
     <span class="kw">for </span>(seq,combined_qual) <span class="kw">in </span>seq_error_rate {
         seq_counter += <span class="number">1</span>;
-        <span class="comment">//println!(&quot;{:?}&quot;, seq);continue;
+        <span class="comment">//println!("{:?}", seq);continue;
 
         // TODO take care of PE reads
 
@@ -529,15 +531,15 @@
 
         <span class="kw">if </span>paired_end {
             <span class="comment">// split the seq and qual for paired end
-            </span><span class="kw">let </span>separator_pos = seq.find(READ_SEPARATOR).expect(<span class="string">&quot;ERROR finding read separator&quot;</span>);
+            </span><span class="kw">let </span>separator_pos = seq.find(READ_SEPARATOR).expect(<span class="string">"ERROR finding read separator"</span>);
             <span class="kw">let </span>r1_seq = seq[<span class="number">0</span>..separator_pos].to_string();
             <span class="kw">let </span>r2_seq = seq[separator_pos+<span class="number">1</span>..].to_string();
             <span class="kw">let </span>r1_qual= qual_cigar[<span class="number">0</span>..separator_pos].to_string();
             <span class="kw">let </span>r2_qual= qual_cigar[separator_pos+<span class="number">1</span>..].to_string();
-            <span class="macro">println!</span>(<span class="string">&quot;@{}/1\n{}\n+\n{}&quot;</span>,seq_counter,r1_seq,r1_qual);
-            <span class="macro">println!</span>(<span class="string">&quot;@{}/2\n{}\n+\n{}&quot;</span>,seq_counter,r2_seq,r2_qual);
+            <span class="macro">println!</span>(<span class="string">"@{}/1\n{}\n+\n{}"</span>,seq_counter,r1_seq,r1_qual);
+            <span class="macro">println!</span>(<span class="string">"@{}/2\n{}\n+\n{}"</span>,seq_counter,r2_seq,r2_qual);
         } <span class="kw">else </span>{
-            <span class="macro">println!</span>(<span class="string">&quot;@{}\n{}\n+\n{}&quot;</span>,seq_counter,seq,qual_cigar);
+            <span class="macro">println!</span>(<span class="string">"@{}\n{}\n+\n{}"</span>,seq_counter,seq,qual_cigar);
         }
     }
 }
@@ -548,18 +550,18 @@
 /// from vector two.
 </span><span class="kw">fn </span>combine_error_vectors(errors1 :<span class="kw-2">&amp;</span>Vec&lt;f32&gt;, errors2: <span class="kw-2">&amp;</span>Vec&lt;f32&gt;) -&gt; Vec&lt;f32&gt; {
     <span class="kw">if </span>errors1.len() != errors2.len() {
-        <span class="macro">panic!</span>(<span class="string">&quot;Lengths of error vectors do not match: {} and {}&quot;</span>, errors1.len(), errors2.len());
+        <span class="macro">panic!</span>(<span class="string">"Lengths of error vectors do not match: {} and {}"</span>, errors1.len(), errors2.len());
     }
     <span class="kw">let </span><span class="kw-2">mut </span>errors_iter2=errors2.iter();
     <span class="kw">let </span><span class="kw-2">mut </span>new_errors :Vec&lt;f32&gt; = Vec::new(); <span class="comment">// TODO set length/capacity to errors.len()
     </span><span class="kw">for </span>p1 <span class="kw">in </span>errors1 {
-        <span class="kw">let </span>p2 = errors_iter2.next().expect(<span class="string">&quot;ERROR: could not get the error probability from the second read&quot;</span>);
+        <span class="kw">let </span>p2 = errors_iter2.next().expect(<span class="string">"ERROR: could not get the error probability from the second read"</span>);
         new_errors.push(p1 * p2);
     }
     <span class="kw">return </span>new_errors;
 }
 
-<span class="comment">// TODO a function that returns the &#39;min-seq&#39; which is the
+<span class="comment">// TODO a function that returns the 'min-seq' which is the
 // sequence that comes first alphabetically when compared
 // with its revcom
 
@@ -568,8 +570,8 @@
 fn recalculate_qual(qual_str: &amp;str, count: u32) -&gt; String {
     let mut qual_out = String::new();
 
-    let max_qual = &#39;I&#39; as u8;
-    let min_qual = &#39;!&#39; as u8;
+    let max_qual = 'I' as u8;
+    let min_qual = '!' as u8;
 
     let qual = qual_str.to_string();
     for qual_char in qual.chars() {
@@ -586,11 +588,11 @@ fn recalculate_qual(qual_str: &amp;str, count: u32) -&gt; String {
         // switch to u8 and then the corresponding char
         let mut qual_recalc_char = qual_recalc.round() as u8 as char;
         if (qual_recalc_char as u8) &gt; max_qual {
-            qual_recalc_char = &#39;I&#39;;
+            qual_recalc_char = 'I';
         }
         // a reduction in quality is not expected... but just in case.
         if (qual_recalc_char as u8) &lt; min_qual {
-            qual_recalc_char = &#39;!&#39;;
+            qual_recalc_char = '!';
         }
         qual_out.push(qual_recalc_char);
     }

@@ -1,4 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/lib.rs`."><title>lib.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-cb6f1f67f1bcd037.css" id="mainThemeStyle"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="fasten" data-themes="" data-resource-suffix="" data-rustdoc-version="1.73.0 (cc66ad468 2023-10-03)" data-channel="1.73.0" data-search-js="search-6dfdfced5eff6596.js" data-settings-js="settings-de11bff964e9d4e5.js" data-settings-css="settings-8c76f75bfb6bd192.css" data-theme-light-css="light-1596385f77d47ef2.css" data-theme-dark-css="dark-0a43001d3fc2282c.css" data-theme-ayu-css="ayu-fd19013d6ce078bf.css" ><script src="../../static.files/storage-db41da1a38ea3cb8.js"></script><script defer src="../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-0795b7d26be81095.js"></script><noscript><link rel="stylesheet" media="(prefers-color-scheme:light)" href="../../static.files/light-1596385f77d47ef2.css"><link rel="stylesheet" media="(prefers-color-scheme:dark)" href="../../static.files/dark-0a43001d3fc2282c.css"><link rel="stylesheet" href="../../static.files/noscript-cffde32267a19fd6.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../fasten/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/lib.rs`."><title>lib.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-5bc39a1768837dd0.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="fasten" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.0 (aedd173a2 2024-03-17)" data-channel="1.77.0" data-search-js="search-dd67cee4cfa65049.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-48f368f3872407c8.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+            <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../fasten/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -162,6 +164,33 @@
 <a href="#162" id="162">162</a>
 <a href="#163" id="163">163</a>
 <a href="#164" id="164">164</a>
+<a href="#165" id="165">165</a>
+<a href="#166" id="166">166</a>
+<a href="#167" id="167">167</a>
+<a href="#168" id="168">168</a>
+<a href="#169" id="169">169</a>
+<a href="#170" id="170">170</a>
+<a href="#171" id="171">171</a>
+<a href="#172" id="172">172</a>
+<a href="#173" id="173">173</a>
+<a href="#174" id="174">174</a>
+<a href="#175" id="175">175</a>
+<a href="#176" id="176">176</a>
+<a href="#177" id="177">177</a>
+<a href="#178" id="178">178</a>
+<a href="#179" id="179">179</a>
+<a href="#180" id="180">180</a>
+<a href="#181" id="181">181</a>
+<a href="#182" id="182">182</a>
+<a href="#183" id="183">183</a>
+<a href="#184" id="184">184</a>
+<a href="#185" id="185">185</a>
+<a href="#186" id="186">186</a>
+<a href="#187" id="187">187</a>
+<a href="#188" id="188">188</a>
+<a href="#189" id="189">189</a>
+<a href="#190" id="190">190</a>
+<a href="#191" id="191">191</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! Perform random operations on fastq files, using unix streaming.
 //! Secure your analysis with Fasten!
 //! # Synopsis
@@ -216,12 +245,12 @@
 //!
 //! ## Validate a whole directory of fastq reads
 //! ```text
-//! \ls *_1.fastq.gz | xargs -n 1 -P 4 bash -c &#39;
-//!   echo -n &quot;.&quot; &gt;&amp;2 # progress bar
+//! \ls *_1.fastq.gz | xargs -n 1 -P 4 bash -c '
+//!   echo -n "." &gt;&amp;2 # progress bar
 //!   R1=$0
 //!   R2=${0/_1.fastq.gz/_2.fastq.gz}
 //!   zcat $R1 $R2 | fasten_shuffle | fasten_validate --paired-end
-//! &#39;
+//! '
 //! ```
 
 </span><span class="kw">extern crate </span>regex;
@@ -229,6 +258,7 @@
 <span class="kw">extern crate </span>getopts;
 <span class="kw">use </span>std::env;
 <span class="kw">use </span>std::path::Path;
+<span class="kw">use </span>std::collections::HashMap;
 
 <span class="kw">use </span>getopts::Options;
 <span class="kw">use </span>getopts::Matches;
@@ -236,31 +266,31 @@
 <span class="doccomment">/// input/output methods
 </span><span class="kw">pub mod </span>io;
 
-<span class="kw">const </span>VERSION: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str = <span class="macro">env!</span>(<span class="string">&quot;CARGO_PKG_VERSION&quot;</span>);
+<span class="kw">const </span>VERSION: <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str = <span class="macro">env!</span>(<span class="string">"CARGO_PKG_VERSION"</span>);
 
 <span class="doccomment">/// Have some strings that can be printed which could be
 /// used to propagate errors between piped scripts.
 
 /// Invalid fastq ID (no @)
-</span><span class="kw">static </span>INVALID_ID  :<span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str= <span class="string">&quot;invalid_id&quot;</span>;
+</span><span class="kw">static </span>INVALID_ID  :<span class="kw-2">&amp;</span><span class="lifetime">'static </span>str= <span class="string">"invalid_id"</span>;
 <span class="doccomment">/// Invalid sequence (underscore)
-</span><span class="kw">static </span>INVALID_SEQ :<span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str= <span class="string">&quot;invalid_seq&quot;</span>;
+</span><span class="kw">static </span>INVALID_SEQ :<span class="kw-2">&amp;</span><span class="lifetime">'static </span>str= <span class="string">"invalid_seq"</span>;
 <span class="doccomment">/// Invalid plus line (no +)
-</span><span class="kw">static </span>INVALID_PLUS:<span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str= <span class="string">&quot;invalid_plus&quot;</span>;
+</span><span class="kw">static </span>INVALID_PLUS:<span class="kw-2">&amp;</span><span class="lifetime">'static </span>str= <span class="string">"invalid_plus"</span>;
 <span class="doccomment">/// Invalid qual line (~ is chr 126 when the normal max number is 40)
-</span><span class="kw">static </span>INVALID_QUAL:<span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str= <span class="string">&quot;invalid_qual&quot;</span>;
+</span><span class="kw">static </span>INVALID_QUAL:<span class="kw-2">&amp;</span><span class="lifetime">'static </span>str= <span class="string">"invalid_qual"</span>;
 
 <span class="doccomment">/// Propagate an error by printing invalid read(s)
 </span><span class="kw">pub fn </span>eexit() -&gt; () {
-    <span class="macro">println!</span>(<span class="string">&quot;{}\n{}\n{}\n{}&quot;</span>,INVALID_ID,INVALID_SEQ,INVALID_PLUS,INVALID_QUAL);
+    <span class="macro">println!</span>(<span class="string">"{}\n{}\n{}\n{}"</span>,INVALID_ID,INVALID_SEQ,INVALID_PLUS,INVALID_QUAL);
     std::process::exit(<span class="number">1</span>);
 }
 
-<span class="doccomment">/// Rewrite print!() so that it doesn&#39;t panic on broken
+<span class="doccomment">/// Rewrite print!() so that it doesn't panic on broken
 /// pipe.
 </span><span class="attr">#[macro_export]
 </span><span class="macro">macro_rules! </span>print (
-    <span class="comment">// The extra scope is necessary so we don&#39;t leak imports
+    <span class="comment">// The extra scope is necessary so we don't leak imports
     </span>($(<span class="macro-nonterminal">$arg</span>:tt)<span class="kw-2">*</span>) =&gt; ({
         <span class="comment">// The `write!()` macro is written so it can use `std::io::Write`
         // or `std::fmt::Write`, this import sets which to use
@@ -276,35 +306,35 @@
 <span class="doccomment">/// a function that reads an options object and adds fasten default options.
 </span><span class="kw">pub fn </span>fasten_base_options() -&gt; Options{
     <span class="kw">let </span><span class="kw-2">mut </span>opts = Options::new();
-    opts.optflag(<span class="string">&quot;h&quot;</span>, <span class="string">&quot;help&quot;</span>, <span class="string">&quot;Print this help menu.&quot;</span>);
-    opts.optopt(<span class="string">&quot;n&quot;</span>,<span class="string">&quot;numcpus&quot;</span>,<span class="string">&quot;Number of CPUs (default: 1)&quot;</span>,<span class="string">&quot;INT&quot;</span>);
-    opts.optflag(<span class="string">&quot;p&quot;</span>,<span class="string">&quot;paired-end&quot;</span>,<span class="string">&quot;The input reads are interleaved paired-end&quot;</span>);
-    opts.optflag(<span class="string">&quot;&quot;</span>,<span class="string">&quot;verbose&quot;</span>,<span class="string">&quot;Print more status messages&quot;</span>);
-    opts.optflag(<span class="string">&quot;&quot;</span>,<span class="string">&quot;version&quot;</span>,<span class="string">&quot;Print the version of Fasten and exit&quot;</span>);
+    opts.optflag(<span class="string">"h"</span>, <span class="string">"help"</span>, <span class="string">"Print this help menu."</span>);
+    opts.optopt(<span class="string">"n"</span>,<span class="string">"numcpus"</span>,<span class="string">"Number of CPUs (default: 1)"</span>,<span class="string">"INT"</span>);
+    opts.optflag(<span class="string">"p"</span>,<span class="string">"paired-end"</span>,<span class="string">"The input reads are interleaved paired-end"</span>);
+    opts.optflag(<span class="string">""</span>,<span class="string">"verbose"</span>,<span class="string">"Print more status messages"</span>);
+    opts.optflag(<span class="string">""</span>,<span class="string">"version"</span>,<span class="string">"Print the version of Fasten and exit"</span>);
 
     <span class="kw">return </span>opts;
 }
 
 <span class="doccomment">/// a function that processes the options on the command line
 /// The brief is a str that describes the program without using the program
-/// name, e.g., &quot;counts kmers&quot; for fasten_kmer.
+/// name, e.g., "counts kmers" for fasten_kmer.
 /// This function also takes care of --version.
 /// If --help is invoked, then the program name, the brief, and the usage()
 /// are all printed to stdout and then the program exits with 0.
 </span><span class="comment">// TODO if possible add in default somehow for numcpus
 </span><span class="kw">pub fn </span>fasten_base_options_matches(brief:<span class="kw-2">&amp;</span>str, opts:Options) -&gt; Matches{
     <span class="kw">let </span>args: Vec&lt;String&gt; = env::args().collect();
-    <span class="kw">let </span>matches = opts.parse(<span class="kw-2">&amp;</span>args[<span class="number">1</span>..]).expect(<span class="string">&quot;ERROR: could not parse parameters&quot;</span>);
+    <span class="kw">let </span>matches = opts.parse(<span class="kw-2">&amp;</span>args[<span class="number">1</span>..]).expect(<span class="string">"ERROR: could not parse parameters"</span>);
 
-    <span class="kw">if </span>matches.opt_present(<span class="string">&quot;version&quot;</span>) {
-        <span class="macro">println!</span>(<span class="string">&quot;Fasten v{}&quot;</span>, <span class="kw-2">&amp;</span>VERSION);
+    <span class="kw">if </span>matches.opt_present(<span class="string">"version"</span>) {
+        <span class="macro">println!</span>(<span class="string">"Fasten v{}"</span>, <span class="kw-2">&amp;</span>VERSION);
         std::process::exit(<span class="number">0</span>);
     }
-    <span class="kw">if </span>matches.opt_present(<span class="string">&quot;h&quot;</span>) {
+    <span class="kw">if </span>matches.opt_present(<span class="string">"h"</span>) {
         <span class="kw">let </span>prog_name = Path::new(<span class="kw-2">&amp;</span>args[<span class="number">0</span>])
             .file_stem().unwrap()
             .to_str().unwrap();
-        <span class="macro">println!</span>(<span class="string">&quot;{}: {}\n\n{}&quot;</span>, 
+        <span class="macro">println!</span>(<span class="string">"{}: {}\n\n{}"</span>, 
             <span class="kw-2">&amp;</span>prog_name,
             <span class="kw-2">&amp;</span>brief,
             <span class="kw-2">&amp;</span>opts.usage(
@@ -323,7 +353,33 @@
     <span class="comment">// is there a better way to get the basename of the program???
     </span><span class="kw">let </span>program = Path::file_name(Path::new(<span class="kw-2">&amp;</span>args[<span class="number">0</span>])).unwrap().to_str().unwrap();
     <span class="kw">let </span>str_ref = stringlike.as_ref();
-    <span class="macro">eprintln!</span>(<span class="string">&quot;{}: {}&quot;</span>, <span class="kw-2">&amp;</span>program, str_ref);
+    <span class="macro">eprintln!</span>(<span class="string">"{}: {}"</span>, <span class="kw-2">&amp;</span>program, str_ref);
+}
+
+<span class="doccomment">/// Reverse complement a DNA sequence.
+/// Take into account lowercase vs uppercase.
+/// Ambiguity codes are also handled.
+</span><span class="kw">pub fn </span>reverse_complement(dna: <span class="kw-2">&amp;</span>str) -&gt; String {
+    <span class="comment">// Create a mapping for complement bases, including ambiguity codes.
+    </span><span class="kw">let </span>complement_map: HashMap&lt;char, char&gt; = [
+        (<span class="string">'A'</span>, <span class="string">'T'</span>), (<span class="string">'T'</span>, <span class="string">'A'</span>), (<span class="string">'G'</span>, <span class="string">'C'</span>), (<span class="string">'C'</span>, <span class="string">'G'</span>),
+        (<span class="string">'R'</span>, <span class="string">'Y'</span>), (<span class="string">'Y'</span>, <span class="string">'R'</span>), (<span class="string">'S'</span>, <span class="string">'S'</span>), (<span class="string">'W'</span>, <span class="string">'W'</span>),
+        (<span class="string">'K'</span>, <span class="string">'M'</span>), (<span class="string">'M'</span>, <span class="string">'K'</span>), (<span class="string">'B'</span>, <span class="string">'V'</span>), (<span class="string">'V'</span>, <span class="string">'B'</span>),
+        (<span class="string">'D'</span>, <span class="string">'H'</span>), (<span class="string">'H'</span>, <span class="string">'D'</span>), (<span class="string">'N'</span>, <span class="string">'N'</span>),
+        (<span class="string">'a'</span>, <span class="string">'t'</span>), (<span class="string">'t'</span>, <span class="string">'a'</span>), (<span class="string">'g'</span>, <span class="string">'c'</span>), (<span class="string">'c'</span>, <span class="string">'g'</span>),
+        (<span class="string">'r'</span>, <span class="string">'y'</span>), (<span class="string">'y'</span>, <span class="string">'r'</span>), (<span class="string">'s'</span>, <span class="string">'s'</span>), (<span class="string">'w'</span>, <span class="string">'w'</span>),
+        (<span class="string">'k'</span>, <span class="string">'m'</span>), (<span class="string">'m'</span>, <span class="string">'k'</span>), (<span class="string">'b'</span>, <span class="string">'v'</span>), (<span class="string">'v'</span>, <span class="string">'b'</span>),
+        (<span class="string">'d'</span>, <span class="string">'h'</span>), (<span class="string">'h'</span>, <span class="string">'d'</span>), (<span class="string">'n'</span>, <span class="string">'n'</span>),
+    ]
+    .iter()
+    .cloned()
+    .collect();
+
+    <span class="comment">// Generate the reverse complement.
+    </span>dna.chars()
+        .rev()
+        .map(|base| complement_map.get(<span class="kw-2">&amp;</span>base).cloned().unwrap_or(<span class="string">'N'</span>)) <span class="comment">// Default to 'N' for unknown bases.
+        </span>.collect()
 }
 
 </code></pre></div></section></main></body></html>
