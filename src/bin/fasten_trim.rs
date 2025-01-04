@@ -65,7 +65,9 @@
 //! # Output
 //! 
 //! The deflines will be altered with a description of the trimming in brackets, e.g.,
-//! [trimmed_adapter_rev=TT] [trimmed_left=0] [trimmed_right=250]
+//! `@M03235:53:000000000-AHLTD:1:1101:1826:14428 [trimmed_adapter_rev=TT] [trimmed_left=0] [trimmed_right=249]`
+//! or for a forward adapter,
+//! `@M03235:53:000000000-AHLTD:1:1101:1758:14922 [trimmed_adapter_fwd=AA] [trimmed_left=2] [trimmed_right=251]`
 
 extern crate fasten;
 extern crate statistical;
@@ -242,7 +244,7 @@ fn trim_worker(seq:Seq, suggested_first_base:usize, suggested_last_base:usize, a
         last_base = seq.seq.len()-1;
     }
 
-    description.push_str(&format!(" [trimmed_left={}] [trimmed_right={}]", first_base, last_base));
+    description.push_str(&format!(" [trimmed_left={}] [trimmed_right={}]", first_base, last_base-1));
 
     let sequence = &seq.seq[first_base..last_base];
     let quality  = &seq.qual[first_base..last_base];
