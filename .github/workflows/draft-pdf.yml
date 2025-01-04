@@ -19,7 +19,7 @@ jobs:
           tree
           find . -type f -name '*immem*'
       - name: Upload
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v4
         with:
           name: immem-abstract
           # This is the output path where Pandoc will write the compiled
@@ -43,7 +43,7 @@ jobs:
           tree
           find . -type f -name '*paper*'
       - name: Upload
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v4
         with:
           name: paper-abstract
           # This is the output path where Pandoc will write the compiled
