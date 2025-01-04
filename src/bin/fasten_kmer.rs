@@ -48,15 +48,21 @@
 extern crate fasten;
 extern crate statistical;
 extern crate getopts;
+extern crate rand;
+extern crate fancy_regex;
 
 use std::io::BufReader;
 use std::io::BufRead;
 use std::io::stdin;
 use std::io::Stdin;
+use rand::Rng;
+//use rand::seq::SliceRandom;
 
 use fasten::fasten_base_options;
 use fasten::fasten_base_options_matches;
 use fasten::logmsg;
+
+use fancy_regex::Regex;
 
 use std::collections::HashMap;
 
@@ -149,6 +155,11 @@ fn count_kmers (stdin:Stdin, kmer_length:usize, revcomp:bool, remember_reads:boo
 
     // keep track of which sequences start with which kmers
     let mut kmer_to_seqs :HashMap<String, Vec<String>> = HashMap::new();
+
+    // Some randomness
+    let mut rng = rand::thread_rng();
+    // Regular expression to find uncomplex kmers
+    let low_complexity = Regex::new(r"N|(.)\1{2,}|(.)(.)(\2\3){1,}").unwrap();
     
     // read the file
     let my_buffer=BufReader::new(stdin);
@@ -170,6 +181,7 @@ fn count_kmers (stdin:Stdin, kmer_length:usize, revcomp:bool, remember_reads:boo
                 or_insert(0);
             *kmer_count += value;
         }
+        let kmer_keys: Vec<&String> = entry_kmers.keys().collect();
 
         // If this is paired end and if we're saving the second pair's
         // read, then reserve a declaired variable here for the string.
@@ -201,7 +213,24 @@ fn count_kmers (stdin:Stdin, kmer_length:usize, revcomp:bool, remember_reads:boo
 
         // Remember the read that initiated this
         if remember_reads {
-            let init_kmer = String::from(&seq[0..kmer_length]);
+            // Get the kmer substring
+            // let init_kmer = String::from(&seq[0..kmer_length]);
+            // Get the minimizer as the initial kmer
+            //let init_kmer = calculate_minimizer(&seq, kmer_length);
+
+            //let init_kmer_pos = rand::thread_rng().gen_range(0 .. seq.len() - kmer_length + 1);
+            //let init_kmer = seq[init_kmer_pos .. init_kmer_pos+kmer_length].to_string();
+            let mut random_index = rng.gen_range(0..kmer_keys.len());
+            let mut init_kmer    = kmer_keys[random_index].to_string();
+            let mut kmer_tries :u16 = 0;
+            while kmer_tries < 1000 && low_complexity.is_match(&init_kmer).unwrap() {
+                random_index = rng.gen_range(0..kmer_keys.len());
+                init_kmer    = kmer_keys[random_index].to_string();
+                kmer_tries  += 1;
+                //fasten::logmsg(format!("skipping kmer {}, try {}",&init_kmer, kmer_tries));
+            }
+
+            // Get the vector of sequences for this kmer, or else initialize an empty vector
             let init_kmer_vec = kmer_to_seqs.entry(init_kmer).or_insert(vec![]);
 
             // get the formatted entry
@@ -275,6 +304,39 @@ fn kmers_in_str (seq:&str, kmer_length:usize, should_revcomp:bool) -> HashMap<St
 
     return kmer_hash;
 }
+
+/*
+fn calculate_minimizer(sequence: &str, k: usize) -> String {
+    // Ensure the sequence length is greater than or equal to k
+    if sequence.len() < k {
+        panic!("Sequence length is less than k");
+    }
+
+    // Initialize variables to keep track of the minimum k-mer and its hash
+    let mut min_kmer = &sequence[0..k];
+    let mut min_hash = hash_kmer(min_kmer);
+
+    // Iterate over the sequence to find the minimum k-mer and its hash
+    for i in 1..=(sequence.len() - k) {
+        let current_kmer = &sequence[i..(i + k)];
+        let current_hash = hash_kmer(current_kmer);
+
+        // Update the minimum k-mer and its hash if a smaller hash is found
+        if current_hash < min_hash {
+            min_kmer = current_kmer;
+            min_hash = current_hash;
+        }
+    }
+
+    // Return the minimizer k-mer
+    min_kmer.to_string()
+}
+
+fn hash_kmer(kmer: &str) -> u64 {
+    // Simple hash function that converts each nucleotide to its ASCII value and sums them up
+    kmer.bytes().map(|b| b as u64).sum()
+}
+*/
 
 /// reverse-complement a dna sequence
 // Thanks Henk for supplying these functions.
