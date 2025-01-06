@@ -17,7 +17,12 @@
 //! ### Trim the adapters
 //! 
 //! ```bash
-//! cat file.fastq | fasten_trim 
+//! cat file.fastq | \
+//!   fasten_trim --adapterseqs <(echo -e ">test\nCTTT") > trimmed.fastq
+//! 
+//! cat $HOME/db/adapterseqs/adapters/*.fa > ./adapters.fasta
+//! cat file.fastq | \
+//!   fasten_trim --adapterseqs ./adapters.fasta > trimmed.fastq
 //! ```
 //! 
 //! ## Blunt-end trim five bases from the right side
@@ -61,6 +66,14 @@
 //! 2. if an adapter is found at the beginning of the sequence, then move the marker for where it will be trimmed
 //! 3. Compare the blunt end suggested trimming against where an adapter might be found and move the marker as the most inward possible
 //! 4. Trim the sequence and quality strings
+//! 
+//! Making the output more explicit while combining both algorithms can involve a two step process:
+//! 
+//! ```bash
+//! cat file.fastq | \
+//!   fasten_trim --adapterseqs ./adapters.fasta | \
+//!   fasten_trim -f 4 -l 99 > trimmed.fastq
+//! ```
 //! 
 //! # Output
 //! 
