@@ -103,13 +103,13 @@ except `fasten_convert`.
 |[`fasten_validate`](https://lskatz.github.io/fasten/fasten_validate)  | Validates your reads (deprecated in favor of `fasten_inspect` and `fasten_repair`|
 |[`fasten_inspect`](https://lskatz.github.io/fasten/fasten_inspect)  | adds information to read IDs such as seqlength |
 |[`fasten_repair`](https://lskatz.github.io/fasten/fasten_repair)  | Repairs corrupted reads |
-|[`fasten_quality_filter`](https://lskatz.github.io/fasten/fasten_quality_filter) | Transforms nucleotides to "N" if the quality is low | |
-|[`fasten_trim`](https://lskatz.github.io/fasten/fasten_trim)      | Blunt-end trims reads | |
-|[`fasten_replace`](https://lskatz.github.io/fasten/fasten_replace)   | Find and replace using regex | |
-|[`fasten_mutate`](https://lskatz.github.io/fasten/fasten_mutate)    | introduce random mutations | |
-|[`fasten_regex`](https://lskatz.github.io/fasten/fasten_regex)     | Filter for reads using regex | |
-|[`fasten_progress`](https://lskatz.github.io/fasten/fasten_progress)  | Add progress to any place in the pipeline | |
-|[`fasten_sort`](https://lskatz.github.io/fasten/fasten_sort)  | Sort fastq entries | |
+|[`fasten_quality_filter`](https://lskatz.github.io/fasten/fasten_quality_filter) | Transforms nucleotides to "N" if the quality is low |
+|[`fasten_trim`](https://lskatz.github.io/fasten/fasten_trim)      | Blunt-end trims reads |
+|[`fasten_replace`](https://lskatz.github.io/fasten/fasten_replace)   | Find and replace using regex |
+|[`fasten_mutate`](https://lskatz.github.io/fasten/fasten_mutate)    | introduce random mutations |
+|[`fasten_regex`](https://lskatz.github.io/fasten/fasten_regex)     | Filter for reads using regex |
+|[`fasten_progress`](https://lskatz.github.io/fasten/fasten_progress)  | Add progress to any place in the pipeline |
+|[`fasten_sort`](https://lskatz.github.io/fasten/fasten_sort)  | Sort fastq entries |
 
 ## Etymology
 
@@ -121,4 +121,4 @@ that indicates that you are securing your analysis by "fasten"ing it (with a sil
 
 [![DOI](https://joss.theoj.org/papers/10.21105/joss.06030/status.svg)](https://doi.org/10.21105/joss.06030)
 
-To cite, please refer to Katz et al., (2024). Fasten: a toolkit for streaming operations on fastq files. Journal of Open Source Software, 9(94), 6030, https://doi.org/10.21105/joss.06030
+To cite, please refer to Katz et al., (2024). Fasten: a toolkit for streaming operations on fastq files. Journal of Open Source Software, 9(94), 6030, <https://doi.org/10.21105/joss.06030>
