@@ -17,7 +17,12 @@
 //! ### Trim the adapters
 //! 
 //! ```bash
-//! cat file.fastq | fasten_trim 
+//! cat file.fastq | \
+//!   fasten_trim --adapterseqs <(echo -e ">test\nCTTT") > trimmed.fastq
+//! 
+//! cat $HOME/db/adapterseqs/adapters/*.fa > ./adapters.fasta
+//! cat file.fastq | \
+//!   fasten_trim --adapterseqs ./adapters.fasta > trimmed.fastq
 //! ```
 //! 
 //! ## Blunt-end trim five bases from the right side
@@ -62,11 +67,19 @@
 //! 3. Compare the blunt end suggested trimming against where an adapter might be found and move the marker as the most inward possible
 //! 4. Trim the sequence and quality strings
 //! 
+//! Making the output more explicit while combining both algorithms can involve a two step process:
+//! 
+//! ```bash
+//! cat file.fastq | \
+//!   fasten_trim --adapterseqs ./adapters.fasta | \
+//!   fasten_trim -f 4 -l 99 > trimmed.fastq
+//! ```
+//! 
 //! # Output
 //! 
-//! The deflines will be altered with a description of the trimming using key=value syntax, separated by spaces, e.g.,
-//! `@M03235:53:000000000-AHLTD:1:1101:1826:14428 trimmed_adapter_rev=TT trimmed_left=0 trimmed_right=249`
-//! or for a forward adapter,
+//! The deflines will be altered with a description of the trimming using key=value syntax, separated by spaces, e.g.,  
+//! `@M03235:53:000000000-AHLTD:1:1101:1826:14428 trimmed_adapter_rev=TT trimmed_left=0 trimmed_right=249`  
+//! or for a forward adapter,  
 //! `@M03235:53:000000000-AHLTD:1:1101:1758:14922 trimmed_adapter_fwd=AA trimmed_left=2 trimmed_right=251`
 
 extern crate fasten;
