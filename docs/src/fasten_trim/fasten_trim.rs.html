@@ -281,6 +281,19 @@
 <a href="#279" id="279">279</a>
 <a href="#280" id="280">280</a>
 <a href="#281" id="281">281</a>
+<a href="#282" id="282">282</a>
+<a href="#283" id="283">283</a>
+<a href="#284" id="284">284</a>
+<a href="#285" id="285">285</a>
+<a href="#286" id="286">286</a>
+<a href="#287" id="287">287</a>
+<a href="#288" id="288">288</a>
+<a href="#289" id="289">289</a>
+<a href="#290" id="290">290</a>
+<a href="#291" id="291">291</a>
+<a href="#292" id="292">292</a>
+<a href="#293" id="293">293</a>
+<a href="#294" id="294">294</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! Trims reads using 0-based coordinates
 //! 
 //! # Examples
@@ -300,7 +313,12 @@
 //! ### Trim the adapters
 //! 
 //! ```bash
-//! cat file.fastq | fasten_trim 
+//! cat file.fastq | \
+//!   fasten_trim --adapterseqs &lt;(echo -e "&gt;test\nCTTT") &gt; trimmed.fastq
+//! 
+//! cat $HOME/db/adapterseqs/adapters/*.fa &gt; ./adapters.fasta
+//! cat file.fastq | \
+//!   fasten_trim --adapterseqs ./adapters.fasta &gt; trimmed.fastq
 //! ```
 //! 
 //! ## Blunt-end trim five bases from the right side
@@ -345,11 +363,19 @@
 //! 3. Compare the blunt end suggested trimming against where an adapter might be found and move the marker as the most inward possible
 //! 4. Trim the sequence and quality strings
 //! 
+//! Making the output more explicit while combining both algorithms can involve a two step process:
+//! 
+//! ```bash
+//! cat file.fastq | \
+//!   fasten_trim --adapterseqs ./adapters.fasta | \
+//!   fasten_trim -f 4 -l 99 &gt; trimmed.fastq
+//! ```
+//! 
 //! # Output
 //! 
-//! The deflines will be altered with a description of the trimming using key=value syntax, separated by spaces, e.g.,
-//! `@M03235:53:000000000-AHLTD:1:1101:1826:14428 trimmed_adapter_rev=TT trimmed_left=0 trimmed_right=249`
-//! or for a forward adapter,
+//! The deflines will be altered with a description of the trimming using key=value syntax, separated by spaces, e.g.,  
+//! `@M03235:53:000000000-AHLTD:1:1101:1826:14428 trimmed_adapter_rev=TT trimmed_left=0 trimmed_right=249`  
+//! or for a forward adapter,  
 //! `@M03235:53:000000000-AHLTD:1:1101:1758:14922 trimmed_adapter_fwd=AA trimmed_left=2 trimmed_right=251`
 
 </span><span class="kw">extern crate </span>fasten;

@@ -77,9 +77,9 @@
 //! 
 //! # Output
 //! 
-//! The deflines will be altered with a description of the trimming using key=value syntax, separated by spaces, e.g.,
-//! `@M03235:53:000000000-AHLTD:1:1101:1826:14428 trimmed_adapter_rev=TT trimmed_left=0 trimmed_right=249`
-//! or for a forward adapter,
+//! The deflines will be altered with a description of the trimming using key=value syntax, separated by spaces, e.g.,  
+//! `@M03235:53:000000000-AHLTD:1:1101:1826:14428 trimmed_adapter_rev=TT trimmed_left=0 trimmed_right=249`  
+//! or for a forward adapter,  
 //! `@M03235:53:000000000-AHLTD:1:1101:1758:14922 trimmed_adapter_fwd=AA trimmed_left=2 trimmed_right=251`
 
 extern crate fasten;
