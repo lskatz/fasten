@@ -1,4 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/io/seq.rs`."><title>seq.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-cb6f1f67f1bcd037.css" id="mainThemeStyle"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="fasten" data-themes="" data-resource-suffix="" data-rustdoc-version="1.73.0 (cc66ad468 2023-10-03)" data-channel="1.73.0" data-search-js="search-6dfdfced5eff6596.js" data-settings-js="settings-de11bff964e9d4e5.js" data-settings-css="settings-8c76f75bfb6bd192.css" data-theme-light-css="light-1596385f77d47ef2.css" data-theme-dark-css="dark-0a43001d3fc2282c.css" data-theme-ayu-css="ayu-fd19013d6ce078bf.css" ><script src="../../../static.files/storage-db41da1a38ea3cb8.js"></script><script defer src="../../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-0795b7d26be81095.js"></script><noscript><link rel="stylesheet" media="(prefers-color-scheme:light)" href="../../../static.files/light-1596385f77d47ef2.css"><link rel="stylesheet" media="(prefers-color-scheme:dark)" href="../../../static.files/dark-0a43001d3fc2282c.css"><link rel="stylesheet" href="../../../static.files/noscript-cffde32267a19fd6.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../fasten/index.html"><img class="rust-logo" src="../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/io/seq.rs`."><title>seq.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-5bc39a1768837dd0.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="fasten" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.0 (aedd173a2 2024-03-17)" data-channel="1.77.0" data-search-js="search-dd67cee4cfa65049.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-48f368f3872407c8.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+            <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../fasten/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -251,25 +253,25 @@
 <span class="attr">#[test]
 </span><span class="doccomment">/// Test whether a cleanable sequence is instantiated
 </span><span class="kw">fn </span>test_new_seq() {
-    <span class="kw">let </span>id   = <span class="string">&quot;MY_ID&quot;</span>.to_string();
-    <span class="kw">let </span>seq  = <span class="string">&quot;AATNGGCC&quot;</span>.to_string();
-    <span class="kw">let </span>qual = <span class="string">&quot;#ABCDE!!&quot;</span>.to_string();
+    <span class="kw">let </span>id   = <span class="string">"MY_ID"</span>.to_string();
+    <span class="kw">let </span>seq  = <span class="string">"AATNGGCC"</span>.to_string();
+    <span class="kw">let </span>qual = <span class="string">"#ABCDE!!"</span>.to_string();
     <span class="kw">let </span>cleanable = Seq::new(<span class="kw-2">&amp;</span>id,<span class="kw-2">&amp;</span>seq,<span class="kw-2">&amp;</span>qual);
     
-    <span class="kw">let </span>formatted = <span class="macro">format!</span>(<span class="string">&quot;@{}\n{}\n+\n{}&quot;</span>, <span class="kw-2">&amp;</span>id, <span class="kw-2">&amp;</span>seq, <span class="kw-2">&amp;</span>qual);
+    <span class="kw">let </span>formatted = <span class="macro">format!</span>(<span class="string">"@{}\n{}\n+\n{}"</span>, <span class="kw-2">&amp;</span>id, <span class="kw-2">&amp;</span>seq, <span class="kw-2">&amp;</span>qual);
     <span class="macro">assert_eq!</span>(cleanable.to_string(), formatted);
 }
 <span class="attr">#[test]
 </span><span class="doccomment">/// Test whether a cleanable sequence can be cleaned
 </span><span class="kw">fn </span>test_cleanable() {
-    <span class="kw">let </span>id   = <span class="string">&quot;MY_ID&quot;</span>.to_string();
-    <span class="kw">let </span>seq  = <span class="string">&quot;AATNGGCC&quot;</span>.to_string();
-    <span class="kw">let </span>qual = <span class="string">&quot;#ABCDE!!&quot;</span>.to_string();
+    <span class="kw">let </span>id   = <span class="string">"MY_ID"</span>.to_string();
+    <span class="kw">let </span>seq  = <span class="string">"AATNGGCC"</span>.to_string();
+    <span class="kw">let </span>qual = <span class="string">"#ABCDE!!"</span>.to_string();
     <span class="kw">let </span><span class="kw-2">mut </span>cleanable = Seq::new(<span class="kw-2">&amp;</span>id,<span class="kw-2">&amp;</span>seq,<span class="kw-2">&amp;</span>qual);
     
     cleanable.lower_ambiguity_q();
     cleanable.trim();
-    <span class="macro">assert_eq!</span>(cleanable.to_string(), <span class="string">&quot;@MY_ID\nATNGG\n+\nAB!DE&quot;</span>.to_string());
+    <span class="macro">assert_eq!</span>(cleanable.to_string(), <span class="string">"@MY_ID\nATNGG\n+\nAB!DE"</span>.to_string());
 }
 
 
@@ -295,7 +297,7 @@
     </span><span class="kw">fn </span>from_string (seq_str: <span class="kw-2">&amp;</span>String) -&gt; Seq;
     <span class="doccomment">/// sanitize an identifier string
     </span><span class="kw">fn </span>sanitize_id(id: <span class="kw-2">&amp;</span>String) -&gt; String;
-    <span class="doccomment">/// lower any low quality base to a zero and &quot;N&quot;
+    <span class="doccomment">/// lower any low quality base to a zero and "N"
     </span><span class="kw">fn </span>lower_ambiguity_q(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; ();
     <span class="doccomment">/// Trim sequences based on quality
     </span><span class="kw">fn </span>trim(<span class="kw-2">&amp;mut </span><span class="self">self</span>)  -&gt; ();
@@ -312,9 +314,9 @@
     </span><span class="kw">fn </span>new (id: <span class="kw-2">&amp;</span>String, seq: <span class="kw-2">&amp;</span>String, qual: <span class="kw-2">&amp;</span>String) -&gt; Seq{
         <span class="kw">let </span>id_copy = <span class="self">Self</span>::sanitize_id(<span class="kw-2">&amp;</span>id);
         <span class="kw">let </span><span class="kw-2">mut </span>thresholds = HashMap::new();
-        thresholds.insert(<span class="string">&quot;min_avg_qual&quot;</span>.to_string(),<span class="number">20.0</span>);
-        thresholds.insert(<span class="string">&quot;min_length&quot;</span>.to_string(),<span class="number">100.0</span>);
-        thresholds.insert(<span class="string">&quot;min_trim_qual&quot;</span>.to_string(),<span class="number">20.0</span>);
+        thresholds.insert(<span class="string">"min_avg_qual"</span>.to_string(),<span class="number">20.0</span>);
+        thresholds.insert(<span class="string">"min_length"</span>.to_string(),<span class="number">100.0</span>);
+        thresholds.insert(<span class="string">"min_trim_qual"</span>.to_string(),<span class="number">20.0</span>);
 
         <span class="kw">return </span>Seq{
             id:     id_copy,
@@ -339,14 +341,14 @@
     /// TODO make it more like the careful method than quick.
     </span><span class="kw">fn </span>from_string (seq_str: <span class="kw-2">&amp;</span>String) -&gt; Seq {
         <span class="kw">let </span><span class="kw-2">mut </span>lines = seq_str.lines();
-        <span class="kw">let </span>id = lines.next().expect(<span class="string">&quot;Could not parse ID&quot;</span>);
-        <span class="kw">let </span>seq = lines.next().expect(<span class="string">&quot;Could not parse sequence&quot;</span>);
-        lines.next().expect(<span class="string">&quot;Could not parse +&quot;</span>);
+        <span class="kw">let </span>id = lines.next().expect(<span class="string">"Could not parse ID"</span>);
+        <span class="kw">let </span>seq = lines.next().expect(<span class="string">"Could not parse sequence"</span>);
+        lines.next().expect(<span class="string">"Could not parse +"</span>);
         <span class="kw">let </span>qual_opt = lines.next();
         <span class="kw">if </span>qual_opt == <span class="prelude-val">None </span>{
             <span class="kw">return </span>Seq::blank();
         }
-        <span class="kw">let </span>qual = qual_opt.expect(<span class="string">&quot;Could not read the qual line&quot;</span>);
+        <span class="kw">let </span>qual = qual_opt.expect(<span class="string">"Could not read the qual line"</span>);
 
         <span class="comment">// TODO try to guess the pair ID, e.g., replace /1 with /2
 
@@ -366,7 +368,7 @@
             <span class="kw">return </span>String::new();
         }
         <span class="kw">let </span><span class="kw-2">mut </span>id_copy = id.clone();
-        <span class="kw">if </span>id_copy.chars().nth(<span class="number">0</span>).expect(<span class="string">&quot;ID was empty&quot;</span>) == <span class="string">&#39;@&#39; </span>{
+        <span class="kw">if </span>id_copy.chars().nth(<span class="number">0</span>).expect(<span class="string">"ID was empty"</span>) == <span class="string">'@' </span>{
             id_copy.pop();
         }
         <span class="kw">return </span>id_copy;
@@ -382,7 +384,7 @@
         <span class="comment">// First find the indices b/c it is so slow to
         // edit a string in-place one char at a time.
         </span><span class="kw">for </span>(i,nt) <span class="kw">in </span><span class="self">self</span>.seq.chars().enumerate(){
-            <span class="kw">if </span>nt == <span class="string">&#39;N&#39; </span>|| nt == <span class="string">&#39;n&#39; </span>|| <span class="self">self</span>.qual.chars().nth(i).expect(<span class="string">&quot;Expected a char&quot;</span>) &lt; low_score {
+            <span class="kw">if </span>nt == <span class="string">'N' </span>|| nt == <span class="string">'n' </span>|| <span class="self">self</span>.qual.chars().nth(i).expect(<span class="string">"Expected a char"</span>) &lt; low_score {
                 low_qual_idx[i] = <span class="bool-val">true</span>;
             }
         }
@@ -391,7 +393,7 @@
         <span class="kw">let </span><span class="kw-2">mut </span>new_qual=String::new();
         <span class="kw">for </span>(i,nt) <span class="kw">in </span><span class="self">self</span>.seq.chars().enumerate(){
             <span class="kw">if </span>low_qual_idx[i] {
-                new_seq.push(<span class="string">&#39;N&#39;</span>);
+                new_seq.push(<span class="string">'N'</span>);
                 new_qual.push(zero_score);
             } <span class="kw">else</span>{
                 new_seq.push(nt);
@@ -405,13 +407,13 @@
 
     <span class="doccomment">/// Trim the ends of reads with low quality
     </span><span class="kw">fn </span>trim(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
-        <span class="kw">let </span>min_qual = <span class="kw-2">*</span><span class="self">self</span>.thresholds.entry(<span class="string">&quot;min_trim_qual&quot;</span>.to_string())
+        <span class="kw">let </span>min_qual = <span class="kw-2">*</span><span class="self">self</span>.thresholds.entry(<span class="string">"min_trim_qual"</span>.to_string())
             .or_insert(<span class="number">0.0</span>) <span class="kw">as </span>u8;
 
         <span class="kw">let </span><span class="kw-2">mut </span>trim5=<span class="number">0</span>;
         <span class="kw">let </span><span class="kw-2">mut </span>trim3=<span class="kw-2">&amp;</span><span class="self">self</span>.qual.len()-<span class="number">0</span>;
         
-        <span class="comment">// 5&#39;
+        <span class="comment">// 5'
         </span><span class="kw">for </span>qual <span class="kw">in </span><span class="self">self</span>.qual.chars(){
             <span class="kw">if </span>qual <span class="kw">as </span>u8 - <span class="number">33 </span>&lt; min_qual {
                 trim5+=<span class="number">1</span>;
@@ -420,7 +422,7 @@
             }
         }
 
-        <span class="comment">// 3&#39;
+        <span class="comment">// 3'
         </span><span class="kw">for </span>qual <span class="kw">in </span><span class="self">self</span>.qual.chars().rev() {
             <span class="kw">if </span>qual <span class="kw">as </span>u8  - <span class="number">33 </span>&lt; min_qual {
                 trim3-=<span class="number">1</span>;
@@ -441,7 +443,7 @@
     <span class="doccomment">/// Reports bool whether the read passes thresholds.
     </span><span class="kw">fn </span>is_high_quality(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; bool {
         <span class="comment">// fail if seq len is short
-        </span><span class="kw">let </span>min_length = <span class="self">self</span>.thresholds.get(<span class="kw-2">&amp;</span><span class="string">&quot;min_length&quot;</span>.to_string()).expect(<span class="string">&quot;min_length does not look like a number&quot;</span>);
+        </span><span class="kw">let </span>min_length = <span class="self">self</span>.thresholds.get(<span class="kw-2">&amp;</span><span class="string">"min_length"</span>.to_string()).expect(<span class="string">"min_length does not look like a number"</span>);
         <span class="kw">let </span>seq_len = <span class="self">self</span>.seq.len() <span class="kw">as </span>f32;
         <span class="kw">if </span>seq_len &lt; <span class="kw-2">*</span>min_length {
             <span class="comment">//.parse::&lt;i32&gt;().unwrap();
@@ -455,7 +457,7 @@
 
         <span class="comment">// fail if qual is low
         </span><span class="kw">let </span>avg_qual = (total_qual <span class="kw">as </span>f32/seq_len) - <span class="number">33.0</span>;
-        <span class="kw">let </span>min_qual = <span class="self">self</span>.thresholds.get(<span class="kw-2">&amp;</span><span class="string">&quot;min_avg_qual&quot;</span>.to_string()).expect(<span class="string">&quot;min_avg_qual does not look like a number&quot;</span>);
+        <span class="kw">let </span>min_qual = <span class="self">self</span>.thresholds.get(<span class="kw-2">&amp;</span><span class="string">"min_avg_qual"</span>.to_string()).expect(<span class="string">"min_avg_qual does not look like a number"</span>);
         <span class="kw">if </span>avg_qual &lt; <span class="kw-2">*</span>min_qual {
             <span class="kw">return </span><span class="bool-val">false</span>;
         }
@@ -465,18 +467,18 @@
 
     <span class="kw">fn </span>to_string(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; String {
         <span class="kw">let </span><span class="kw-2">mut </span>entry = String::new();
-        <span class="kw">if </span><span class="self">self</span>.id.len() &gt; <span class="number">0 </span>&amp;&amp; <span class="self">self</span>.id.chars().nth(<span class="number">0</span>).expect(<span class="string">&quot;Seq ID was not set&quot;</span>) != <span class="string">&#39;@&#39; </span>{
-            entry.push(<span class="string">&#39;@&#39;</span>);
+        <span class="kw">if </span><span class="self">self</span>.id.len() &gt; <span class="number">0 </span>&amp;&amp; <span class="self">self</span>.id.chars().nth(<span class="number">0</span>).expect(<span class="string">"Seq ID was not set"</span>) != <span class="string">'@' </span>{
+            entry.push(<span class="string">'@'</span>);
         }
         entry.push_str(<span class="self">self</span>.id.trim());
-        entry.push_str(<span class="string">&quot;\n&quot;</span>);
+        entry.push_str(<span class="string">"\n"</span>);
         entry.push_str(<span class="self">self</span>.seq.trim());
-        entry.push_str(<span class="string">&quot;\n+\n&quot;</span>);
+        entry.push_str(<span class="string">"\n+\n"</span>);
         entry.push_str(<span class="kw-2">&amp;</span><span class="self">self</span>.qual.trim());
         <span class="kw">return </span>entry;
     }
     <span class="kw">fn </span>print(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; () {
-        <span class="macro">println!</span>(<span class="string">&quot;{}&quot;</span>,<span class="self">self</span>.to_string());
+        <span class="macro">println!</span>(<span class="string">"{}"</span>,<span class="self">self</span>.to_string());
     }
 } 
 

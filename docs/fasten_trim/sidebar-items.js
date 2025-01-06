@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"fn":["main","trim_worker"]};
+window.SIDEBAR_ITEMS = {"fn":["main","read_fasta","trim_worker"]};

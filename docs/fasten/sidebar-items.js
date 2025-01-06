@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"fn":["eexit","fasten_base_options","fasten_base_options_matches","logmsg"],"macro":["print"],"mod":["io"]};
+window.SIDEBAR_ITEMS = {"fn":["eexit","fasten_base_options","fasten_base_options_matches","logmsg","reverse_complement"],"macro":["print"],"mod":["io"]};

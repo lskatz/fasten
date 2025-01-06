@@ -1,4 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/io/fastq.rs`."><title>fastq.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-cb6f1f67f1bcd037.css" id="mainThemeStyle"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="fasten" data-themes="" data-resource-suffix="" data-rustdoc-version="1.73.0 (cc66ad468 2023-10-03)" data-channel="1.73.0" data-search-js="search-6dfdfced5eff6596.js" data-settings-js="settings-de11bff964e9d4e5.js" data-settings-css="settings-8c76f75bfb6bd192.css" data-theme-light-css="light-1596385f77d47ef2.css" data-theme-dark-css="dark-0a43001d3fc2282c.css" data-theme-ayu-css="ayu-fd19013d6ce078bf.css" ><script src="../../../static.files/storage-db41da1a38ea3cb8.js"></script><script defer src="../../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-0795b7d26be81095.js"></script><noscript><link rel="stylesheet" media="(prefers-color-scheme:light)" href="../../../static.files/light-1596385f77d47ef2.css"><link rel="stylesheet" media="(prefers-color-scheme:dark)" href="../../../static.files/dark-0a43001d3fc2282c.css"><link rel="stylesheet" href="../../../static.files/noscript-cffde32267a19fd6.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../fasten/index.html"><img class="rust-logo" src="../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/io/fastq.rs`."><title>fastq.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-5bc39a1768837dd0.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="fasten" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.0 (aedd173a2 2024-03-17)" data-channel="1.77.0" data-search-js="search-dd67cee4cfa65049.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-48f368f3872407c8.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+            <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../fasten/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -183,22 +185,22 @@
 </span><span class="doccomment">/// Test whether we can read the test data carefully.
 </span><span class="kw">fn </span>test_the_careful_reader () {
     <span class="kw">use </span>std::fs::File;
-    <span class="kw">let </span>my_file = File::open(<span class="string">&quot;testdata/four_reads.fastq&quot;</span>).expect(<span class="string">&quot;Could not open file&quot;</span>);
+    <span class="kw">let </span>my_file = File::open(<span class="string">"testdata/four_reads.fastq"</span>).expect(<span class="string">"Could not open file"</span>);
     <span class="kw">let </span>my_buffer=BufReader::new(my_file);
     <span class="kw">let </span><span class="kw-2">mut </span>fastq_reader=FastqReader::new_careful(my_buffer);
-    <span class="kw">let </span>seq_obj = fastq_reader.next().expect(<span class="string">&quot;Could not read four_reads.fastq&quot;</span>);
-    <span class="macro">assert_eq!</span>(seq_obj.seq.trim(), <span class="string">&quot;AAAGTGCTCTTAACTTGTCCCGCTCCACATCAGCGCGACATCAATCGACATTAAACCGAGTATCTTGTCAGCCTGGGGTGACGATGCGTCCCATTAAAGT&quot;</span>);
+    <span class="kw">let </span>seq_obj = fastq_reader.next().expect(<span class="string">"Could not read four_reads.fastq"</span>);
+    <span class="macro">assert_eq!</span>(seq_obj.seq.trim(), <span class="string">"AAAGTGCTCTTAACTTGTCCCGCTCCACATCAGCGCGACATCAATCGACATTAAACCGAGTATCTTGTCAGCCTGGGGTGACGATGCGTCCCATTAAAGT"</span>);
 }
 
 <span class="attr">#[test]
 </span><span class="doccomment">/// Test whether we can read the test data quickly.
 </span><span class="kw">fn </span>test_the_fast_reader () {
     <span class="kw">use </span>std::fs::File;
-    <span class="kw">let </span>my_file = File::open(<span class="string">&quot;testdata/four_reads.fastq&quot;</span>).expect(<span class="string">&quot;Could not open file&quot;</span>);
+    <span class="kw">let </span>my_file = File::open(<span class="string">"testdata/four_reads.fastq"</span>).expect(<span class="string">"Could not open file"</span>);
     <span class="kw">let </span>my_buffer=BufReader::new(my_file);
     <span class="kw">let </span><span class="kw-2">mut </span>fastq_reader=FastqReader::new(my_buffer);
-    <span class="kw">let </span>seq_obj = fastq_reader.next().expect(<span class="string">&quot;Could not read four_reads.fastq&quot;</span>);
-    <span class="macro">assert_eq!</span>(seq_obj.seq.trim(), <span class="string">&quot;AAAGTGCTCTTAACTTGTCCCGCTCCACATCAGCGCGACATCAATCGACATTAAACCGAGTATCTTGTCAGCCTGGGGTGACGATGCGTCCCATTAAAGT&quot;</span>);
+    <span class="kw">let </span>seq_obj = fastq_reader.next().expect(<span class="string">"Could not read four_reads.fastq"</span>);
+    <span class="macro">assert_eq!</span>(seq_obj.seq.trim(), <span class="string">"AAAGTGCTCTTAACTTGTCCCGCTCCACATCAGCGCGACATCAATCGACATTAAACCGAGTATCTTGTCAGCCTGGGGTGACGATGCGTCCCATTAAAGT"</span>);
 }
 
 <span class="doccomment">/// A FastQ reader
@@ -227,7 +229,7 @@
 
     <span class="doccomment">/// There are two flavors of next: either read 
     /// quickly or read carefully, depending on the 
-    /// &#39;quickly&#39; bool.
+    /// 'quickly' bool.
     </span><span class="kw">fn </span>next(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;Seq&gt; {
         <span class="comment">// Read a fastq entry but assume that there are only
         // four lines per entry (id, seq, plus, qual).
@@ -239,7 +241,7 @@
             <span class="comment">// Read the ID of the entry
             </span><span class="kw">match </span><span class="self">self</span>.reader.read_line(<span class="kw-2">&amp;mut </span>id) {
                 <span class="prelude-val">Ok</span>(n) =&gt; {
-                    <span class="comment">// if we&#39;re expecting an ID line, but
+                    <span class="comment">// if we're expecting an ID line, but
                     // there are zero bytes read, then we are
                     // at the end of the file. Break.
                     </span><span class="kw">if </span>n &lt; <span class="number">1 </span>{
@@ -247,17 +249,17 @@
                     }
                 }
                 <span class="prelude-val">Err</span>(error) =&gt; {
-                    <span class="macro">panic!</span>(<span class="string">&quot;ERROR: could not read the ID line: {}&quot;</span>,error);
+                    <span class="macro">panic!</span>(<span class="string">"ERROR: could not read the ID line: {}"</span>,error);
                 }
             };
 
-            <span class="self">self</span>.reader.read_line(<span class="kw-2">&amp;mut </span>seq).expect(<span class="string">&quot;ERROR: could not read sequence line&quot;</span>);
+            <span class="self">self</span>.reader.read_line(<span class="kw-2">&amp;mut </span>seq).expect(<span class="string">"ERROR: could not read sequence line"</span>);
         
             <span class="comment">// burn the plus sign
             </span><span class="kw">let </span><span class="kw-2">mut </span>_plus = String::new();
-            <span class="self">self</span>.reader.read_line(<span class="kw-2">&amp;mut </span>_plus).expect(<span class="string">&quot;ERROR: plus sign line not found&quot;</span>);
+            <span class="self">self</span>.reader.read_line(<span class="kw-2">&amp;mut </span>_plus).expect(<span class="string">"ERROR: plus sign line not found"</span>);
 
-            <span class="self">self</span>.reader.read_line(<span class="kw-2">&amp;mut </span>qual).expect(<span class="string">&quot;ERROR: could not read qual line&quot;</span>);
+            <span class="self">self</span>.reader.read_line(<span class="kw-2">&amp;mut </span>qual).expect(<span class="string">"ERROR: could not read qual line"</span>);
 
             <span class="kw">let </span>seq = Seq::new(<span class="kw-2">&amp;</span>id, <span class="kw-2">&amp;</span>seq, <span class="kw-2">&amp;</span>qual);
 
@@ -266,7 +268,7 @@
         <span class="comment">// Read a fastq entry in the most correct way possible,
         // allowing for whitespace in seq and qual lines.
         </span><span class="kw">else </span>{
-            <span class="kw">let </span>whitespace_regex = Regex::new(<span class="string">r&quot;(\s+)&quot;</span>).expect(<span class="string">&quot;malformed regex&quot;</span>);
+            <span class="kw">let </span>whitespace_regex = Regex::new(<span class="string">r"(\s+)"</span>).expect(<span class="string">"malformed regex"</span>);
 
             <span class="kw">let </span><span class="kw-2">mut </span>id=    String::new();
             <span class="kw">let </span><span class="kw-2">mut </span>seq=   String::new();
@@ -275,7 +277,7 @@
             <span class="comment">// Read the ID of the entry
             </span><span class="kw">match </span><span class="self">self</span>.reader.read_line(<span class="kw-2">&amp;mut </span>id) {
                 <span class="prelude-val">Ok</span>(n) =&gt; {
-                    <span class="comment">// if we&#39;re expecting an ID line, but
+                    <span class="comment">// if we're expecting an ID line, but
                     // there are zero bytes read, then we are
                     // at the end of the file. Break.
                     </span><span class="kw">if </span>n &lt; <span class="number">1 </span>{
@@ -283,56 +285,56 @@
                     }
                 }
                 <span class="prelude-val">Err</span>(error) =&gt; {
-                    <span class="macro">panic!</span>(<span class="string">&quot;ERROR: {}&quot;</span>,error);
+                    <span class="macro">panic!</span>(<span class="string">"ERROR: {}"</span>,error);
                 }
               
             }
             <span class="comment">// Read the DNA line of the entry and count
             // how long it is.
-            </span><span class="lifetime">&#39;dna</span>: <span class="kw">loop</span>{
+            </span><span class="lifetime">'dna</span>: <span class="kw">loop</span>{
                 <span class="kw">let </span><span class="kw-2">mut </span>buf = String::new();
                 <span class="kw">match </span><span class="self">self</span>.reader.read_line(<span class="kw-2">&amp;mut </span>buf) {
                     <span class="prelude-val">Ok</span>(n) =&gt; {
                         <span class="kw">if </span>n &lt; <span class="number">1 </span>{
-                            <span class="macro">panic!</span>(<span class="string">&quot;ERROR: incomplete entry (no seq line), seqid {}\nbuf {}&quot;</span>, id.trim(),buf);
+                            <span class="macro">panic!</span>(<span class="string">"ERROR: incomplete entry (no seq line), seqid {}\nbuf {}"</span>, id.trim(),buf);
                         }
                         <span class="comment">// if we hit the qual line, then it is a single
                         // character, +
-                        </span><span class="kw">else if </span><span class="kw-2">&amp;</span>buf[<span class="number">0</span>..<span class="number">1</span>] == <span class="string">&quot;+&quot; </span>{
-                            <span class="kw">break </span><span class="lifetime">&#39;dna</span>;
+                        </span><span class="kw">else if </span><span class="kw-2">&amp;</span>buf[<span class="number">0</span>..<span class="number">1</span>] == <span class="string">"+" </span>{
+                            <span class="kw">break </span><span class="lifetime">'dna</span>;
                         }
                         <span class="kw">else </span>{
                             seq.push_str(<span class="kw-2">&amp;</span>buf);
                         }
                     }
                     <span class="prelude-val">Err</span>(error) =&gt; {
-                        <span class="macro">panic!</span>(<span class="string">&quot;ERROR while reading seq for ID {}: {}&quot;</span>,id.trim(),error);
+                        <span class="macro">panic!</span>(<span class="string">"ERROR while reading seq for ID {}: {}"</span>,id.trim(),error);
                     }
                 }
             }
             <span class="comment">// remove all whitespace
-            </span>seq = whitespace_regex.replace_all(<span class="kw-2">&amp;</span>seq,<span class="string">&quot;&quot;</span>).into_owned();
+            </span>seq = whitespace_regex.replace_all(<span class="kw-2">&amp;</span>seq,<span class="string">""</span>).into_owned();
             <span class="kw">let </span>read_length :usize=seq.len(); 
             
             <span class="comment">// build onto the qual line until it has the right
             // number of bytes.
-            </span><span class="lifetime">&#39;qual</span>: <span class="kw">loop</span>{
+            </span><span class="lifetime">'qual</span>: <span class="kw">loop</span>{
                 <span class="kw">let </span><span class="kw-2">mut </span>buf = String::new();
                 <span class="kw">match </span><span class="self">self</span>.reader.read_line(<span class="kw-2">&amp;mut </span>buf) {
                     <span class="prelude-val">Ok</span>(n) =&gt; {
                         <span class="kw">if </span>n &lt; <span class="number">1 </span>{
-                            <span class="macro">panic!</span>(<span class="string">&quot;ERROR: incomplete entry (no qual line), seqid {}\nbuf {}&quot;</span>, id.trim(),buf);
+                            <span class="macro">panic!</span>(<span class="string">"ERROR: incomplete entry (no qual line), seqid {}\nbuf {}"</span>, id.trim(),buf);
                         }
                         <span class="kw">else </span>{
                           qual.push_str(<span class="kw-2">&amp;</span>buf);
                         }
-                        qual = whitespace_regex.replace_all(<span class="kw-2">&amp;</span>qual,<span class="string">&quot;&quot;</span>).into_owned();
+                        qual = whitespace_regex.replace_all(<span class="kw-2">&amp;</span>qual,<span class="string">""</span>).into_owned();
                         <span class="kw">if </span>qual.len() &gt;= read_length {
-                          <span class="kw">break </span><span class="lifetime">&#39;qual</span>;
+                          <span class="kw">break </span><span class="lifetime">'qual</span>;
                         }
                     }
                     <span class="prelude-val">Err</span>(error) =&gt; {
-                        <span class="macro">panic!</span>(<span class="string">&quot;ERROR while reading qual for ID {}: {}&quot;</span>,buf.trim(),error);
+                        <span class="macro">panic!</span>(<span class="string">"ERROR while reading qual for ID {}: {}"</span>,buf.trim(),error);
                     }
                 }
             }

@@ -1,4 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/bin/fasten_sort.rs`."><title>fasten_sort.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-cb6f1f67f1bcd037.css" id="mainThemeStyle"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="fasten_sort" data-themes="" data-resource-suffix="" data-rustdoc-version="1.73.0 (cc66ad468 2023-10-03)" data-channel="1.73.0" data-search-js="search-6dfdfced5eff6596.js" data-settings-js="settings-de11bff964e9d4e5.js" data-settings-css="settings-8c76f75bfb6bd192.css" data-theme-light-css="light-1596385f77d47ef2.css" data-theme-dark-css="dark-0a43001d3fc2282c.css" data-theme-ayu-css="ayu-fd19013d6ce078bf.css" ><script src="../../static.files/storage-db41da1a38ea3cb8.js"></script><script defer src="../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-0795b7d26be81095.js"></script><noscript><link rel="stylesheet" media="(prefers-color-scheme:light)" href="../../static.files/light-1596385f77d47ef2.css"><link rel="stylesheet" media="(prefers-color-scheme:dark)" href="../../static.files/dark-0a43001d3fc2282c.css"><link rel="stylesheet" href="../../static.files/noscript-cffde32267a19fd6.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../fasten_sort/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/bin/fasten_sort.rs`."><title>fasten_sort.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-5bc39a1768837dd0.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="fasten_sort" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.0 (aedd173a2 2024-03-17)" data-channel="1.77.0" data-search-js="search-dd67cee4cfa65049.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-48f368f3872407c8.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+            <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../fasten_sort/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -335,20 +337,20 @@
 </span><span class="attr">#[test]
 </span><span class="kw">fn </span>test_sort_fastq_basic () {
     <span class="kw">let </span>is_paired_end = <span class="bool-val">false</span>;
-    <span class="kw">let </span>which_field   = <span class="string">&quot;ID&quot;</span>;
-    <span class="kw">let </span>my_file = File::open(<span class="string">&quot;testdata/four_reads.fastq&quot;</span>).expect(<span class="string">&quot;Could not open file&quot;</span>);
+    <span class="kw">let </span>which_field   = <span class="string">"ID"</span>;
+    <span class="kw">let </span>my_file = File::open(<span class="string">"testdata/four_reads.fastq"</span>).expect(<span class="string">"Could not open file"</span>);
     <span class="kw">let </span>my_buffer=BufReader::new(my_file);
     <span class="kw">let </span><span class="kw-2">mut </span>buffer_iter = my_buffer.lines();
 
     <span class="kw">let </span><span class="kw-2">mut </span>entries:Vec&lt;Seq&gt; = <span class="macro">vec!</span>[];
     <span class="kw">while let </span><span class="prelude-val">Some</span>(line) = buffer_iter.next() {
-        <span class="kw">let </span>id1  = line.expect(<span class="string">&quot;ERROR reading the ID line&quot;</span>);
-        <span class="kw">let </span>seq1 = buffer_iter.next().expect(<span class="string">&quot;ERROR reading a sequence line&quot;</span>)
-            .expect(<span class="string">&quot;ERROR reading a sequence line&quot;</span>);
-                  buffer_iter.next().expect(<span class="string">&quot;ERROR reading a plus line&quot;</span>)
-                      .expect(<span class="string">&quot;ERROR reading the plus line&quot;</span>);
-        <span class="kw">let </span>qual1= buffer_iter.next().expect(<span class="string">&quot;ERROR reading a qual line&quot;</span>)
-            .expect(<span class="string">&quot;ERROR reading a qual line&quot;</span>);
+        <span class="kw">let </span>id1  = line.expect(<span class="string">"ERROR reading the ID line"</span>);
+        <span class="kw">let </span>seq1 = buffer_iter.next().expect(<span class="string">"ERROR reading a sequence line"</span>)
+            .expect(<span class="string">"ERROR reading a sequence line"</span>);
+                  buffer_iter.next().expect(<span class="string">"ERROR reading a plus line"</span>)
+                      .expect(<span class="string">"ERROR reading the plus line"</span>);
+        <span class="kw">let </span>qual1= buffer_iter.next().expect(<span class="string">"ERROR reading a qual line"</span>)
+            .expect(<span class="string">"ERROR reading a qual line"</span>);
 
         <span class="kw">let </span><span class="kw-2">mut </span>id2   =String::new();
         <span class="kw">let </span><span class="kw-2">mut </span>seq2  =String::new();
@@ -356,14 +358,14 @@
 
         <span class="comment">// Get R2
         </span><span class="kw">if </span>is_paired_end {
-            id2  = buffer_iter.next().expect(<span class="string">&quot;ERROR reading the ID line&quot;</span>)
-                .expect(<span class="string">&quot;ERROR reading the ID line&quot;</span>);
-            seq2 = buffer_iter.next().expect(<span class="string">&quot;ERROR reading a sequence line&quot;</span>)
-                .expect(<span class="string">&quot;ERROR reading a sequence line&quot;</span>);
-                       buffer_iter.next().expect(<span class="string">&quot;ERROR reading a plus line&quot;</span>)
-                          .expect(<span class="string">&quot;ERROR reading the plus line&quot;</span>);
-            qual2= buffer_iter.next().expect(<span class="string">&quot;ERROR reading a qual line&quot;</span>)
-                .expect(<span class="string">&quot;ERROR reading a qual line&quot;</span>);
+            id2  = buffer_iter.next().expect(<span class="string">"ERROR reading the ID line"</span>)
+                .expect(<span class="string">"ERROR reading the ID line"</span>);
+            seq2 = buffer_iter.next().expect(<span class="string">"ERROR reading a sequence line"</span>)
+                .expect(<span class="string">"ERROR reading a sequence line"</span>);
+                       buffer_iter.next().expect(<span class="string">"ERROR reading a plus line"</span>)
+                          .expect(<span class="string">"ERROR reading the plus line"</span>);
+            qual2= buffer_iter.next().expect(<span class="string">"ERROR reading a qual line"</span>)
+                .expect(<span class="string">"ERROR reading a qual line"</span>);
         }
 
         <span class="kw">let </span>entry:Seq = Seq {
@@ -383,16 +385,16 @@
     <span class="comment">// test that each read is readX in a sorted order
     </span><span class="kw">let </span>sorted_entries:Vec&lt;Seq&gt; = sort_entries(entries.clone(), <span class="kw-2">&amp;</span>which_field, <span class="bool-val">false</span>);
     <span class="kw">for </span>i <span class="kw">in </span><span class="number">0</span>..<span class="number">4 </span>{
-        <span class="kw">let </span>expected = <span class="macro">format!</span>(<span class="string">&quot;@read{}&quot;</span>,i);
-        <span class="macro">assert_eq!</span>(sorted_entries[i].id1, expected, <span class="string">&quot;Sort by ID&quot;</span>);
+        <span class="kw">let </span>expected = <span class="macro">format!</span>(<span class="string">"@read{}"</span>,i);
+        <span class="macro">assert_eq!</span>(sorted_entries[i].id1, expected, <span class="string">"Sort by ID"</span>);
     }
 
     <span class="comment">// test reverse sorting
     </span><span class="kw">let </span>reverse_sorted_entries:Vec&lt;Seq&gt; = sort_entries(entries.clone(), <span class="kw-2">&amp;</span>which_field, <span class="bool-val">true</span>);
     <span class="kw">for </span>i <span class="kw">in </span><span class="number">0</span>..<span class="number">4 </span>{
-        <span class="kw">let </span>expected = <span class="macro">format!</span>(<span class="string">&quot;@read{}&quot;</span>,i);
+        <span class="kw">let </span>expected = <span class="macro">format!</span>(<span class="string">"@read{}"</span>,i);
         <span class="kw">let </span>idx = <span class="number">3 </span>- i;
-        <span class="macro">assert_eq!</span>(reverse_sorted_entries[idx].id1, expected, <span class="string">&quot;Reverse sort by ID. Full list is {:?}&quot;</span>, reverse_sorted_entries);
+        <span class="macro">assert_eq!</span>(reverse_sorted_entries[idx].id1, expected, <span class="string">"Reverse sort by ID. Full list is {:?}"</span>, reverse_sorted_entries);
     }
 }
 
@@ -411,31 +413,31 @@
 <span class="kw">fn </span>main(){
     <span class="kw">let </span><span class="kw-2">mut </span>opts = fasten_base_options();
     <span class="comment">// Options specific to this script
-    </span>opts.optopt(<span class="string">&quot;s&quot;</span>,<span class="string">&quot;sort-by&quot;</span>,<span class="string">&quot;Sort by either SEQ, GC, or ID. If GC, then the entries are sorted by GC percentage. SEQ and ID are alphabetically sorted.&quot;</span>,<span class="string">&quot;STRING&quot;</span>);
-    opts.optflag(<span class="string">&quot;r&quot;</span>,<span class="string">&quot;reverse&quot;</span>,<span class="string">&quot;Reverse sort&quot;</span>);
+    </span>opts.optopt(<span class="string">"s"</span>,<span class="string">"sort-by"</span>,<span class="string">"Sort by either SEQ, GC, or ID. If GC, then the entries are sorted by GC percentage. SEQ and ID are alphabetically sorted."</span>,<span class="string">"STRING"</span>);
+    opts.optflag(<span class="string">"r"</span>,<span class="string">"reverse"</span>,<span class="string">"Reverse sort"</span>);
 
-    <span class="kw">let </span>matches = fasten_base_options_matches(<span class="string">&quot;Sort reads. This can be useful for many things including checksums and reducing gzip file sizes. Remember to use --paired-end if applicable.&quot;</span>, opts);
+    <span class="kw">let </span>matches = fasten_base_options_matches(<span class="string">"Sort reads. This can be useful for many things including checksums and reducing gzip file sizes. Remember to use --paired-end if applicable."</span>, opts);
 
-    <span class="kw">let </span>my_file = File::open(<span class="string">&quot;/dev/stdin&quot;</span>).expect(<span class="string">&quot;Could not open file&quot;</span>);
+    <span class="kw">let </span>my_file = File::open(<span class="string">"/dev/stdin"</span>).expect(<span class="string">"Could not open file"</span>);
     <span class="kw">let </span>my_buffer=BufReader::new(my_file);
 
-    <span class="kw">let </span>is_paired_end=matches.opt_present(<span class="string">&quot;paired-end&quot;</span>);
-    <span class="kw">let </span>reverse_sort =matches.opt_present(<span class="string">&quot;reverse&quot;</span>);
+    <span class="kw">let </span>is_paired_end=matches.opt_present(<span class="string">"paired-end"</span>);
+    <span class="kw">let </span>reverse_sort =matches.opt_present(<span class="string">"reverse"</span>);
 
     <span class="kw">let </span>which_field:String={
-        <span class="kw">if </span>matches.opt_present(<span class="string">&quot;sort-by&quot;</span>) {
-            matches.opt_str(<span class="string">&quot;sort-by&quot;</span>).expect(<span class="string">&quot;ERROR parsing --sort-by&quot;</span>)
+        <span class="kw">if </span>matches.opt_present(<span class="string">"sort-by"</span>) {
+            matches.opt_str(<span class="string">"sort-by"</span>).expect(<span class="string">"ERROR parsing --sort-by"</span>)
                 .to_uppercase()
         } <span class="kw">else </span>{
-            <span class="string">&quot;ID&quot;</span>.to_string()
+            <span class="string">"ID"</span>.to_string()
         }
     };
 
     <span class="kw">let </span>_num_cpus:usize = {
-        <span class="kw">if </span>matches.opt_present(<span class="string">&quot;numcpus&quot;</span>) {
-            matches.opt_str(<span class="string">&quot;numcpus&quot;</span>).expect(<span class="string">&quot;ERROR parsing --numcpus&quot;</span>)
+        <span class="kw">if </span>matches.opt_present(<span class="string">"numcpus"</span>) {
+            matches.opt_str(<span class="string">"numcpus"</span>).expect(<span class="string">"ERROR parsing --numcpus"</span>)
                 .parse()
-                .expect(<span class="string">&quot;ERROR: numcpus is not an integer&quot;</span>)
+                .expect(<span class="string">"ERROR: numcpus is not an integer"</span>)
         } <span class="kw">else </span>{
             <span class="number">1
         </span>}
@@ -445,13 +447,13 @@
 
     <span class="kw">let </span><span class="kw-2">mut </span>entries:Vec&lt;Seq&gt; = <span class="macro">vec!</span>[];
     <span class="kw">while let </span><span class="prelude-val">Some</span>(line) = buffer_iter.next() {
-        <span class="kw">let </span>id1  = line.expect(<span class="string">&quot;ERROR reading the ID line&quot;</span>);
-        <span class="kw">let </span>seq1 = buffer_iter.next().expect(<span class="string">&quot;ERROR reading a sequence line&quot;</span>)
-            .expect(<span class="string">&quot;ERROR reading a sequence line&quot;</span>);
-                  buffer_iter.next().expect(<span class="string">&quot;ERROR reading a plus line&quot;</span>)
-                      .expect(<span class="string">&quot;ERROR reading the plus line&quot;</span>);
-        <span class="kw">let </span>qual1= buffer_iter.next().expect(<span class="string">&quot;ERROR reading a qual line&quot;</span>)
-            .expect(<span class="string">&quot;ERROR reading a qual line&quot;</span>);
+        <span class="kw">let </span>id1  = line.expect(<span class="string">"ERROR reading the ID line"</span>);
+        <span class="kw">let </span>seq1 = buffer_iter.next().expect(<span class="string">"ERROR reading a sequence line"</span>)
+            .expect(<span class="string">"ERROR reading a sequence line"</span>);
+                  buffer_iter.next().expect(<span class="string">"ERROR reading a plus line"</span>)
+                      .expect(<span class="string">"ERROR reading the plus line"</span>);
+        <span class="kw">let </span>qual1= buffer_iter.next().expect(<span class="string">"ERROR reading a qual line"</span>)
+            .expect(<span class="string">"ERROR reading a qual line"</span>);
 
         <span class="kw">let </span><span class="kw-2">mut </span>id2   =String::new();
         <span class="kw">let </span><span class="kw-2">mut </span>seq2  =String::new();
@@ -459,14 +461,14 @@
 
         <span class="comment">// Get R2
         </span><span class="kw">if </span>is_paired_end {
-            id2  = buffer_iter.next().expect(<span class="string">&quot;ERROR reading the ID line&quot;</span>)
-                .expect(<span class="string">&quot;ERROR reading the ID line&quot;</span>);
-            seq2 = buffer_iter.next().expect(<span class="string">&quot;ERROR reading a sequence line&quot;</span>)
-                .expect(<span class="string">&quot;ERROR reading a sequence line&quot;</span>);
-                       buffer_iter.next().expect(<span class="string">&quot;ERROR reading a plus line&quot;</span>)
-                          .expect(<span class="string">&quot;ERROR reading the plus line&quot;</span>);
-            qual2= buffer_iter.next().expect(<span class="string">&quot;ERROR reading a qual line&quot;</span>)
-                .expect(<span class="string">&quot;ERROR reading a qual line&quot;</span>);
+            id2  = buffer_iter.next().expect(<span class="string">"ERROR reading the ID line"</span>)
+                .expect(<span class="string">"ERROR reading the ID line"</span>);
+            seq2 = buffer_iter.next().expect(<span class="string">"ERROR reading a sequence line"</span>)
+                .expect(<span class="string">"ERROR reading a sequence line"</span>);
+                       buffer_iter.next().expect(<span class="string">"ERROR reading a plus line"</span>)
+                          .expect(<span class="string">"ERROR reading the plus line"</span>);
+            qual2= buffer_iter.next().expect(<span class="string">"ERROR reading a qual line"</span>)
+                .expect(<span class="string">"ERROR reading a qual line"</span>);
         }
 
         <span class="kw">let </span>entry:Seq = Seq {
@@ -485,9 +487,9 @@
 
     <span class="kw">let </span>sorted_entries:Vec&lt;Seq&gt; = sort_entries(entries, <span class="kw-2">&amp;</span>which_field, reverse_sort);
     <span class="kw">for </span>entry <span class="kw">in </span>sorted_entries {
-        <span class="macro">println!</span>(<span class="string">&quot;{}\n{}\n+\n{}&quot;</span>, entry.id1, entry.seq1, entry.qual1);
+        <span class="macro">println!</span>(<span class="string">"{}\n{}\n+\n{}"</span>, entry.id1, entry.seq1, entry.qual1);
         <span class="kw">if </span>entry.pe {
-            <span class="macro">println!</span>(<span class="string">&quot;{}\n{}\n+\n{}&quot;</span>, entry.id2, entry.seq2, entry.qual2);
+            <span class="macro">println!</span>(<span class="string">"{}\n{}\n+\n{}"</span>, entry.id2, entry.seq2, entry.qual2);
         }
     }
 
@@ -496,7 +498,7 @@
 <span class="doccomment">/// Sort fastq entries in a vector
 </span><span class="kw">fn </span>sort_entries (unsorted:Vec&lt;Seq&gt;, which_field:<span class="kw-2">&amp;</span>str, reverse_sort:bool) -&gt; Vec&lt;Seq&gt; {
 
-    <span class="comment">//logmsg(&amp;format!(&quot;REVERSE SORT? {}\n{:?}&quot;,reverse_sort, &amp;unsorted));
+    <span class="comment">//logmsg(&amp;format!("REVERSE SORT? {}\n{:?}",reverse_sort, &amp;unsorted));
 
     // I want to avoid editing the vector in place
     </span><span class="kw">let </span><span class="kw-2">mut </span>sorted = unsorted.clone();
@@ -504,38 +506,38 @@
     <span class="comment">// Actual sort
     // TODO sort by length?
     </span><span class="kw">match </span>which_field{
-        <span class="string">&quot;ID&quot; </span>=&gt; {
+        <span class="string">"ID" </span>=&gt; {
             sorted.sort_by(|a, b| {
-                <span class="kw">let </span>a_id = <span class="macro">format!</span>(<span class="string">&quot;{}{}&quot;</span>, a.id1, a.id2);
-                <span class="kw">let </span>b_id = <span class="macro">format!</span>(<span class="string">&quot;{}{}&quot;</span>, b.id1, b.id2);
+                <span class="kw">let </span>a_id = <span class="macro">format!</span>(<span class="string">"{}{}"</span>, a.id1, a.id2);
+                <span class="kw">let </span>b_id = <span class="macro">format!</span>(<span class="string">"{}{}"</span>, b.id1, b.id2);
                 a_id.cmp(<span class="kw-2">&amp;</span>b_id)
             });
         },
-        <span class="string">&quot;SEQ&quot; </span>=&gt; {
+        <span class="string">"SEQ" </span>=&gt; {
             sorted.sort_by(|a, b| {
-                <span class="kw">let </span>a_seq = <span class="macro">format!</span>(<span class="string">&quot;{}{}&quot;</span>, a.seq1, a.seq2);
-                <span class="kw">let </span>b_seq = <span class="macro">format!</span>(<span class="string">&quot;{}{}&quot;</span>, b.seq1, b.seq2);
+                <span class="kw">let </span>a_seq = <span class="macro">format!</span>(<span class="string">"{}{}"</span>, a.seq1, a.seq2);
+                <span class="kw">let </span>b_seq = <span class="macro">format!</span>(<span class="string">"{}{}"</span>, b.seq1, b.seq2);
                 a_seq.cmp(<span class="kw-2">&amp;</span>b_seq)
             });
         },
-        <span class="string">&quot;GC&quot;  </span>=&gt; {
+        <span class="string">"GC"  </span>=&gt; {
             sorted.sort_by(|a,b| {
-                <span class="kw">let </span>a_seq = <span class="macro">format!</span>(<span class="string">&quot;{}{}&quot;</span>, a.seq1, a.seq2);
-                <span class="kw">let </span>b_seq = <span class="macro">format!</span>(<span class="string">&quot;{}{}&quot;</span>, b.seq1, b.seq2);
+                <span class="kw">let </span>a_seq = <span class="macro">format!</span>(<span class="string">"{}{}"</span>, a.seq1, a.seq2);
+                <span class="kw">let </span>b_seq = <span class="macro">format!</span>(<span class="string">"{}{}"</span>, b.seq1, b.seq2);
 
-                <span class="kw">let </span>a_gc:f32  = a_seq.matches(<span class="kw-2">&amp;</span>[<span class="string">&#39;G&#39;</span>,<span class="string">&#39;g&#39;</span>,<span class="string">&#39;C&#39;</span>,<span class="string">&#39;c&#39;</span>]).count() <span class="kw">as </span>f32 / a_seq.len() <span class="kw">as </span>f32;
-                <span class="kw">let </span>b_gc:f32  = b_seq.matches(<span class="kw-2">&amp;</span>[<span class="string">&#39;G&#39;</span>,<span class="string">&#39;g&#39;</span>,<span class="string">&#39;C&#39;</span>,<span class="string">&#39;c&#39;</span>]).count() <span class="kw">as </span>f32 / b_seq.len() <span class="kw">as </span>f32;
-                <span class="comment">//logmsg(format!(&quot;{} ({}) &lt;=&gt; {} ({})&quot;, a.id1, a_gc, b.id1, b_gc));
+                <span class="kw">let </span>a_gc:f32  = a_seq.matches(<span class="kw-2">&amp;</span>[<span class="string">'G'</span>,<span class="string">'g'</span>,<span class="string">'C'</span>,<span class="string">'c'</span>]).count() <span class="kw">as </span>f32 / a_seq.len() <span class="kw">as </span>f32;
+                <span class="kw">let </span>b_gc:f32  = b_seq.matches(<span class="kw-2">&amp;</span>[<span class="string">'G'</span>,<span class="string">'g'</span>,<span class="string">'C'</span>,<span class="string">'c'</span>]).count() <span class="kw">as </span>f32 / b_seq.len() <span class="kw">as </span>f32;
+                <span class="comment">//logmsg(format!("{} ({}) &lt;=&gt; {} ({})", a.id1, a_gc, b.id1, b_gc));
                 </span>a_gc.partial_cmp(<span class="kw-2">&amp;</span>b_gc).unwrap()
             });
         },
         <span class="kw">_   </span>=&gt; {
-            <span class="macro">panic!</span>(<span class="string">&quot;Tried to sort by {} which is not implemented&quot;</span>, which_field);
+            <span class="macro">panic!</span>(<span class="string">"Tried to sort by {} which is not implemented"</span>, which_field);
         }
     };
 
     <span class="kw">if </span>reverse_sort {
-        <span class="comment">//logmsg(&quot;REVERSE SORT&quot;);
+        <span class="comment">//logmsg("REVERSE SORT");
         </span>sorted.reverse();
     }
 

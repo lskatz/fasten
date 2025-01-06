@@ -1,6 +1,6 @@
 [package]
 name    = "fasten"
-version = "0.8.3"
+version = "0.8.4"
 authors = ["Lee Katz <gzu2@cdc.gov>"]
 #license-file  = "LICENSE"
 license       = "MIT"
@@ -104,6 +104,7 @@ path = "src/bin/fasten_normalize.rs"
 
 [dependencies]
 regex        = "1.10"
+fancy-regex  = "0.13"
 getopts      = "0.2.21"
 statistical  = "1.0"
 multiqueue   = "0.3.2"

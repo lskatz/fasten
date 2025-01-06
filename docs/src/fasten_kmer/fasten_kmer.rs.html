@@ -1,4 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/bin/fasten_kmer.rs`."><title>fasten_kmer.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-cb6f1f67f1bcd037.css" id="mainThemeStyle"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="fasten_kmer" data-themes="" data-resource-suffix="" data-rustdoc-version="1.73.0 (cc66ad468 2023-10-03)" data-channel="1.73.0" data-search-js="search-6dfdfced5eff6596.js" data-settings-js="settings-de11bff964e9d4e5.js" data-settings-css="settings-8c76f75bfb6bd192.css" data-theme-light-css="light-1596385f77d47ef2.css" data-theme-dark-css="dark-0a43001d3fc2282c.css" data-theme-ayu-css="ayu-fd19013d6ce078bf.css" ><script src="../../static.files/storage-db41da1a38ea3cb8.js"></script><script defer src="../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-0795b7d26be81095.js"></script><noscript><link rel="stylesheet" media="(prefers-color-scheme:light)" href="../../static.files/light-1596385f77d47ef2.css"><link rel="stylesheet" media="(prefers-color-scheme:dark)" href="../../static.files/dark-0a43001d3fc2282c.css"><link rel="stylesheet" href="../../static.files/noscript-cffde32267a19fd6.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../fasten_kmer/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/bin/fasten_kmer.rs`."><title>fasten_kmer.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-5bc39a1768837dd0.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="fasten_kmer" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.0 (aedd173a2 2024-03-17)" data-channel="1.77.0" data-search-js="search-dd67cee4cfa65049.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-48f368f3872407c8.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+            <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../fasten_kmer/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -305,6 +307,68 @@
 <a href="#305" id="305">305</a>
 <a href="#306" id="306">306</a>
 <a href="#307" id="307">307</a>
+<a href="#308" id="308">308</a>
+<a href="#309" id="309">309</a>
+<a href="#310" id="310">310</a>
+<a href="#311" id="311">311</a>
+<a href="#312" id="312">312</a>
+<a href="#313" id="313">313</a>
+<a href="#314" id="314">314</a>
+<a href="#315" id="315">315</a>
+<a href="#316" id="316">316</a>
+<a href="#317" id="317">317</a>
+<a href="#318" id="318">318</a>
+<a href="#319" id="319">319</a>
+<a href="#320" id="320">320</a>
+<a href="#321" id="321">321</a>
+<a href="#322" id="322">322</a>
+<a href="#323" id="323">323</a>
+<a href="#324" id="324">324</a>
+<a href="#325" id="325">325</a>
+<a href="#326" id="326">326</a>
+<a href="#327" id="327">327</a>
+<a href="#328" id="328">328</a>
+<a href="#329" id="329">329</a>
+<a href="#330" id="330">330</a>
+<a href="#331" id="331">331</a>
+<a href="#332" id="332">332</a>
+<a href="#333" id="333">333</a>
+<a href="#334" id="334">334</a>
+<a href="#335" id="335">335</a>
+<a href="#336" id="336">336</a>
+<a href="#337" id="337">337</a>
+<a href="#338" id="338">338</a>
+<a href="#339" id="339">339</a>
+<a href="#340" id="340">340</a>
+<a href="#341" id="341">341</a>
+<a href="#342" id="342">342</a>
+<a href="#343" id="343">343</a>
+<a href="#344" id="344">344</a>
+<a href="#345" id="345">345</a>
+<a href="#346" id="346">346</a>
+<a href="#347" id="347">347</a>
+<a href="#348" id="348">348</a>
+<a href="#349" id="349">349</a>
+<a href="#350" id="350">350</a>
+<a href="#351" id="351">351</a>
+<a href="#352" id="352">352</a>
+<a href="#353" id="353">353</a>
+<a href="#354" id="354">354</a>
+<a href="#355" id="355">355</a>
+<a href="#356" id="356">356</a>
+<a href="#357" id="357">357</a>
+<a href="#358" id="358">358</a>
+<a href="#359" id="359">359</a>
+<a href="#360" id="360">360</a>
+<a href="#361" id="361">361</a>
+<a href="#362" id="362">362</a>
+<a href="#363" id="363">363</a>
+<a href="#364" id="364">364</a>
+<a href="#365" id="365">365</a>
+<a href="#366" id="366">366</a>
+<a href="#367" id="367">367</a>
+<a href="#368" id="368">368</a>
+<a href="#369" id="369">369</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! Counts kmers.
 //! Each line is a kmer with two columns separated by tab: kmer, count
 //! Optional columns starting with column 3 are the reads that start with that kmer
@@ -355,68 +419,74 @@
 </span><span class="kw">extern crate </span>fasten;
 <span class="kw">extern crate </span>statistical;
 <span class="kw">extern crate </span>getopts;
+<span class="kw">extern crate </span>rand;
+<span class="kw">extern crate </span>fancy_regex;
 
 <span class="kw">use </span>std::io::BufReader;
 <span class="kw">use </span>std::io::BufRead;
 <span class="kw">use </span>std::io::stdin;
 <span class="kw">use </span>std::io::Stdin;
+<span class="kw">use </span>rand::Rng;
+<span class="comment">//use rand::seq::SliceRandom;
 
-<span class="kw">use </span>fasten::fasten_base_options;
+</span><span class="kw">use </span>fasten::fasten_base_options;
 <span class="kw">use </span>fasten::fasten_base_options_matches;
 <span class="kw">use </span>fasten::logmsg;
+
+<span class="kw">use </span>fancy_regex::Regex;
 
 <span class="kw">use </span>std::collections::HashMap;
 
 <span class="doccomment">/// Glues together paired end reads internally and is a
 /// character not expected in any read
-</span><span class="kw">const </span>READ_SEPARATOR :char = <span class="string">&#39;~&#39;</span>;
+</span><span class="kw">const </span>READ_SEPARATOR :char = <span class="string">'~'</span>;
 
 <span class="attr">#[test]
-</span><span class="doccomment">/// Let&#39;s count some kmers on homopolymers
+</span><span class="doccomment">/// Let's count some kmers on homopolymers
 </span><span class="kw">fn </span>test_kmer_counting_homopolymers () {
     <span class="kw">let </span>k = <span class="number">4</span>;
 
     <span class="comment">// The first easy test is an AAAA kmer in a Ax10 homopolymer
-    </span><span class="kw">let </span>a_homopolymer = (<span class="number">0</span>..<span class="number">10</span>).map(|<span class="kw">_</span>| <span class="string">&quot;A&quot;</span>).collect::&lt;String&gt;();
+    </span><span class="kw">let </span>a_homopolymer = (<span class="number">0</span>..<span class="number">10</span>).map(|<span class="kw">_</span>| <span class="string">"A"</span>).collect::&lt;String&gt;();
     <span class="kw">let </span><span class="kw-2">mut </span>kmer = kmers_in_str(<span class="kw-2">&amp;</span>a_homopolymer, k, <span class="bool-val">false</span>);
-    <span class="kw">let </span>obs_a_count = <span class="kw-2">*</span>kmer.entry(String::from(<span class="string">&quot;AAAA&quot;</span>)).or_insert(<span class="number">0</span>);
-    <span class="macro">assert_eq!</span>(obs_a_count, <span class="number">7</span>, <span class="string">&quot;10-mer A yields seven 4-mers of A&quot;</span>);
-    <span class="kw">let </span>obs_t_count = <span class="kw-2">*</span>kmer.entry(String::from(<span class="string">&quot;TTTT&quot;</span>)).or_insert(<span class="number">0</span>);
-    <span class="macro">assert_eq!</span>(obs_t_count, <span class="number">0</span>, <span class="string">&quot;10-mer A yields zero 4-mers of T&quot;</span>);
+    <span class="kw">let </span>obs_a_count = <span class="kw-2">*</span>kmer.entry(String::from(<span class="string">"AAAA"</span>)).or_insert(<span class="number">0</span>);
+    <span class="macro">assert_eq!</span>(obs_a_count, <span class="number">7</span>, <span class="string">"10-mer A yields seven 4-mers of A"</span>);
+    <span class="kw">let </span>obs_t_count = <span class="kw-2">*</span>kmer.entry(String::from(<span class="string">"TTTT"</span>)).or_insert(<span class="number">0</span>);
+    <span class="macro">assert_eq!</span>(obs_t_count, <span class="number">0</span>, <span class="string">"10-mer A yields zero 4-mers of T"</span>);
 
     <span class="comment">// Ok but what about revcom kmers
     </span><span class="kw">let </span><span class="kw-2">mut </span>kmer = kmers_in_str(<span class="kw-2">&amp;</span>a_homopolymer, k, <span class="bool-val">true </span>);
-    <span class="kw">let </span>obs_a_count = <span class="kw-2">*</span>kmer.entry(String::from(<span class="string">&quot;AAAA&quot;</span>)).or_insert(<span class="number">0</span>);
-    <span class="macro">assert_eq!</span>(obs_a_count, <span class="number">7</span>, <span class="string">&quot;10-mer A yields seven 4-mers of A&quot;</span>);
-    <span class="kw">let </span>obs_t_count = <span class="kw-2">*</span>kmer.entry(String::from(<span class="string">&quot;TTTT&quot;</span>)).or_insert(<span class="number">0</span>);
-    <span class="macro">assert_eq!</span>(obs_t_count, <span class="number">7</span>, <span class="string">&quot;10-mer A yields seven 4-mers of T&quot;</span>);
+    <span class="kw">let </span>obs_a_count = <span class="kw-2">*</span>kmer.entry(String::from(<span class="string">"AAAA"</span>)).or_insert(<span class="number">0</span>);
+    <span class="macro">assert_eq!</span>(obs_a_count, <span class="number">7</span>, <span class="string">"10-mer A yields seven 4-mers of A"</span>);
+    <span class="kw">let </span>obs_t_count = <span class="kw-2">*</span>kmer.entry(String::from(<span class="string">"TTTT"</span>)).or_insert(<span class="number">0</span>);
+    <span class="macro">assert_eq!</span>(obs_t_count, <span class="number">7</span>, <span class="string">"10-mer A yields seven 4-mers of T"</span>);
 }   
 <span class="attr">#[test]
-</span><span class="doccomment">/// Let&#39;s count some kmers on something more complicated
+</span><span class="doccomment">/// Let's count some kmers on something more complicated
 </span><span class="kw">fn </span>test_kmer_counting_4mers () {
     <span class="kw">let </span>k = <span class="number">4</span>;
 
     <span class="comment">// This is the first seq of the test file four_reads.fastq
-    </span><span class="kw">let </span>seq = <span class="string">&quot;AAAGTGCTCTTAACTTGTCCCGCTCCACATCAGCGCGACATCAATCGACATTAAACCGAGTATCTTGTCAGCCTGGGGTGACGATGCGTCCCATTAAAGT&quot;</span>;
-    <span class="kw">let </span>my_kmer = <span class="string">&quot;TTAA&quot;</span>;
+    </span><span class="kw">let </span>seq = <span class="string">"AAAGTGCTCTTAACTTGTCCCGCTCCACATCAGCGCGACATCAATCGACATTAAACCGAGTATCTTGTCAGCCTGGGGTGACGATGCGTCCCATTAAAGT"</span>;
+    <span class="kw">let </span>my_kmer = <span class="string">"TTAA"</span>;
     <span class="kw">let </span><span class="kw-2">mut </span>kmer = kmers_in_str(<span class="kw-2">&amp;</span>seq, k, <span class="bool-val">false</span>);
     <span class="kw">let </span>obs = <span class="kw-2">*</span>kmer.entry(String::from(my_kmer)).or_insert(<span class="number">0</span>);
-    <span class="macro">assert_eq!</span>(obs, <span class="number">3</span>, <span class="string">&quot;Found {} kmer in seq {} times. Seq is \n{}&quot;</span>, my_kmer, obs, seq);
+    <span class="macro">assert_eq!</span>(obs, <span class="number">3</span>, <span class="string">"Found {} kmer in seq {} times. Seq is \n{}"</span>, my_kmer, obs, seq);
 
     <span class="comment">// But also test for revcom kmers
     </span><span class="kw">let </span><span class="kw-2">mut </span>kmer = kmers_in_str(<span class="kw-2">&amp;</span>seq, k, <span class="bool-val">true </span>);
     <span class="kw">let </span>obs = <span class="kw-2">*</span>kmer.entry(String::from(my_kmer)).or_insert(<span class="number">0</span>);
-    <span class="macro">assert_eq!</span>(obs, <span class="number">6</span>, <span class="string">&quot;Found {} kmer in seq {} times. Seq is \n{}&quot;</span>, my_kmer, obs, seq);
+    <span class="macro">assert_eq!</span>(obs, <span class="number">6</span>, <span class="string">"Found {} kmer in seq {} times. Seq is \n{}"</span>, my_kmer, obs, seq);
 
     <span class="comment">// one more kmer
-    </span><span class="kw">let </span>my_kmer = <span class="string">&quot;TGTC&quot;</span>;
+    </span><span class="kw">let </span>my_kmer = <span class="string">"TGTC"</span>;
     <span class="kw">let </span><span class="kw-2">mut </span>kmer = kmers_in_str(<span class="kw-2">&amp;</span>seq, k, <span class="bool-val">false</span>);
     <span class="kw">let </span>obs = <span class="kw-2">*</span>kmer.entry(String::from(my_kmer)).or_insert(<span class="number">0</span>);
-    <span class="macro">assert_eq!</span>(obs, <span class="number">2</span>, <span class="string">&quot;Found {} kmer in seq {} times. Seq is \n{}&quot;</span>, my_kmer, obs, seq);
+    <span class="macro">assert_eq!</span>(obs, <span class="number">2</span>, <span class="string">"Found {} kmer in seq {} times. Seq is \n{}"</span>, my_kmer, obs, seq);
     <span class="comment">// and revcom
     </span><span class="kw">let </span><span class="kw-2">mut </span>kmer = kmers_in_str(<span class="kw-2">&amp;</span>seq, k, <span class="bool-val">true </span>);
     <span class="kw">let </span>obs = <span class="kw-2">*</span>kmer.entry(String::from(my_kmer)).or_insert(<span class="number">0</span>);
-    <span class="macro">assert_eq!</span>(obs, <span class="number">4</span>, <span class="string">&quot;Found {} kmer in seq {} times. Seq is \n{}&quot;</span>, my_kmer, obs, seq);
+    <span class="macro">assert_eq!</span>(obs, <span class="number">4</span>, <span class="string">"Found {} kmer in seq {} times. Seq is \n{}"</span>, my_kmer, obs, seq);
 }
 
 <span class="kw">fn </span>main(){
@@ -424,22 +494,22 @@
 
     <span class="comment">// script-specific options
     </span><span class="kw">let </span>default_k:usize = <span class="number">21</span>;
-    opts.optopt(<span class="string">&quot;k&quot;</span>,<span class="string">&quot;kmer-length&quot;</span>,<span class="kw-2">&amp;</span><span class="macro">format!</span>(<span class="string">&quot;The size of the kmer (default: {})&quot;</span>,default_k),<span class="string">&quot;INT&quot;</span>);
-    opts.optflag(<span class="string">&quot;r&quot;</span>,<span class="string">&quot;revcomp&quot;</span>, <span class="string">&quot;Count kmers on the reverse complement strand too&quot;</span>);
-    opts.optflag(<span class="string">&quot;m&quot;</span>,<span class="string">&quot;remember-reads&quot;</span>, <span class="string">&quot;Add reads to subsequent columns. Each read begins with the kmer. Only lists reads in the forward direction.&quot;</span>);
+    opts.optopt(<span class="string">"k"</span>,<span class="string">"kmer-length"</span>,<span class="kw-2">&amp;</span><span class="macro">format!</span>(<span class="string">"The size of the kmer (default: {})"</span>,default_k),<span class="string">"INT"</span>);
+    opts.optflag(<span class="string">"r"</span>,<span class="string">"revcomp"</span>, <span class="string">"Count kmers on the reverse complement strand too"</span>);
+    opts.optflag(<span class="string">"m"</span>,<span class="string">"remember-reads"</span>, <span class="string">"Add reads to subsequent columns. Each read begins with the kmer. Only lists reads in the forward direction."</span>);
 
-    <span class="kw">let </span>matches = fasten_base_options_matches(<span class="string">&quot;Counts kmers.&quot;</span>, opts);
+    <span class="kw">let </span>matches = fasten_base_options_matches(<span class="string">"Counts kmers."</span>, opts);
     
-    <span class="comment">//if matches.opt_present(&quot;paired-end&quot;) {
-    //    logmsg(&quot;WARNING: --paired-end is not utilized in this script&quot;);
+    <span class="comment">//if matches.opt_present("paired-end") {
+    //    logmsg("WARNING: --paired-end is not utilized in this script");
     //}
 
     </span><span class="kw">let </span>kmer_length:usize={
-        <span class="kw">if </span>matches.opt_present(<span class="string">&quot;kmer-length&quot;</span>) {
-            matches.opt_str(<span class="string">&quot;kmer-length&quot;</span>)
-                .expect(<span class="string">&quot;ERROR: could not understand parameter --kmer-length&quot;</span>)
+        <span class="kw">if </span>matches.opt_present(<span class="string">"kmer-length"</span>) {
+            matches.opt_str(<span class="string">"kmer-length"</span>)
+                .expect(<span class="string">"ERROR: could not understand parameter --kmer-length"</span>)
                 .parse()
-                .expect(<span class="string">&quot;ERROR: --kmer-length is not an INT&quot;</span>)
+                .expect(<span class="string">"ERROR: --kmer-length is not an INT"</span>)
         } <span class="kw">else </span>{
             default_k
         }
@@ -448,7 +518,7 @@
 
     <span class="kw">let </span>stdin = stdin();
     
-    count_kmers(stdin, kmer_length, matches.opt_present(<span class="string">&quot;revcomp&quot;</span>), matches.opt_present(<span class="string">&quot;remember-reads&quot;</span>), matches.opt_present(<span class="string">&quot;paired-end&quot;</span>));
+    count_kmers(stdin, kmer_length, matches.opt_present(<span class="string">"revcomp"</span>), matches.opt_present(<span class="string">"remember-reads"</span>), matches.opt_present(<span class="string">"paired-end"</span>));
 }
 
 <span class="doccomment">/// Read fastq from stdin and count kmers
@@ -456,14 +526,19 @@
 
     <span class="comment">// keep track of which sequences start with which kmers
     </span><span class="kw">let </span><span class="kw-2">mut </span>kmer_to_seqs :HashMap&lt;String, Vec&lt;String&gt;&gt; = HashMap::new();
+
+    <span class="comment">// Some randomness
+    </span><span class="kw">let </span><span class="kw-2">mut </span>rng = rand::thread_rng();
+    <span class="comment">// Regular expression to find uncomplex kmers
+    </span><span class="kw">let </span>low_complexity = Regex::new(<span class="string">r"N|(.)\1{2,}|(.)(.)(\2\3){1,}"</span>).unwrap();
     
     <span class="comment">// read the file
     </span><span class="kw">let </span>my_buffer=BufReader::new(stdin);
     <span class="kw">let </span><span class="kw-2">mut </span>buffer_iter = my_buffer.lines();
     <span class="kw">let </span><span class="kw-2">mut </span>kmer_hash :HashMap&lt;String,u32&gt; = HashMap::new();
     <span class="kw">while let </span><span class="prelude-val">Some</span>(id_opt) = buffer_iter.next() {
-        <span class="kw">let </span>seq = buffer_iter.next().expect(<span class="string">&quot;ERROR reading a sequence line&quot;</span>)
-            .expect(<span class="string">&quot;ERROR reading a sequence line&quot;</span>);
+        <span class="kw">let </span>seq = buffer_iter.next().expect(<span class="string">"ERROR reading a sequence line"</span>)
+            .expect(<span class="string">"ERROR reading a sequence line"</span>);
         <span class="comment">// burn the plus line
         </span><span class="kw">let </span>plus_opt = buffer_iter.next();
         <span class="comment">// burn the qual line
@@ -477,22 +552,23 @@
                 or_insert(<span class="number">0</span>);
             <span class="kw-2">*</span>kmer_count += value;
         }
+        <span class="kw">let </span>kmer_keys: Vec&lt;<span class="kw-2">&amp;</span>String&gt; = entry_kmers.keys().collect();
 
-        <span class="comment">// If this is paired end and if we&#39;re saving the second pair&#39;s
+        <span class="comment">// If this is paired end and if we're saving the second pair's
         // read, then reserve a declaired variable here for the string.
         </span><span class="kw">let </span><span class="kw-2">mut </span>r2_read_string :String = String::new();
         <span class="kw">if </span>paired_end {
-            <span class="kw">let </span>id2 = buffer_iter.next().expect(<span class="string">&quot;reading the ID2 line&quot;</span>)
-                .expect(<span class="string">&quot;reading the ID2 line&quot;</span>);
+            <span class="kw">let </span>id2 = buffer_iter.next().expect(<span class="string">"reading the ID2 line"</span>)
+                .expect(<span class="string">"reading the ID2 line"</span>);
 
-            <span class="kw">let </span>seq2 = buffer_iter.next().expect(<span class="string">&quot;ERROR reading a sequence line, second in pair&quot;</span>)
-                .expect(<span class="string">&quot;ERROR reading a sequence line, second in pair&quot;</span>);
+            <span class="kw">let </span>seq2 = buffer_iter.next().expect(<span class="string">"ERROR reading a sequence line, second in pair"</span>)
+                .expect(<span class="string">"ERROR reading a sequence line, second in pair"</span>);
             <span class="comment">// burn the plus line
-            </span><span class="kw">let </span>plus2 = buffer_iter.next().expect(<span class="string">&quot;reading the plus2 line&quot;</span>)
-                .expect(<span class="string">&quot;reading the plus2 line&quot;</span>);
+            </span><span class="kw">let </span>plus2 = buffer_iter.next().expect(<span class="string">"reading the plus2 line"</span>)
+                .expect(<span class="string">"reading the plus2 line"</span>);
             <span class="comment">// burn the qual line
-            </span><span class="kw">let </span>qual2 = buffer_iter.next().expect(<span class="string">&quot;reading the qual2 line&quot;</span>)
-                .expect(<span class="string">&quot;reading the qual2 line&quot;</span>);
+            </span><span class="kw">let </span>qual2 = buffer_iter.next().expect(<span class="string">"reading the qual2 line"</span>)
+                .expect(<span class="string">"reading the qual2 line"</span>);
 
             <span class="comment">// get all the kmers in this entry
             </span><span class="kw">let </span>entry_kmers2 = kmers_in_str(<span class="kw-2">&amp;</span>seq2, kmer_length, revcomp);
@@ -508,15 +584,32 @@
 
         <span class="comment">// Remember the read that initiated this
         </span><span class="kw">if </span>remember_reads {
-            <span class="kw">let </span>init_kmer = String::from(<span class="kw-2">&amp;</span>seq[<span class="number">0</span>..kmer_length]);
-            <span class="kw">let </span>init_kmer_vec = kmer_to_seqs.entry(init_kmer).or_insert(<span class="macro">vec!</span>[]);
+            <span class="comment">// Get the kmer substring
+            // let init_kmer = String::from(&amp;seq[0..kmer_length]);
+            // Get the minimizer as the initial kmer
+            //let init_kmer = calculate_minimizer(&amp;seq, kmer_length);
+
+            //let init_kmer_pos = rand::thread_rng().gen_range(0 .. seq.len() - kmer_length + 1);
+            //let init_kmer = seq[init_kmer_pos .. init_kmer_pos+kmer_length].to_string();
+            </span><span class="kw">let </span><span class="kw-2">mut </span>random_index = rng.gen_range(<span class="number">0</span>..kmer_keys.len());
+            <span class="kw">let </span><span class="kw-2">mut </span>init_kmer    = kmer_keys[random_index].to_string();
+            <span class="kw">let </span><span class="kw-2">mut </span>kmer_tries :u16 = <span class="number">0</span>;
+            <span class="kw">while </span>kmer_tries &lt; <span class="number">1000 </span>&amp;&amp; low_complexity.is_match(<span class="kw-2">&amp;</span>init_kmer).unwrap() {
+                random_index = rng.gen_range(<span class="number">0</span>..kmer_keys.len());
+                init_kmer    = kmer_keys[random_index].to_string();
+                kmer_tries  += <span class="number">1</span>;
+                <span class="comment">//fasten::logmsg(format!("skipping kmer {}, try {}",&amp;init_kmer, kmer_tries));
+            </span>}
+
+            <span class="comment">// Get the vector of sequences for this kmer, or else initialize an empty vector
+            </span><span class="kw">let </span>init_kmer_vec = kmer_to_seqs.entry(init_kmer).or_insert(<span class="macro">vec!</span>[]);
 
             <span class="comment">// get the formatted entry
-            </span><span class="kw">let </span>id   = id_opt.expect(<span class="string">&quot;reading the ID line&quot;</span>);
-            <span class="kw">let </span>plus = plus_opt.expect(<span class="string">&quot;reading the plus line&quot;</span>)
-                .expect(<span class="string">&quot;reading the plus line&quot;</span>);
-            <span class="kw">let </span>qual = qual_opt.expect(<span class="string">&quot;reading the qual line&quot;</span>)
-                .expect(<span class="string">&quot;reading the qual line&quot;</span>);
+            </span><span class="kw">let </span>id   = id_opt.expect(<span class="string">"reading the ID line"</span>);
+            <span class="kw">let </span>plus = plus_opt.expect(<span class="string">"reading the plus line"</span>)
+                .expect(<span class="string">"reading the plus line"</span>);
+            <span class="kw">let </span>qual = qual_opt.expect(<span class="string">"reading the qual line"</span>)
+                .expect(<span class="string">"reading the qual line"</span>);
 
             <span class="kw">if </span>paired_end {
                 init_kmer_vec.push(
@@ -536,16 +629,16 @@
     // complement kmers before printing because it is basically
     // double the information needed.
     </span><span class="kw">for </span>(kmer,count) <span class="kw">in </span>kmer_hash.iter() {
-        <span class="kw">let </span><span class="kw-2">mut </span>line :String = <span class="macro">format!</span>(<span class="string">&quot;{}\t{}&quot;</span>, kmer, count);
+        <span class="kw">let </span><span class="kw-2">mut </span>line :String = <span class="macro">format!</span>(<span class="string">"{}\t{}"</span>, kmer, count);
         <span class="kw">if </span>remember_reads {
             <span class="kw">let </span>reads_vec = kmer_to_seqs.entry(kmer.to_string()).or_insert(<span class="macro">vec!</span>[]);
             <span class="kw">for </span>read <span class="kw">in </span>reads_vec {
-                line.push_str(<span class="string">&quot;\t&quot;</span>);
+                line.push_str(<span class="string">"\t"</span>);
                 line.push_str(read);
             }
         }
 
-        <span class="macro">println!</span>(<span class="string">&quot;{}&quot;</span>, line);
+        <span class="macro">println!</span>(<span class="string">"{}"</span>, line);
     }
 }
 
@@ -556,9 +649,9 @@
     </span><span class="kw">let </span><span class="kw-2">mut </span>kmer_hash :HashMap&lt;String,u32&gt; = HashMap::new();
     <span class="comment">// how many kmers we expect in this sliding window
     </span><span class="kw">let </span>seq_len = seq.len();
-    <span class="comment">// Don&#39;t count short sequences
+    <span class="comment">// Don't count short sequences
     </span><span class="kw">if </span>seq_len &lt; kmer_length {
-        logmsg(<span class="string">&quot;WARNING: found a sequence less than k&quot;</span>);
+        logmsg(<span class="string">"WARNING: found a sequence less than k"</span>);
         <span class="kw">return </span>kmer_hash;
     }
     <span class="kw">let </span>my_num_kmers = seq_len - kmer_length + <span class="number">1</span>;
@@ -583,7 +676,40 @@
     <span class="kw">return </span>kmer_hash;
 }
 
-<span class="doccomment">/// reverse-complement a dna sequence
+<span class="comment">/*
+fn calculate_minimizer(sequence: &amp;str, k: usize) -&gt; String {
+    // Ensure the sequence length is greater than or equal to k
+    if sequence.len() &lt; k {
+        panic!("Sequence length is less than k");
+    }
+
+    // Initialize variables to keep track of the minimum k-mer and its hash
+    let mut min_kmer = &amp;sequence[0..k];
+    let mut min_hash = hash_kmer(min_kmer);
+
+    // Iterate over the sequence to find the minimum k-mer and its hash
+    for i in 1..=(sequence.len() - k) {
+        let current_kmer = &amp;sequence[i..(i + k)];
+        let current_hash = hash_kmer(current_kmer);
+
+        // Update the minimum k-mer and its hash if a smaller hash is found
+        if current_hash &lt; min_hash {
+            min_kmer = current_kmer;
+            min_hash = current_hash;
+        }
+    }
+
+    // Return the minimizer k-mer
+    min_kmer.to_string()
+}
+
+fn hash_kmer(kmer: &amp;str) -&gt; u64 {
+    // Simple hash function that converts each nucleotide to its ASCII value and sums them up
+    kmer.bytes().map(|b| b as u64).sum()
+}
+*/
+
+</span><span class="doccomment">/// reverse-complement a dna sequence
 </span><span class="comment">// Thanks Henk for supplying these functions.
 </span><span class="kw">fn </span>revcomp(dna: <span class="kw-2">&amp;</span>str) -&gt; String {
     <span class="kw">let </span><span class="kw-2">mut </span>rc_dna: String = String::with_capacity(dna.len());
@@ -596,19 +722,19 @@
 <span class="doccomment">/// Complementary nucleotide for ACTGUN, case insensitive
 </span><span class="kw">fn </span>switch_base(c: char) -&gt; char {
     <span class="kw">match </span>c {
-        <span class="string">&#39;a&#39; </span>=&gt; <span class="string">&#39;t&#39;</span>,
-        <span class="string">&#39;c&#39; </span>=&gt; <span class="string">&#39;g&#39;</span>,
-        <span class="string">&#39;t&#39; </span>=&gt; <span class="string">&#39;a&#39;</span>,
-        <span class="string">&#39;g&#39; </span>=&gt; <span class="string">&#39;c&#39;</span>,
-        <span class="string">&#39;u&#39; </span>=&gt; <span class="string">&#39;a&#39;</span>,
-        <span class="string">&#39;n&#39; </span>=&gt; <span class="string">&#39;n&#39;</span>,
-        <span class="string">&#39;A&#39; </span>=&gt; <span class="string">&#39;T&#39;</span>,
-        <span class="string">&#39;C&#39; </span>=&gt; <span class="string">&#39;G&#39;</span>,
-        <span class="string">&#39;T&#39; </span>=&gt; <span class="string">&#39;A&#39;</span>,
-        <span class="string">&#39;G&#39; </span>=&gt; <span class="string">&#39;C&#39;</span>,
-        <span class="string">&#39;U&#39; </span>=&gt; <span class="string">&#39;A&#39;</span>,
-        <span class="string">&#39;N&#39; </span>=&gt; <span class="string">&#39;N&#39;</span>,
-        <span class="kw">_ </span>=&gt; <span class="string">&#39;N&#39;</span>,
+        <span class="string">'a' </span>=&gt; <span class="string">'t'</span>,
+        <span class="string">'c' </span>=&gt; <span class="string">'g'</span>,
+        <span class="string">'t' </span>=&gt; <span class="string">'a'</span>,
+        <span class="string">'g' </span>=&gt; <span class="string">'c'</span>,
+        <span class="string">'u' </span>=&gt; <span class="string">'a'</span>,
+        <span class="string">'n' </span>=&gt; <span class="string">'n'</span>,
+        <span class="string">'A' </span>=&gt; <span class="string">'T'</span>,
+        <span class="string">'C' </span>=&gt; <span class="string">'G'</span>,
+        <span class="string">'T' </span>=&gt; <span class="string">'A'</span>,
+        <span class="string">'G' </span>=&gt; <span class="string">'C'</span>,
+        <span class="string">'U' </span>=&gt; <span class="string">'A'</span>,
+        <span class="string">'N' </span>=&gt; <span class="string">'N'</span>,
+        <span class="kw">_ </span>=&gt; <span class="string">'N'</span>,
     }
 }
 

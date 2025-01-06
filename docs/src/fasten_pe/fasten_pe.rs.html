@@ -1,4 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/bin/fasten_pe.rs`."><title>fasten_pe.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-cb6f1f67f1bcd037.css" id="mainThemeStyle"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="fasten_pe" data-themes="" data-resource-suffix="" data-rustdoc-version="1.73.0 (cc66ad468 2023-10-03)" data-channel="1.73.0" data-search-js="search-6dfdfced5eff6596.js" data-settings-js="settings-de11bff964e9d4e5.js" data-settings-css="settings-8c76f75bfb6bd192.css" data-theme-light-css="light-1596385f77d47ef2.css" data-theme-dark-css="dark-0a43001d3fc2282c.css" data-theme-ayu-css="ayu-fd19013d6ce078bf.css" ><script src="../../static.files/storage-db41da1a38ea3cb8.js"></script><script defer src="../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-0795b7d26be81095.js"></script><noscript><link rel="stylesheet" media="(prefers-color-scheme:light)" href="../../static.files/light-1596385f77d47ef2.css"><link rel="stylesheet" media="(prefers-color-scheme:dark)" href="../../static.files/dark-0a43001d3fc2282c.css"><link rel="stylesheet" href="../../static.files/noscript-cffde32267a19fd6.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../fasten_pe/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/bin/fasten_pe.rs`."><title>fasten_pe.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-5bc39a1768837dd0.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="fasten_pe" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.0 (aedd173a2 2024-03-17)" data-channel="1.77.0" data-search-js="search-dd67cee4cfa65049.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-48f368f3872407c8.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+            <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../fasten_pe/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -195,11 +197,11 @@
 //! 
 //! ## Test the file and then print a message with the exit code
 //! ```bash
-//! cat file.fastq | fasten_pe; echo &quot;Reads were paired-end? $?&quot;;
+//! cat file.fastq | fasten_pe; echo "Reads were paired-end? $?";
 //! ```
 //! ## Test the file and if it is paired end (exit code 0), then print a message
 //! ```bash
-//! cat file.fastq | fasten_pe || echo &quot;Reads were paired end.&quot;;
+//! cat file.fastq | fasten_pe || echo "Reads were paired end.";
 //! ```
 //! 
 //! # Usage
@@ -228,14 +230,14 @@
 
 <span class="kw">fn </span>main() {
     <span class="kw">let </span><span class="kw-2">mut </span>opts = fasten_base_options();
-    opts.optflag(<span class="string">&quot;&quot;</span>,<span class="string">&quot;print-reads&quot;</span>,<span class="string">&quot;Print each read. Useful for Unix pipes.&quot;</span>);
-    <span class="kw">let </span>matches = fasten_base_options_matches(<span class="string">&quot;Determine paired-end-ness in an interleaved file. Exit code of 0 indicates PE. Exit code &gt; 0 indicates SE.&quot;</span>, opts);
+    opts.optflag(<span class="string">""</span>,<span class="string">"print-reads"</span>,<span class="string">"Print each read. Useful for Unix pipes."</span>);
+    <span class="kw">let </span>matches = fasten_base_options_matches(<span class="string">"Determine paired-end-ness in an interleaved file. Exit code of 0 indicates PE. Exit code &gt; 0 indicates SE."</span>, opts);
     
-    <span class="kw">if </span>matches.opt_present(<span class="string">&quot;paired-end&quot;</span>) {
-        logmsg(<span class="string">&quot;WARNING: --paired-end was supplied but this script is supposed to determine whether the input is paired-end.&quot;</span>);
+    <span class="kw">if </span>matches.opt_present(<span class="string">"paired-end"</span>) {
+        logmsg(<span class="string">"WARNING: --paired-end was supplied but this script is supposed to determine whether the input is paired-end."</span>);
     }
 
-    <span class="kw">let </span>should_print = matches.opt_present(<span class="string">&quot;print-reads&quot;</span>);
+    <span class="kw">let </span>should_print = matches.opt_present(<span class="string">"print-reads"</span>);
 
     <span class="comment">// Save the top X ID pairs in a vector
     // and compare them in several functions that test for
@@ -243,37 +245,37 @@
     // it is paired-end input.
     </span><span class="kw">let </span><span class="kw-2">mut </span>id1_vec :Vec&lt;String&gt;=Vec::new();
     <span class="kw">let </span><span class="kw-2">mut </span>id2_vec :Vec&lt;String&gt;=Vec::new();
-    <span class="kw">let </span>my_file = File::open(<span class="string">&quot;/dev/stdin&quot;</span>).expect(<span class="string">&quot;Could not open file&quot;</span>);
+    <span class="kw">let </span>my_file = File::open(<span class="string">"/dev/stdin"</span>).expect(<span class="string">"Could not open file"</span>);
     <span class="kw">let </span>my_buffer=BufReader::new(my_file);
     <span class="kw">let </span><span class="kw-2">mut </span>lines = my_buffer.lines();
     <span class="kw">while let </span><span class="prelude-val">Some</span>(line) = lines.next() {
-        <span class="kw">let </span>id1 = line.expect(<span class="string">&quot;ERROR parsing id line in R1&quot;</span>);
+        <span class="kw">let </span>id1 = line.expect(<span class="string">"ERROR parsing id line in R1"</span>);
         <span class="kw">let </span><span class="kw-2">mut </span>entry=id1.clone();
-        entry.push(<span class="string">&#39;\n&#39;</span>);
+        entry.push(<span class="string">'\n'</span>);
         <span class="kw">for _ in </span><span class="number">1</span>..<span class="number">4 </span>{ <span class="comment">// move ahead three lines
             </span><span class="kw">let </span>other_line = lines.next()
-                .expect(<span class="string">&quot;ERROR getting next line&quot;</span>)
-                .expect(<span class="string">&quot;ERROR parsing next line&quot;</span>);
+                .expect(<span class="string">"ERROR getting next line"</span>)
+                .expect(<span class="string">"ERROR parsing next line"</span>);
             entry.push_str(<span class="kw-2">&amp;</span>other_line);
-            entry.push(<span class="string">&#39;\n&#39;</span>);
+            entry.push(<span class="string">'\n'</span>);
         }
         <span class="kw">let </span>id2 = lines.next()
-            .expect(<span class="string">&quot;ERROR getting R2. This is not a paired end file.&quot;</span>)
-            .expect(<span class="string">&quot;ERROR parsing next line in R2&quot;</span>);
+            .expect(<span class="string">"ERROR getting R2. This is not a paired end file."</span>)
+            .expect(<span class="string">"ERROR parsing next line in R2"</span>);
         entry.push_str(<span class="kw-2">&amp;</span>id2);
-        entry.push(<span class="string">&#39;\n&#39;</span>);
+        entry.push(<span class="string">'\n'</span>);
         <span class="kw">for _ in </span><span class="number">1</span>..<span class="number">4 </span>{ <span class="comment">// move ahead three lines
             </span><span class="kw">let </span>other_line = lines.next()
-                .expect(<span class="string">&quot;ERROR getting next line in R2. This is not a paired end file.&quot;</span>)
-                .expect(<span class="string">&quot;ERROR parsing next line in R2&quot;</span>);
+                .expect(<span class="string">"ERROR getting next line in R2. This is not a paired end file."</span>)
+                .expect(<span class="string">"ERROR parsing next line in R2"</span>);
             entry.push_str(<span class="kw-2">&amp;</span>other_line);
-            entry.push(<span class="string">&#39;\n&#39;</span>);
+            entry.push(<span class="string">'\n'</span>);
         }
         id1_vec.push(id1);
         id2_vec.push(id2);
 
         <span class="kw">if </span>should_print {
-            <span class="macro">print!</span>(<span class="string">&quot;{}&quot;</span>,entry);
+            <span class="macro">print!</span>(<span class="string">"{}"</span>,entry);
         }
     }
 
@@ -286,14 +288,14 @@
 
     <span class="comment">// If this is not paired end, return a nonzero
     </span><span class="kw">if </span>is_paired_end == <span class="number">0 </span>{
-        <span class="kw">if </span>matches.opt_present(<span class="string">&quot;verbose&quot;</span>) {
-            logmsg(<span class="string">&quot;I do not think this is interleaved paired end&quot;</span>);
+        <span class="kw">if </span>matches.opt_present(<span class="string">"verbose"</span>) {
+            logmsg(<span class="string">"I do not think this is interleaved paired end"</span>);
         }
         std::process::exit(<span class="number">1</span>);
     }
     
-    <span class="kw">if </span>matches.opt_present(<span class="string">&quot;verbose&quot;</span>) {
-        logmsg(<span class="string">&quot;The fastq input seems to be interleaved paired-end&quot;</span>);
+    <span class="kw">if </span>matches.opt_present(<span class="string">"verbose"</span>) {
+        logmsg(<span class="string">"The fastq input seems to be interleaved paired-end"</span>);
     }
 
 }
@@ -307,12 +309,12 @@
     <span class="kw">let </span>id2_vec = id2_ref.clone();
     
     <span class="comment">// @.../1
-    </span><span class="kw">let </span>slash_r1r2_regex = Regex::new(<span class="string">r&quot;(.+)/([12])$&quot;</span>).expect(<span class="string">&quot;malformed qual regex&quot;</span>);
+    </span><span class="kw">let </span>slash_r1r2_regex = Regex::new(<span class="string">r"(.+)/([12])$"</span>).expect(<span class="string">"malformed qual regex"</span>);
 
     <span class="kw">let </span><span class="kw-2">mut </span>id2_iter = id2_vec.iter();
     <span class="kw">for </span>id1 <span class="kw">in </span>id1_vec.iter(){
         <span class="kw">let </span>id2 = id2_iter.next()
-            .expect(<span class="string">&quot;ERROR getting next id2&quot;</span>);
+            .expect(<span class="string">"ERROR getting next id2"</span>);
 
         <span class="kw">let </span>caps1_result = slash_r1r2_regex.captures(<span class="kw-2">&amp;</span>id1);
         <span class="kw">let </span>caps2_result = slash_r1r2_regex.captures(<span class="kw-2">&amp;</span>id2);
@@ -324,16 +326,16 @@
 
         <span class="comment">// If we have a match then get the captured values
         </span><span class="kw">let </span>caps1 = caps1_result
-            .expect(<span class="string">&quot;ERROR: could not regex against id1&quot;</span>);
+            .expect(<span class="string">"ERROR: could not regex against id1"</span>);
         <span class="kw">let </span>caps2 = caps2_result
-            .expect(<span class="string">&quot;ERROR: could not regex against id2&quot;</span>);
+            .expect(<span class="string">"ERROR: could not regex against id2"</span>);
 
         <span class="comment">// Make sure the base name matches
         </span><span class="kw">if </span>caps1[<span class="number">1</span>] != caps2[<span class="number">1</span>] {
             <span class="kw">return </span><span class="number">0</span>;
         }
         <span class="comment">// Make sure there is a 1/2 combo
-        </span><span class="kw">if </span><span class="kw-2">&amp;</span>caps1[<span class="number">2</span>] != <span class="string">&quot;1&quot; </span>|| <span class="kw-2">&amp;</span>caps2[<span class="number">2</span>] != <span class="string">&quot;2&quot; </span>{
+        </span><span class="kw">if </span><span class="kw-2">&amp;</span>caps1[<span class="number">2</span>] != <span class="string">"1" </span>|| <span class="kw-2">&amp;</span>caps2[<span class="number">2</span>] != <span class="string">"2" </span>{
             <span class="kw">return </span><span class="number">0</span>;
         }
     }
@@ -352,25 +354,25 @@
 
     <span class="kw">for </span>id1 <span class="kw">in </span>id1_vec.iter(){
         <span class="kw">let </span>id2 = id2_iter.next()
-            .expect(<span class="string">&quot;ERROR getting next id2&quot;</span>);
+            .expect(<span class="string">"ERROR getting next id2"</span>);
 
 
         <span class="comment">// Get the 7th field which is a combination of the
         // Y position and the read number, separated by a
         // space.
-        </span><span class="kw">let </span>id1_tmp = id1.split(<span class="string">&quot;:&quot;</span>).nth(<span class="number">6</span>);
-        <span class="kw">let </span>id2_tmp = id2.split(<span class="string">&quot;:&quot;</span>).nth(<span class="number">6</span>);
+        </span><span class="kw">let </span>id1_tmp = id1.split(<span class="string">":"</span>).nth(<span class="number">6</span>);
+        <span class="kw">let </span>id2_tmp = id2.split(<span class="string">":"</span>).nth(<span class="number">6</span>);
         <span class="kw">if </span>id1_tmp.is_none() || id2_tmp.is_none() {
             <span class="kw">return </span><span class="number">0</span>;
         }
 
         <span class="comment">// Get the read number. It has to be 1 and 2.
-        </span><span class="kw">let </span>id1_read_number = id1_tmp.unwrap().split(<span class="string">&quot; &quot;</span>).nth(<span class="number">1</span>);
-        <span class="kw">let </span>id2_read_number = id2_tmp.unwrap().split(<span class="string">&quot; &quot;</span>).nth(<span class="number">1</span>);
+        </span><span class="kw">let </span>id1_read_number = id1_tmp.unwrap().split(<span class="string">" "</span>).nth(<span class="number">1</span>);
+        <span class="kw">let </span>id2_read_number = id2_tmp.unwrap().split(<span class="string">" "</span>).nth(<span class="number">1</span>);
         <span class="kw">if </span>id1_read_number.is_none() || id2_read_number.is_none() {
             <span class="kw">return </span><span class="number">0</span>;
         }
-        <span class="kw">if </span>id1_read_number.unwrap() != <span class="string">&quot;1&quot; </span>|| id2_read_number.unwrap() != <span class="string">&quot;2&quot; </span>{
+        <span class="kw">if </span>id1_read_number.unwrap() != <span class="string">"1" </span>|| id2_read_number.unwrap() != <span class="string">"2" </span>{
             <span class="kw">return </span><span class="number">0</span>;
         }
     }

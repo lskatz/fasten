@@ -65,6 +65,7 @@ extern crate statistical;
 extern crate getopts;
 use std::env;
 use std::path::Path;
+use std::collections::HashMap;
 
 use getopts::Options;
 use getopts::Matches;
@@ -160,5 +161,31 @@ pub fn logmsg<S: AsRef<str>>(stringlike: S) {
     let program = Path::file_name(Path::new(&args[0])).unwrap().to_str().unwrap();
     let str_ref = stringlike.as_ref();
     eprintln!("{}: {}", &program, str_ref);
+}
+
+/// Reverse complement a DNA sequence.
+/// Take into account lowercase vs uppercase.
+/// Ambiguity codes are also handled.
+pub fn reverse_complement(dna: &str) -> String {
+    // Create a mapping for complement bases, including ambiguity codes.
+    let complement_map: HashMap<char, char> = [
+        ('A', 'T'), ('T', 'A'), ('G', 'C'), ('C', 'G'),
+        ('R', 'Y'), ('Y', 'R'), ('S', 'S'), ('W', 'W'),
+        ('K', 'M'), ('M', 'K'), ('B', 'V'), ('V', 'B'),
+        ('D', 'H'), ('H', 'D'), ('N', 'N'),
+        ('a', 't'), ('t', 'a'), ('g', 'c'), ('c', 'g'),
+        ('r', 'y'), ('y', 'r'), ('s', 's'), ('w', 'w'),
+        ('k', 'm'), ('m', 'k'), ('b', 'v'), ('v', 'b'),
+        ('d', 'h'), ('h', 'd'), ('n', 'n'),
+    ]
+    .iter()
+    .cloned()
+    .collect();
+
+    // Generate the reverse complement.
+    dna.chars()
+        .rev()
+        .map(|base| complement_map.get(&base).cloned().unwrap_or('N')) // Default to 'N' for unknown bases.
+        .collect()
 }
 

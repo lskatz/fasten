@@ -129,8 +129,6 @@ fn normalize_coverage (stdin:Stdin, target_depth:u32, paired_end:bool) {
 
         // number of reads to keep is the target depth / kmer coverage * number of reads present
         let mut num_reads_to_keep :usize = min(
-            //(target_depth as f32 / count as f32 * f.len() as f32).ceil() as usize,
-            //(target_depth as f32 / num_reads_orig as f32).ceil() as usize,
             target_depth,
             num_reads_orig as u32
         ) as usize;
