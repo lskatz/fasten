@@ -104,7 +104,7 @@ except `fasten_convert`.
 |[`fasten_inspect`](https://lskatz.github.io/fasten/fasten_inspect)  | adds information to read IDs such as seqlength |
 |[`fasten_repair`](https://lskatz.github.io/fasten/fasten_repair)  | Repairs corrupted reads |
 |[`fasten_quality_filter`](https://lskatz.github.io/fasten/fasten_quality_filter) | Transforms nucleotides to "N" if the quality is low |
-|[`fasten_trim`](https://lskatz.github.io/fasten/fasten_trim)      | Blunt-end trims reads |
+|[`fasten_trim`](https://lskatz.github.io/fasten/fasten_trim)      | Blunt-end trims reads and/or removes adapter sequences |
 |[`fasten_replace`](https://lskatz.github.io/fasten/fasten_replace)   | Find and replace using regex |
 |[`fasten_mutate`](https://lskatz.github.io/fasten/fasten_mutate)    | introduce random mutations |
 |[`fasten_regex`](https://lskatz.github.io/fasten/fasten_regex)     | Filter for reads using regex |
