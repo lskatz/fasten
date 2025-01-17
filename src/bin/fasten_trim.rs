@@ -56,6 +56,8 @@
 //!     -f, --first-base INT
 //!                         The first base to keep (default: 0)
 //!     -l, --last-base INT The last base to keep. (default: 0)
+//!     -a, --adapterseqs path/to/file.fa
+//!                         fasta file of adapters
 //! ```
 //! 
 //! # Notes

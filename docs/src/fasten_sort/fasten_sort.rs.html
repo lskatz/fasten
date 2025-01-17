@@ -272,6 +272,66 @@
 <a href="#270" id="270">270</a>
 <a href="#271" id="271">271</a>
 <a href="#272" id="272">272</a>
+<a href="#273" id="273">273</a>
+<a href="#274" id="274">274</a>
+<a href="#275" id="275">275</a>
+<a href="#276" id="276">276</a>
+<a href="#277" id="277">277</a>
+<a href="#278" id="278">278</a>
+<a href="#279" id="279">279</a>
+<a href="#280" id="280">280</a>
+<a href="#281" id="281">281</a>
+<a href="#282" id="282">282</a>
+<a href="#283" id="283">283</a>
+<a href="#284" id="284">284</a>
+<a href="#285" id="285">285</a>
+<a href="#286" id="286">286</a>
+<a href="#287" id="287">287</a>
+<a href="#288" id="288">288</a>
+<a href="#289" id="289">289</a>
+<a href="#290" id="290">290</a>
+<a href="#291" id="291">291</a>
+<a href="#292" id="292">292</a>
+<a href="#293" id="293">293</a>
+<a href="#294" id="294">294</a>
+<a href="#295" id="295">295</a>
+<a href="#296" id="296">296</a>
+<a href="#297" id="297">297</a>
+<a href="#298" id="298">298</a>
+<a href="#299" id="299">299</a>
+<a href="#300" id="300">300</a>
+<a href="#301" id="301">301</a>
+<a href="#302" id="302">302</a>
+<a href="#303" id="303">303</a>
+<a href="#304" id="304">304</a>
+<a href="#305" id="305">305</a>
+<a href="#306" id="306">306</a>
+<a href="#307" id="307">307</a>
+<a href="#308" id="308">308</a>
+<a href="#309" id="309">309</a>
+<a href="#310" id="310">310</a>
+<a href="#311" id="311">311</a>
+<a href="#312" id="312">312</a>
+<a href="#313" id="313">313</a>
+<a href="#314" id="314">314</a>
+<a href="#315" id="315">315</a>
+<a href="#316" id="316">316</a>
+<a href="#317" id="317">317</a>
+<a href="#318" id="318">318</a>
+<a href="#319" id="319">319</a>
+<a href="#320" id="320">320</a>
+<a href="#321" id="321">321</a>
+<a href="#322" id="322">322</a>
+<a href="#323" id="323">323</a>
+<a href="#324" id="324">324</a>
+<a href="#325" id="325">325</a>
+<a href="#326" id="326">326</a>
+<a href="#327" id="327">327</a>
+<a href="#328" id="328">328</a>
+<a href="#329" id="329">329</a>
+<a href="#330" id="330">330</a>
+<a href="#331" id="331">331</a>
+<a href="#332" id="332">332</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! Sort a fastq file.
 //! If the reads are paired end, then the sorted field 
 //! concatenates R1 and R2 before comparisons in the sort.
@@ -373,9 +433,11 @@
             id1:    id1,
             seq1:   seq1,
             qual1:  qual1,
+            minimizer1: String::new(),
             id2:    id2,
             seq2:   seq2,
-            qual2:  qual2
+            qual2:  qual2,
+            minimizer2: String::new()
         };
 
         entries.push(entry);
@@ -405,15 +467,18 @@
     id1:    String,
     seq1:   String,
     qual1:  String,
+    minimizer1: String,
     id2:    String,
     seq2:   String,
     qual2:  String,
+    minimizer2: String,
 }
 
 <span class="kw">fn </span>main(){
     <span class="kw">let </span><span class="kw-2">mut </span>opts = fasten_base_options();
     <span class="comment">// Options specific to this script
-    </span>opts.optopt(<span class="string">"s"</span>,<span class="string">"sort-by"</span>,<span class="string">"Sort by either SEQ, GC, or ID. If GC, then the entries are sorted by GC percentage. SEQ and ID are alphabetically sorted."</span>,<span class="string">"STRING"</span>);
+    </span>opts.optopt(<span class="string">"s"</span>,<span class="string">"sort-by"</span>,<span class="string">"Sort by either SEQ, MINIMIZER, GC, or ID. If GC, then the entries are sorted by GC percentage. SEQ and ID are alphabetically sorted."</span>,<span class="string">"STRING"</span>);
+    opts.optopt(<span class="string">"k"</span>, <span class="string">"kmer-length"</span>, <span class="string">"Length of kmer if using minimizers"</span>, <span class="string">"STRING"</span>);
     opts.optflag(<span class="string">"r"</span>,<span class="string">"reverse"</span>,<span class="string">"Reverse sort"</span>);
 
     <span class="kw">let </span>matches = fasten_base_options_matches(<span class="string">"Sort reads. This can be useful for many things including checksums and reducing gzip file sizes. Remember to use --paired-end if applicable."</span>, opts);
@@ -443,6 +508,8 @@
         </span>}
     };
 
+    <span class="kw">let </span>k: usize = matches.opt_get_default(<span class="string">"kmer-length"</span>, <span class="number">21</span>).expect(<span class="string">"ERROR parsing --kmer-length"</span>);
+
     <span class="kw">let </span><span class="kw-2">mut </span>buffer_iter = my_buffer.lines();
 
     <span class="kw">let </span><span class="kw-2">mut </span>entries:Vec&lt;Seq&gt; = <span class="macro">vec!</span>[];
@@ -471,14 +538,24 @@
                 .expect(<span class="string">"ERROR reading a qual line"</span>);
         }
 
+        <span class="comment">// minimizers: they are costly if we aren't using them
+        </span><span class="kw">let </span><span class="kw-2">mut </span>minimizer1 = String::new();
+        <span class="kw">let </span><span class="kw-2">mut </span>minimizer2 = String::new();
+        <span class="kw">if </span>which_field == <span class="string">"MINIMIZER" </span>{
+            minimizer1 = minimizer(<span class="kw-2">&amp;</span>seq1, k);
+            minimizer2 = minimizer(<span class="kw-2">&amp;</span>seq2, k);
+        }
+
         <span class="kw">let </span>entry:Seq = Seq {
             pe:     is_paired_end,
-            id1:    id1,
-            seq1:   seq1,
+            id1:    id1, <span class="comment">//format!("{} minimizer:{}",id1,minimizer1),
+            </span>seq1:   seq1,
             qual1:  qual1,
+            minimizer1: minimizer1,
             id2:    id2,
             seq2:   seq2,
-            qual2:  qual2
+            qual2:  qual2,
+            minimizer2: minimizer2
         };
 
         entries.push(entry);
@@ -495,6 +572,25 @@
 
 }
 
+<span class="doccomment">/// Find the lexicographically smallest kmer in a sequence.
+</span><span class="kw">fn </span>minimizer (sequence:<span class="kw-2">&amp;</span>str, k: usize) -&gt; String {
+
+    <span class="comment">// if the length of the sequence is less than k, then return the sequence
+    </span><span class="kw">if </span>sequence.len() &lt; k {
+        <span class="kw">return </span>sequence.to_string();
+    }
+    
+    <span class="kw">let </span><span class="kw-2">mut </span>min = <span class="string">"z"</span>.repeat(k);
+    <span class="kw">for </span>i <span class="kw">in </span><span class="number">0</span>..sequence.len()-k {
+        <span class="kw">let </span>kmer = <span class="kw-2">&amp;</span>sequence[i..i+k];
+        <span class="kw">if </span>kmer &lt; <span class="kw-2">&amp;</span>min {
+            min = kmer.to_string();
+        }
+    }
+
+    <span class="kw">return </span>min;
+}
+
 <span class="doccomment">/// Sort fastq entries in a vector
 </span><span class="kw">fn </span>sort_entries (unsorted:Vec&lt;Seq&gt;, which_field:<span class="kw-2">&amp;</span>str, reverse_sort:bool) -&gt; Vec&lt;Seq&gt; {
 
@@ -508,16 +604,20 @@
     </span><span class="kw">match </span>which_field{
         <span class="string">"ID" </span>=&gt; {
             sorted.sort_by(|a, b| {
-                <span class="kw">let </span>a_id = <span class="macro">format!</span>(<span class="string">"{}{}"</span>, a.id1, a.id2);
-                <span class="kw">let </span>b_id = <span class="macro">format!</span>(<span class="string">"{}{}"</span>, b.id1, b.id2);
-                a_id.cmp(<span class="kw-2">&amp;</span>b_id)
+                <span class="kw">if </span>a.id1 != b.id1 {
+                    a.id1.cmp(<span class="kw-2">&amp;</span>b.id1)
+                } <span class="kw">else </span>{
+                    a.id2.cmp(<span class="kw-2">&amp;</span>b.id2)
+                }
             });
         },
         <span class="string">"SEQ" </span>=&gt; {
             sorted.sort_by(|a, b| {
-                <span class="kw">let </span>a_seq = <span class="macro">format!</span>(<span class="string">"{}{}"</span>, a.seq1, a.seq2);
-                <span class="kw">let </span>b_seq = <span class="macro">format!</span>(<span class="string">"{}{}"</span>, b.seq1, b.seq2);
-                a_seq.cmp(<span class="kw-2">&amp;</span>b_seq)
+                <span class="kw">if </span>a.seq1 != b.seq1 {
+                    a.seq1.cmp(<span class="kw-2">&amp;</span>b.seq1)
+                } <span class="kw">else </span>{
+                    a.seq2.cmp(<span class="kw-2">&amp;</span>b.seq2)
+                }
             });
         },
         <span class="string">"GC"  </span>=&gt; {
@@ -529,6 +629,26 @@
                 <span class="kw">let </span>b_gc:f32  = b_seq.matches(<span class="kw-2">&amp;</span>[<span class="string">'G'</span>,<span class="string">'g'</span>,<span class="string">'C'</span>,<span class="string">'c'</span>]).count() <span class="kw">as </span>f32 / b_seq.len() <span class="kw">as </span>f32;
                 <span class="comment">//logmsg(format!("{} ({}) &lt;=&gt; {} ({})", a.id1, a_gc, b.id1, b_gc));
                 </span>a_gc.partial_cmp(<span class="kw-2">&amp;</span>b_gc).unwrap()
+            });
+        },
+        <span class="string">"MINIMIZER" </span>=&gt; {
+            sorted.sort_by(|a,b| {
+                <span class="comment">// Sort by minimizer1 first
+                </span><span class="kw">if </span>a.minimizer1 != b.minimizer1 {
+                    a.minimizer1.cmp(<span class="kw-2">&amp;</span>b.minimizer1)
+                }
+                <span class="comment">// If the R1 minimizer isn't the same, then compare on minimizer2
+                </span><span class="kw">else if </span>a.minimizer2 != b.minimizer2 {
+                    a.minimizer2.cmp(<span class="kw-2">&amp;</span>b.minimizer2)
+                }
+                <span class="comment">// If both minimizers are the same, then sort by R1 SEQ
+                </span><span class="kw">else if </span>a.seq1 != b.seq1 {
+                    a.seq1.cmp(<span class="kw-2">&amp;</span>b.seq1)
+                }
+                <span class="comment">// and then lastely by R2 SEQ
+                </span><span class="kw">else </span>{
+                    a.seq2.cmp(<span class="kw-2">&amp;</span>b.seq2)
+                }
             });
         },
         <span class="kw">_   </span>=&gt; {
