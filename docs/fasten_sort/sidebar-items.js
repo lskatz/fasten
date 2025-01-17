@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"fn":["main","sort_entries"],"struct":["Seq"]};
+window.SIDEBAR_ITEMS = {"fn":["main","minimizer","sort_entries"],"struct":["Seq"]};

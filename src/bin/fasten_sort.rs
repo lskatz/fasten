@@ -99,9 +99,11 @@ fn test_sort_fastq_basic () {
             id1:    id1,
             seq1:   seq1,
             qual1:  qual1,
+            minimizer1: String::new(),
             id2:    id2,
             seq2:   seq2,
-            qual2:  qual2
+            qual2:  qual2,
+            minimizer2: String::new()
         };
 
         entries.push(entry);
@@ -131,15 +133,18 @@ struct Seq {
     id1:    String,
     seq1:   String,
     qual1:  String,
+    minimizer1: String,
     id2:    String,
     seq2:   String,
     qual2:  String,
+    minimizer2: String,
 }
 
 fn main(){
     let mut opts = fasten_base_options();
     // Options specific to this script
-    opts.optopt("s","sort-by","Sort by either SEQ, GC, or ID. If GC, then the entries are sorted by GC percentage. SEQ and ID are alphabetically sorted.","STRING");
+    opts.optopt("s","sort-by","Sort by either SEQ, MINIMIZER, GC, or ID. If GC, then the entries are sorted by GC percentage. SEQ and ID are alphabetically sorted.","STRING");
+    opts.optopt("k", "kmer-length", "Length of kmer if using minimizers", "STRING");
     opts.optflag("r","reverse","Reverse sort");
 
     let matches = fasten_base_options_matches("Sort reads. This can be useful for many things including checksums and reducing gzip file sizes. Remember to use --paired-end if applicable.", opts);
@@ -169,6 +174,8 @@ fn main(){
         }
     };
 
+    let k: usize = matches.opt_get_default("kmer-length", 21).expect("ERROR parsing --kmer-length");
+
     let mut buffer_iter = my_buffer.lines();
 
     let mut entries:Vec<Seq> = vec![];
@@ -197,14 +204,24 @@ fn main(){
                 .expect("ERROR reading a qual line");
         }
 
+        // minimizers: they are costly if we aren't using them
+        let mut minimizer1 = String::new();
+        let mut minimizer2 = String::new();
+        if which_field == "MINIMIZER" {
+            minimizer1 = minimizer(&seq1, k);
+            minimizer2 = minimizer(&seq2, k);
+        }
+
         let entry:Seq = Seq {
             pe:     is_paired_end,
-            id1:    id1,
+            id1:    id1, //format!("{} minimizer:{}",id1,minimizer1),
             seq1:   seq1,
             qual1:  qual1,
+            minimizer1: minimizer1,
             id2:    id2,
             seq2:   seq2,
-            qual2:  qual2
+            qual2:  qual2,
+            minimizer2: minimizer2
         };
 
         entries.push(entry);
@@ -221,6 +238,25 @@ fn main(){
 
 }
 
+/// Find the lexicographically smallest kmer in a sequence.
+fn minimizer (sequence:&str, k: usize) -> String {
+
+    // if the length of the sequence is less than k, then return the sequence
+    if sequence.len() < k {
+        return sequence.to_string();
+    }
+    
+    let mut min = "z".repeat(k);
+    for i in 0..sequence.len()-k {
+        let kmer = &sequence[i..i+k];
+        if kmer < &min {
+            min = kmer.to_string();
+        }
+    }
+
+    return min;
+}
+
 /// Sort fastq entries in a vector
 fn sort_entries (unsorted:Vec<Seq>, which_field:&str, reverse_sort:bool) -> Vec<Seq> {
 
@@ -234,16 +270,20 @@ fn sort_entries (unsorted:Vec<Seq>, which_field:&str, reverse_sort:bool) -> Vec<
     match which_field{
         "ID" => {
             sorted.sort_by(|a, b| {
-                let a_id = format!("{}{}", a.id1, a.id2);
-                let b_id = format!("{}{}", b.id1, b.id2);
-                a_id.cmp(&b_id)
+                if a.id1 != b.id1 {
+                    a.id1.cmp(&b.id1)
+                } else {
+                    a.id2.cmp(&b.id2)
+                }
             });
         },
         "SEQ" => {
             sorted.sort_by(|a, b| {
-                let a_seq = format!("{}{}", a.seq1, a.seq2);
-                let b_seq = format!("{}{}", b.seq1, b.seq2);
-                a_seq.cmp(&b_seq)
+                if a.seq1 != b.seq1 {
+                    a.seq1.cmp(&b.seq1)
+                } else {
+                    a.seq2.cmp(&b.seq2)
+                }
             });
         },
         "GC"  => {
@@ -255,6 +295,26 @@ fn sort_entries (unsorted:Vec<Seq>, which_field:&str, reverse_sort:bool) -> Vec<
                 let b_gc:f32  = b_seq.matches(&['G','g','C','c']).count() as f32 / b_seq.len() as f32;
                 //logmsg(format!("{} ({}) <=> {} ({})", a.id1, a_gc, b.id1, b_gc));
                 a_gc.partial_cmp(&b_gc).unwrap()
+            });
+        },
+        "MINIMIZER" => {
+            sorted.sort_by(|a,b| {
+                // Sort by minimizer1 first
+                if a.minimizer1 != b.minimizer1 {
+                    a.minimizer1.cmp(&b.minimizer1)
+                }
+                // If the R1 minimizer isn't the same, then compare on minimizer2
+                else if a.minimizer2 != b.minimizer2 {
+                    a.minimizer2.cmp(&b.minimizer2)
+                }
+                // If both minimizers are the same, then sort by R1 SEQ
+                else if a.seq1 != b.seq1 {
+                    a.seq1.cmp(&b.seq1)
+                }
+                // and then lastely by R2 SEQ
+                else {
+                    a.seq2.cmp(&b.seq2)
+                }
             });
         },
         _   => {
