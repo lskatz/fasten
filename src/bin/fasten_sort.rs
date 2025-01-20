@@ -257,17 +257,15 @@ fn main(){
 
     }
 
-    // If we aren't chunking then just print everything sorted
-    if chunk_size == 0 {
-        let sorted_entries:Vec<Seq> = sort_entries(entries, &which_field, reverse_sort);
-        for entry in sorted_entries {
-            println!("{}\n{}\n+\n{}", entry.id1, entry.seq1, entry.qual1);
-            if entry.pe {
-                println!("{}\n{}\n+\n{}", entry.id2, entry.seq2, entry.qual2);
-            }
+    // Print the rest of the entries
+    let sorted_entries:Vec<Seq> = sort_entries(entries, &which_field, reverse_sort);
+    for entry in sorted_entries {
+        println!("{}\n{}\n+\n{}", entry.id1, entry.seq1, entry.qual1);
+        if entry.pe {
+            println!("{}\n{}\n+\n{}", entry.id2, entry.seq2, entry.qual2);
         }
     }
-
+    
 }
 
 /// Find the lexicographically smallest kmer in a sequence.
