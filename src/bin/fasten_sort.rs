@@ -25,10 +25,21 @@
 //!   fasten_shuffle -d -1 sorted_1.fastq -2 sorted_2.fastq && \
 //!   gzip -v sorted_1.fastq sorted_2.fastq
 //! ```
+//! 
 //! Compare compression between unsorted and sorted
 //! from the previous example
+//! 
 //! ```bash
 //! ls -lh sorted_1.fastq.gz sorted_2.fastq.gz
+//! ```
+//! 
+//! ## Fast sorting of large files
+//! 
+//! If you want reads sorted but do not care if _everything_ is sorted,
+//! you can sort in chunks. This is useful for streaming large files.
+//! 
+//! ```bash
+//! zcat large.fastq.gz | fasten_sort --paired-end --chunk-size 1000 | gzip -c > sorted.fastq.gz
 //! ```
 //! 
 //! # Usage 
@@ -46,6 +57,10 @@
 //!                         are sorted by GC percentage. SEQ and ID are
 //!                         alphabetically sorted.
 //!     -r, --reverse       Reverse sort
+//!     -c, --chunk-size INT
+//!                         If > 0, then chunks of reads or pairs will be sorted
+//!                         instead of the whole set. This is useful for streaming
+//!                         large files. Default: 0
 //! ```
 
 extern crate getopts;
@@ -146,6 +161,7 @@ fn main(){
     opts.optopt("s","sort-by","Sort by either SEQ, MINIMIZER, GC, or ID. If GC, then the entries are sorted by GC percentage. SEQ and ID are alphabetically sorted.","STRING");
     opts.optopt("k", "kmer-length", "Length of kmer if using minimizers", "STRING");
     opts.optflag("r","reverse","Reverse sort");
+    opts.optopt("c", "chunk-size", "If > 0, then chunks of reads or pairs will be sorted instead of the whole set. This is useful for streaming large files. Default: 0", "INT");
 
     let matches = fasten_base_options_matches("Sort reads. This can be useful for many things including checksums and reducing gzip file sizes. Remember to use --paired-end if applicable.", opts);
 
@@ -175,6 +191,7 @@ fn main(){
     };
 
     let k: usize = matches.opt_get_default("kmer-length", 21).expect("ERROR parsing --kmer-length");
+    let chunk_size: usize = matches.opt_get_default("chunk-size", 0).expect("ERROR parsing --chunk-size");
 
     let mut buffer_iter = my_buffer.lines();
 
@@ -226,13 +243,28 @@ fn main(){
 
         entries.push(entry);
 
+        // If we are chunking, then sort and print the chunk
+        if chunk_size > 0 && entries.len() == chunk_size {
+            let sorted_entries:Vec<Seq> = sort_entries(entries, &which_field, reverse_sort);
+            for entry in sorted_entries {
+                println!("{}\n{}\n+\n{}", entry.id1, entry.seq1, entry.qual1);
+                if entry.pe {
+                    println!("{}\n{}\n+\n{}", entry.id2, entry.seq2, entry.qual2);
+                }
+            }
+            entries = vec![];
+        }
+
     }
 
-    let sorted_entries:Vec<Seq> = sort_entries(entries, &which_field, reverse_sort);
-    for entry in sorted_entries {
-        println!("{}\n{}\n+\n{}", entry.id1, entry.seq1, entry.qual1);
-        if entry.pe {
-            println!("{}\n{}\n+\n{}", entry.id2, entry.seq2, entry.qual2);
+    // If we aren't chunking then just print everything sorted
+    if chunk_size == 0 {
+        let sorted_entries:Vec<Seq> = sort_entries(entries, &which_field, reverse_sort);
+        for entry in sorted_entries {
+            println!("{}\n{}\n+\n{}", entry.id1, entry.seq1, entry.qual1);
+            if entry.pe {
+                println!("{}\n{}\n+\n{}", entry.id2, entry.seq2, entry.qual2);
+            }
         }
     }
 
