@@ -65,7 +65,9 @@
 //! The algorithm is as follows:
 //! 
 //! 1. marks the first and last bases for trimming as 0 and the last base, respectively
-//! 2. if an adapter is found at the beginning of the sequence, then move the marker for where it will be trimmed
+//! 2. if an adapter is found at the beginning of the sequence, then move the marker for where it will be trimmed.
+//!   * If the revcom is found at the end, then the marker will be moved from the right side also.
+//!   * Adapters will tried to be compared in a sliding window from left to right (fwd adapter) and in a sliding window from right to left (revcom, rev adapter)
 //! 3. Compare the blunt end suggested trimming against where an adapter might be found and move the marker as the most inward possible
 //! 4. Trim the sequence and quality strings
 //! 
@@ -222,17 +224,21 @@ fn trim_worker(seq:Seq, suggested_first_base:usize, suggested_last_base:usize, a
         }
         
         // Check if the adapter is at the beginning of the sequence
-        if &seq.seq[0..adapter_length] == adapter {
-            first_base = adapter_length;
-            description.push_str(&format!(" trimmed_adapter_fwd={}", &adapter));
+        for i in 0..seq.seq.len()-adapter_length {
+            if &seq.seq[i..adapter_length+i] == adapter {
+                first_base = adapter_length + i;
+                description.push_str(&format!(" trimmed_adapter_fwd={}", &adapter));
+            }
         }
-        
+
         // Check if the revcom is at the end of the sequence
         let revcom = reverse_complement(&adapter);
-        let end_slice: &str = &seq.seq[&seq.seq.len()-1 - adapter_length..].trim();
-        if end_slice == revcom {
-            last_base = seq.seq.len() - adapter_length;
-            description.push_str(&format!(" trimmed_adapter_rev={}", &revcom));
+        for i in 0..seq.seq.len()-adapter_length {
+            let end_slice: &str = &seq.seq[&seq.seq.len()-1 - adapter_length - i..].trim();
+            if end_slice == revcom {
+                last_base = seq.seq.len() - adapter_length - i;
+                description.push_str(&format!(" trimmed_adapter_rev={}", &revcom));
+            }
         }
     }
 
