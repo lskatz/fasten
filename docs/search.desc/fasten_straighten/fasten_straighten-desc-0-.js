@@ -1,0 +1,1 @@
+searchState.loadedDescShard("fasten_straighten", 0, "Convert a fastq file to a standard 4-lines-per-entry format")

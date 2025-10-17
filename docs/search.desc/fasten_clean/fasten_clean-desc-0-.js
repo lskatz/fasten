@@ -1,0 +1,1 @@
+searchState.loadedDescShard("fasten_clean", 0, "Trim and filter reads\nDetermine average quality of a qual cigar string, e.g., …\nTrim the ends of reads with low quality")

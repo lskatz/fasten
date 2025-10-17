@@ -1,0 +1,1 @@
+searchState.loadedDescShard("fasten_trim", 0, "Trims reads using 0-based coordinates\nRead a fasta file and return a HashMap of the sequences\nTrim a set of fastq entries and send it to a channel")

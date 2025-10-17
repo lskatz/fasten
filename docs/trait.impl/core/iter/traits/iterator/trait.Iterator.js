@@ -1,3 +1,9 @@
-(function() {var implementors = {
-"fasten":[["impl&lt;R: <a class=\"trait\" href=\"https://doc.rust-lang.org/1.77.0/std/io/trait.Read.html\" title=\"trait std::io::Read\">Read</a>&gt; <a class=\"trait\" href=\"https://doc.rust-lang.org/1.77.0/core/iter/traits/iterator/trait.Iterator.html\" title=\"trait core::iter::traits::iterator::Iterator\">Iterator</a> for <a class=\"struct\" href=\"fasten/io/fastq/struct.FastqReader.html\" title=\"struct fasten::io::fastq::FastqReader\">FastqReader</a>&lt;R&gt;"]]
-};if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()
+(function() {
+    var implementors = Object.fromEntries([["fasten",[["impl&lt;R: <a class=\"trait\" href=\"https://doc.rust-lang.org/1.83.0/std/io/trait.Read.html\" title=\"trait std::io::Read\">Read</a>&gt; <a class=\"trait\" href=\"https://doc.rust-lang.org/1.83.0/core/iter/traits/iterator/trait.Iterator.html\" title=\"trait core::iter::traits::iterator::Iterator\">Iterator</a> for <a class=\"struct\" href=\"fasten/io/fastq/struct.FastqReader.html\" title=\"struct fasten::io::fastq::FastqReader\">FastqReader</a>&lt;R&gt;"]]]]);
+    if (window.register_implementors) {
+        window.register_implementors(implementors);
+    } else {
+        window.pending_implementors = implementors;
+    }
+})()
+//{"start":57,"fragment_lengths":[475]}

@@ -1,0 +1,1 @@
+searchState.loadedDescShard("fasten_sample", 0, "downsample your reads\nGenerate a set of random floats")

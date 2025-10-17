@@ -1,0 +1,1 @@
+searchState.loadedDescShard("fasten_randomize", 0, "Create random reads from stdin.\nRead fastq from stdin, add the reads to a vector, then …")

@@ -1,0 +1,1 @@
+searchState.loadedDescShard("fasten_kmer", 0, "Counts kmers. Each line is a kmer with two columns …\nGlues together paired end reads internally and is a …\nRead fastq from stdin and count kmers\nRead a str of nucleotides and count kmers. If …\nreverse-complement a dna sequence\nComplementary nucleotide for ACTGUN, case insensitive")

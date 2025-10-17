@@ -1,0 +1,1 @@
+searchState.loadedDescShard("fasten_inspect", 0, "Marks up your reads with useful information like read …\nmarks up reads from stdin")

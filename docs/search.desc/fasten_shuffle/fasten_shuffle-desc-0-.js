@@ -1,0 +1,1 @@
+searchState.loadedDescShard("fasten_shuffle", 0, "Interleaves reads from either stdin or file parameters.\nRead from stdin and deshuffle reads into files\nRead fastq entries from a filename\nRead fastq from stdin and interleave")

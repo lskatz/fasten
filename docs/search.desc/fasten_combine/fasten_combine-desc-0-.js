@@ -1,0 +1,1 @@
+searchState.loadedDescShard("fasten_combine", 0, "Collapse identical reads into single reads, recalculating …\nGlues together paired end reads internally and is a …\nneed this constant because the compiler had a problem with …\nCombines vectors of error probabilities such that the rate …")

@@ -1,0 +1,1 @@
+searchState.loadedDescShard("fasten_pe", 0, "Determine paired-end-ness in an interleaved file. Exit …\nDetect whether the vector of IDs represent paired-endedness\nDetect whether the vector of IDs represent paired-endedness")
