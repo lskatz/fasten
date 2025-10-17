@@ -2,6 +2,10 @@
 
 set -e
 
+THIS_SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+THIS_SCRIPT_NAME=$(basename "$0" | sed 's/\.sh//g')
+source "${THIS_SCRIPT_DIR}/test_functions.sh"
+
 INPUT=testdata/four_reads.pe.fastq
 
 reads=$(for i in $(seq 1 1000); do cat $INPUT; done;)
