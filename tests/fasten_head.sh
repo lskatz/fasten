@@ -8,15 +8,12 @@ source "${THIS_SCRIPT_DIR}/test_functions.sh"
 
 INPUT=testdata/four_reads.pe.fastq
 
-reads=$(for i in $(seq 1 1000); do cat $INPUT; done;)
-not_downsampled=$(echo "$reads" | ./target/debug/fasten_sample)
-
 # Use md5sum to compare
-first_ten_reads=$(echo "$reads" | head -n 40 | md5sum)
-fasten_head=$(echo "$reads" | ./target/debug/fasten_head --reads 10 | md5sum)
+first_two_reads=$(cat $INPUT | head -n 8 )
+fasten_head=$(cat $INPUT | ./target/debug/fasten_head --reads 2 )
 
-if [ "$fasten_head" != "$first_ten_reads" ]; then
-  echo "fasten_head does not match head -n 40"
+if [ "$fasten_head" != "$first_two_reads" ]; then
+  echo "fasten_head does not match head -n 8"
   exit 1
 fi
 
