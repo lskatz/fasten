@@ -4,14 +4,14 @@
 //!
 //! Example 1: Get the first 10 reads
 //! 
-// ```bash
+//! ```bash
 //! fasten_head -r 10 < in.fq > out.fq
 //! ```
 //!
 //! Example 2: Get the first 100 bases
 //! Note: the last read will not be truncated and so you may have more than 100 bases
 //! 
-// ```bash
+//! ```bash
 //! fasten_head -b 100 < in.fq > out.fq
 //! ```
 //!
