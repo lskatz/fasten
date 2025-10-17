@@ -99,6 +99,7 @@ except `fasten_convert`.
 |[`fasten_kmer`](https://lskatz.github.io/fasten/fasten_kmer)      | Kmer counting.|
 |[`fasten_normalize`](https://lskatz.github.io/fasten/fasten_normalize)      | Normalize read depth by using kmer counting.|
 |[`fasten_sample`](https://lskatz.github.io/fasten/fasten_sample)    | Downsamples reads.|
+|[`fasten_head`](https://lskatz.github.io/fasten/fasten_head)    | Get the first X reads or nts.|
 |[`fasten_shuffle`](https://lskatz.github.io/fasten/fasten_shuffle)   | Shuffles or deshuffles paired end reads.|
 |[`fasten_validate`](https://lskatz.github.io/fasten/fasten_validate)  | Validates your reads (deprecated in favor of `fasten_inspect` and `fasten_repair`|
 |[`fasten_inspect`](https://lskatz.github.io/fasten/fasten_inspect)  | adds information to read IDs such as seqlength |
