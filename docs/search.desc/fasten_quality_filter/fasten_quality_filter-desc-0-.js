@@ -1,0 +1,1 @@
+searchState.loadedDescShard("fasten_quality_filter", 0, "Transforms any low-quality base to ‘N’")

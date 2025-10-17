@@ -1,0 +1,1 @@
+searchState.loadedDescShard("fasten_normalize", 0, "Normalizes kmer depth by removing some reads from high …\nGlues together paired end reads internally and is a …\nNormalize the coverage to a certain target and print as a …\nPrint the reads in fastq format when given in a single …")

@@ -1,0 +1,1 @@
+searchState.loadedDescShard("fasten_replace", 0, "Streaming editor for fastq data using a find/replace.")

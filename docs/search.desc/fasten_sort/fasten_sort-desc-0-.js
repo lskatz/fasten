@@ -1,0 +1,1 @@
+searchState.loadedDescShard("fasten_sort", 0, "Sort a fastq file. If the reads are paired end, then the …\nA sequence struct that is paired-end aware\nReturns the argument unchanged.\nCalls <code>U::from(self)</code>.\nFind the lexicographically smallest kmer in a sequence.\nSort fastq entries in a vector")

@@ -1,0 +1,1 @@
+searchState.loadedDescShard("fasten_mutate", 0, "Mutates reads. There is no mutation model; only randomness.\nMutate a str of a sequence of nucleotides using the …")

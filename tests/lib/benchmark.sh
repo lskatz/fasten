@@ -58,7 +58,7 @@ seqtk 2>&1 | grep -i version | sed 's/^/seqtk /'
 seqkit version | grep -m 1 v
 fasten_clean --version
 fastq_to_fasta -h | grep "Part of FASTX"
-bbnorm.sh version 2>&1 | grep 'BBMap version'
+bbnorm.sh version 2>&1 | grep -E '(BBMap|BBTools) version'
 seqfu --version
 
 # hyperfine
