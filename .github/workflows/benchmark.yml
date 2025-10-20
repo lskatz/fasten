@@ -70,11 +70,12 @@ jobs:
           which fasten_clean
           #bash fasten/tests/10_benchmark.sh
           echo "Running benchmarks:"
-          for i in fasten/tests/benchmark_*.sh; do echo "===$i==="; bash -x $i; done
+          for i in fasten/tests/benchmark_*.sh; do echo "===$i==="; bash $i; done
       - name: save benchmark results
         uses: actions/upload-artifact@v4
         with:
           name: benchmark-results
           path: fasten/tests/hyperfine
+          filename: benchmark-results.${{ matrix.os }}.${{ matrix.python-version }}.tar.gz
 
 
