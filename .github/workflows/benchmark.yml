@@ -116,7 +116,7 @@ jobs:
       fail-fast: false
       matrix:
         os: ["ubuntu-latest"]
-        python-version: ["3.7", "3.10"]
+        python-version: ["3.10"]
     steps:
       - name: Download artifacts for this combo
         uses: actions/download-artifact@v4
@@ -128,6 +128,13 @@ jobs:
         run: |
           echo "Collected artifacts under ./collected:"
           ls -R collected || true
+      - name: Make grid of PNGs
+        env:
+          image: collected/grid.png
+        run: |
+          pip install pillow
+          python3 -c "import os; from PIL import Image; import math; files = [os.path.join(dp, f) for dp, dn, fn in os.walk('collected') for f in fn if f.endswith('.png')]; n = len(files); cols = min(4, n); rows = math.ceil(n / cols); imgs = [Image.open(f) for f in files]; w, h = imgs[0].size if imgs else (100, 100); grid = Image.new('RGB', (cols * w, rows * h), 'white'); [grid.paste(imgs[i], ((i % cols) * w, (i // cols) * h)) for i in range(n)]; grid.save('collected/grid.png')"
+          echo "Grid image saved as $image"
       - name: Upload combined artifact
         uses: actions/upload-artifact@v4
         with:
