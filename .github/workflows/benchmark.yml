@@ -48,7 +48,8 @@ jobs:
         with:
           auto-update-conda: true
           python-version: ${{ matrix.python-version }}
-          channels: bioconda,conda-forge,nodefaults
+          channels: bioconda,conda-forge
+          conda-remove-defaults: true
           activate-environment: benchmarking
       - name: Conda info
         shell: bash -l {0}
@@ -79,7 +80,8 @@ jobs:
         with:
           auto-update-conda: true
           python-version: ${{ matrix.python-version }}
-          channels: bioconda,conda-forge,nodefaults
+          channels: bioconda,conda-forge
+          conda-remove-defaults: true
           activate-environment: benchmarking      
       - name: install hyperfine
         run:  |
