@@ -63,5 +63,10 @@ jobs:
           export PATH=$PATH:fasten/target/release
           which fasten_clean
           bash fasten/tests/10_benchmark.sh
+      - name: save benchmark results
+        uses: actions/upload-artifact@v3
+        with:
+          name: benchmark-results
+          path: fasten/tests/hyperfine
 
 
