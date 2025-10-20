@@ -16,6 +16,8 @@ jobs:
         run:  |
           wget https://github.com/sharkdp/hyperfine/releases/download/v1.13.0/hyperfine-v1.13.0-x86_64-unknown-linux-gnu.tar.gz
           tar zxvf hyperfine-v1.13.0-x86_64-unknown-linux-gnu.tar.gz
+          wget https://raw.githubusercontent.com/sharkdp/hyperfine/refs/tags/v1.19.0/scripts/plot_whisker.py -O hyperfine-v1.13.0-x86_64-unknown-linux-gnu/plot_whisker.py
+          chmod -v +x hyperfine-v1.13.0-x86_64-unknown-linux-gnu/plot_whisker.py
           echo
           ls -Fd hyperfine-v1.13.0-x86_64-unknown-linux-gnu/*
           echo hyperfine-v1.13.0-x86_64-unknown-linux-gnu >> $GITHUB_PATH
@@ -34,7 +36,7 @@ jobs:
         run:  |
           conda info
           conda env list
-          mamba install -n benchmarking seqkit seqtk
+          mamba install -n benchmarking seqkit seqtk matplotlib pyqt qtwayland
       - name: env
         shell: bash -l {0}
         run:  |
