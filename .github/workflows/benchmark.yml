@@ -5,7 +5,7 @@ name: benchmarking
 
 jobs:
   build_and_test:
-    name: Benchmark with ${{matrix.os}} and python ${{ matrix.python-version }}
+    name: Benchmark with python ${{ matrix.python-version }} and${{matrix.os}}
     runs-on: ${{matrix.os}}
     strategy:
       matrix:
@@ -70,7 +70,7 @@ jobs:
           which fasten_clean
           #bash fasten/tests/10_benchmark.sh
           echo "Running benchmarks:"
-          for i in fasten/tests/benchmark_*.sh; do echo "===$i==="; bash $i; done
+          for i in fasten/tests/benchmark_*.sh; do echo "===$i==="; bash -x $i; done
       - name: save benchmark results
         uses: actions/upload-artifact@v4
         with:
