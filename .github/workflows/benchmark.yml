@@ -4,14 +4,39 @@ on: push
 name: benchmarking
 
 jobs:
+  discover:
+    name: Discover benchmark scripts
+    runs-on: ubuntu-latest
+    outputs:
+      scripts: ${{ steps.set.outputs.scripts }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          path: fasten
+      - id: set
+        name: Find benchmark_*.sh files
+        run: |
+          shopt -s nullglob
+          mapfile -t files < <(cd fasten && ls tests/benchmark_*.sh)
+          # Build JSON array
+          json="["; sep=""
+          for f in "${files[@]}"; do
+            json+="$sep\"fasten/$f\""; sep=",";
+          done
+          json+="]"
+          echo "Found: $json"
+          echo "scripts=$json" >> $GITHUB_OUTPUT
+
   build_and_test:
-    name: Benchmark with python ${{ matrix.python-version }} and ${{matrix.os}}
-    runs-on: ${{matrix.os}}
+    name: Benchmark with python ${{ matrix.python-version }} and ${{ matrix.os }} — ${{ matrix.script }}
+    needs: discover
+    runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
         os: ["ubuntu-latest"]
         python-version: ["3.7", "3.10"]
-      fail-fast: false
+        script: ${{ fromJson(needs.discover.outputs.scripts) }}
     steps:
       - name: apt
         run:  |
@@ -61,20 +86,26 @@ jobs:
           cd fasten && cargo build --release
           tree -d
           echo "fasten/target/release" >> $GITHUB_PATH
-      - name: benchmark
+      - name: benchmark ${{ matrix.script }}
         shell: bash -l {0}
         env:
           QT_QPA_PLATFORM: offscreen
+          # Use Agg backend for matplotlib to enable headless plotting
+          MPLBACKEND: Agg
         run:  |
           export PATH=$PATH:fasten/target/release
           which fasten_clean
-          #bash fasten/tests/10_benchmark.sh
-          echo "Running benchmarks:"
-          for i in fasten/tests/benchmark_*.sh; do echo "===$i==="; bash $i; done
+          echo "Running benchmark: ${{ matrix.script }}"
+          bash ${{ matrix.script }}
+      - name: set artifact name
+        id: art
+        run: |
+          name=$(basename "${{ matrix.script }}" .sh)
+          echo "artifact=benchmark-results.${{ matrix.os }}.${{ matrix.python-version }}.$name" >> $GITHUB_OUTPUT
       - name: save benchmark results
         uses: actions/upload-artifact@v4
         with:
-          name: benchmark-results.${{ matrix.os }}.${{ matrix.python-version }}
+          name: ${{ steps.art.outputs.artifact }}
           path: fasten/tests/hyperfine
 
 
