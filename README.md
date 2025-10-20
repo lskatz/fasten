@@ -112,6 +112,11 @@ except `fasten_convert`.
 |[`fasten_progress`](https://lskatz.github.io/fasten/fasten_progress)  | Add progress to any place in the pipeline |
 |[`fasten_sort`](https://lskatz.github.io/fasten/fasten_sort)  | Sort fastq entries |
 
+## Benchmarking
+
+Executables are benchmarked under [GitHub Actions](https://github.com/lskatz/fasten/actions/workflows/benchmark.yml).
+A CI artifact is generated, and a composite image is available in the compressed file.
+
 ## Etymology
 
 Many of these scripts have inspiration from the fastx toolkit, and I wanted to make a `fasty` which was already the name of a bioinformatics program.
