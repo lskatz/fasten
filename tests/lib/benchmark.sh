@@ -8,10 +8,10 @@ set -u
 # but in the cloud, boost it to ten
 num_runs=100 
 # How many times to multiply the four reads file to make a large one
-multiplier=100
+multiplier=1000
 if [[ ! -z ${CI+x} ]]; then
-  num_runs=1000
-  multiplier=10000;
+  #num_runs=1000
+  #multiplier=10000;
 fi
 
 if [[ -z ${thisDir+x} ]]; then
