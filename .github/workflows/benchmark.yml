@@ -75,6 +75,12 @@ jobs:
       - name: apt
         run:  |
           sudo apt-get install -y qtwayland5 tree
+      - uses: conda-incubator/setup-miniconda@v3
+        with:
+          auto-update-conda: true
+          python-version: ${{ matrix.python-version }}
+          channels: bioconda,conda-forge,nodefaults
+          activate-environment: benchmarking      
       - name: install hyperfine
         run:  |
           wget https://github.com/sharkdp/hyperfine/releases/download/v1.13.0/hyperfine-v1.13.0-x86_64-unknown-linux-gnu.tar.gz
