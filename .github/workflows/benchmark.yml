@@ -1,5 +1,6 @@
 on: push
-
+env:
+  CACHE_NUMBER: 1
 
 name: benchmarking
 
@@ -27,9 +28,40 @@ jobs:
           echo "Found: $json"
           echo "scripts=$json" >> $GITHUB_OUTPUT
 
+  build_and_cache_conda:
+    name: Set up conda for benchmarking
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ["ubuntu-latest"]
+        python-version: ["3.10"]
+    steps:
+      - name: Cache conda
+        uses: actions/cache@v4
+        with:
+          path: ~/conda_pkgs_dir
+          key:
+            ${{ runner.os }}-conda-${{ matrix.python-version }}-${{ env.CACHE_NUMBER }}
+      - uses: conda-incubator/setup-miniconda@v3
+        with:
+          auto-update-conda: true
+          python-version: ${{ matrix.python-version }}
+          channels: bioconda,conda-forge,nodefaults
+          activate-environment: benchmarking
+      - name: Conda info
+        shell: bash -l {0}
+        run: conda info
+      - name: create conda env
+        shell: bash -l {0}
+        run:  |
+          conda info
+          conda env list
+          conda install -n benchmarking seqkit seqtk matplotlib pyqt qtwayland bbmap seqfu fastx_toolkit kmer-jellyfish
+
   build_and_test:
     name: Benchmark with python ${{ matrix.python-version }} and ${{ matrix.os }} — ${{ matrix.script }}
-    needs: discover
+    needs: [discover, build_and_cache_conda]
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -50,29 +82,13 @@ jobs:
           echo
           ls -Fd hyperfine-v1.13.0-x86_64-unknown-linux-gnu/*
           echo hyperfine-v1.13.0-x86_64-unknown-linux-gnu >> $GITHUB_PATH
-      - name: Cache conda
-        uses: actions/cache@v4
-        env:
-          CACHE_NUMBER: 0
+      - name: get conda from cache
+        uses: actions/cache/restore@v4
+        id: restore-conda
         with:
-          path: ~/conda_pkgs_dir
           key:
-            ${{ runner.os }}-conda-${{ env.python-version }}-${{ env.CACHE_NUMBER }}
-      - uses: conda-incubator/setup-miniconda@v3
-        with:
-          auto-update-conda: true
-          python-version: ${{ matrix.python-version }}
-          channels: bioconda,conda-forge,nodefaults
-          activate-environment: benchmarking
-      - name: Conda info
-        shell: bash -l {0}
-        run: conda info
-      - name: create conda env
-        shell: bash -l {0}
-        run:  |
-          conda info
-          conda env list
-          conda install -n benchmarking seqkit seqtk matplotlib pyqt qtwayland bbmap seqfu fastx_toolkit kmer-jellyfish
+            ${{ runner.os }}-conda-${{ matrix.python-version }}-${{ env.CACHE_NUMBER }}
+
       - name: env
         shell: bash -l {0}
         run:  |
