@@ -55,7 +55,7 @@ jobs:
         shell: bash -l {0}
         run: conda info
       - name: create conda env
-        shell: bash -l {0}
+        shell: bash -el {0}
         if: steps.cache-conda.outputs.cache-hit != 'true'
         run:  |
           conda info
@@ -120,7 +120,7 @@ jobs:
           tree -d
           echo "fasten/target/release" >> $GITHUB_PATH
       - name: benchmark ${{ matrix.script }}
-        shell: bash -l {0}
+        shell: bash -el {0}
         env:
           QT_QPA_PLATFORM: offscreen
           # Use Agg backend for matplotlib to enable headless plotting
