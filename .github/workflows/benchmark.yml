@@ -1,6 +1,4 @@
-on: 
-  push:
-    branches: [*]
+on: push
 
 
 name: benchmarking
