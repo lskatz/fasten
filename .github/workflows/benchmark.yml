@@ -96,16 +96,16 @@ jobs:
           which fasten_clean
           echo "Running benchmark: ${{ matrix.script }}"
           bash ${{ matrix.script }}
-      #- name: set artifact name
-      #  id: art
-      #  run: |
-      #    name=$(basename "${{ matrix.script }}" .sh)
-      #    echo "artifact=benchmark-results.${{ matrix.os }}.${{ matrix.python-version }}.$name" >> $GITHUB_OUTPUT
-      #- name: save benchmark results
-      #  uses: actions/upload-artifact@v4
-      #  with:
-      #    name: ${{ steps.art.outputs.artifact }}
-      #    path: fasten/tests/hyperfine
+      - name: set artifact name
+        id: art
+        run: |
+          name=$(basename "${{ matrix.script }}" .sh)
+          echo "artifact=benchmark-results.${{ matrix.os }}.${{ matrix.python-version }}.$name" >> $GITHUB_OUTPUT
+      - name: save benchmark results
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.art.outputs.artifact }}
+          path: fasten/tests/hyperfine
 
   aggregate:
     name: Aggregate artifacts for ${{ matrix.os }} ${{ matrix.python-version }}
@@ -117,17 +117,12 @@ jobs:
         os: ["ubuntu-latest"]
         python-version: ["3.10"]
     steps:
-      - name: copy all PNGs to collected/
-        run: |
-          mkdir -p collected
-          cp -nv fasten/tests/hyperfine/*.png collected/
-          cp -nv fasten/tests/hyperfine/*.json collected/
-      #- name: Download artifacts for this combo
-      #  uses: actions/download-artifact@v4
-      #  with:
-      #    pattern: benchmark-results.${{ matrix.os }}.${{ matrix.python-version }}.*
-      #    path: collected
-      #    if-no-artifact-found: warn
+      - name: Download artifacts for this combo
+        uses: actions/download-artifact@v4
+        with:
+          pattern: benchmark-results.${{ matrix.os }}.${{ matrix.python-version }}.*
+          path: collected
+          if-no-artifact-found: warn
       - name: List collected files
         run: |
           echo "Collected artifacts under ./collected:"
