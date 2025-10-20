@@ -52,12 +52,12 @@ jobs:
           echo hyperfine-v1.13.0-x86_64-unknown-linux-gnu >> $GITHUB_PATH
       - name: Cache conda
         uses: actions/cache@v4
-          env:
-            CACHE_NUMBER: 0
-          with:
-            path: ~/conda_pkgs_dir
-            key:
-              ${{ runner.os }}-conda-${{ env.python-version }}-${{ env.CACHE_NUMBER }}
+        env:
+          CACHE_NUMBER: 0
+        with:
+          path: ~/conda_pkgs_dir
+          key:
+            ${{ runner.os }}-conda-${{ env.python-version }}-${{ env.CACHE_NUMBER }}
       - uses: conda-incubator/setup-miniconda@v3
         with:
           auto-update-conda: true
