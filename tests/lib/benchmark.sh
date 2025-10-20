@@ -12,6 +12,7 @@ multiplier=1000
 if [[ ! -z ${CI+x} ]]; then
   #num_runs=1000
   #multiplier=10000;
+  echo "! -z CI"
 fi
 
 if [[ -z ${thisDir+x} ]]; then
