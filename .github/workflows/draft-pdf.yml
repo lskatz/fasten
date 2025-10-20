@@ -1,5 +1,6 @@
 on: 
-  master: [push]
+  push:
+    branches: [master]
 name: paper formatting
 
 jobs:
