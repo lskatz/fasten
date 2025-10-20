@@ -76,6 +76,6 @@ jobs:
         with:
           name: benchmark-results
           path: fasten/tests/hyperfine
-          filename: benchmark-results.${{ matrix.os }}.${{ matrix.python-version }}.tar.gz
+          name: benchmark-results.${{ matrix.os }}.${{ matrix.python-version }}.tar.gz
 
 
