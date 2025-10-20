@@ -96,16 +96,16 @@ jobs:
           which fasten_clean
           echo "Running benchmark: ${{ matrix.script }}"
           bash ${{ matrix.script }}
-      - name: set artifact name
-        id: art
-        run: |
-          name=$(basename "${{ matrix.script }}" .sh)
-          echo "artifact=benchmark-results.${{ matrix.os }}.${{ matrix.python-version }}.$name" >> $GITHUB_OUTPUT
-      - name: save benchmark results
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ steps.art.outputs.artifact }}
-          path: fasten/tests/hyperfine
+      #- name: set artifact name
+      #  id: art
+      #  run: |
+      #    name=$(basename "${{ matrix.script }}" .sh)
+      #    echo "artifact=benchmark-results.${{ matrix.os }}.${{ matrix.python-version }}.$name" >> $GITHUB_OUTPUT
+      #- name: save benchmark results
+      #  uses: actions/upload-artifact@v4
+      #  with:
+      #    name: ${{ steps.art.outputs.artifact }}
+      #    path: fasten/tests/hyperfine
 
   aggregate:
     name: Aggregate artifacts for ${{ matrix.os }} ${{ matrix.python-version }}
