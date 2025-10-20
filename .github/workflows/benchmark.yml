@@ -10,8 +10,12 @@ jobs:
     strategy:
       matrix:
         os: ["ubuntu-latest"]
-        python-version: ["3.7"]
+        python-version: ["3.10"]
+        fail-fast: false
     steps:
+      - name: apt
+        run:  |
+          sudo apt-get install -y qtwayland5 tree
       - name: install hyperfine
         run:  |
           wget https://github.com/sharkdp/hyperfine/releases/download/v1.13.0/hyperfine-v1.13.0-x86_64-unknown-linux-gnu.tar.gz
@@ -59,10 +63,14 @@ jobs:
           echo "fasten/target/release" >> $GITHUB_PATH
       - name: benchmark
         shell: bash -l {0}
+        env:
+          QT_QPA_PLATFORM: offscreen
         run:  |
           export PATH=$PATH:fasten/target/release
           which fasten_clean
-          bash fasten/tests/10_benchmark.sh
+          #bash fasten/tests/10_benchmark.sh
+          echo "Running benchmarks:"
+          for i in fasten/tests/benchmark_*.sh; do echo "===$i==="; bash $i; done
       - name: save benchmark results
         uses: actions/upload-artifact@v4
         with:
