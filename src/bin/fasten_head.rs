@@ -9,7 +9,6 @@
 //! ```
 //!
 //! Example 2: Get the first 100 bases
-//! Note: the last read will not be truncated and so you may have more than 100 bases
 //! 
 //! ```bash
 //! fasten_head -b 100 < in.fq > out.fq
@@ -46,7 +45,7 @@ fn main(){
     let mut opts = fasten_base_options();
 
     opts.optopt("r","reads","Number of reads or pairs of reads to keep, default: 10","INT");
-    opts.optopt("b","bases","Number of bases to keep, default: 0 (zero for no limit). If bases are reached in the middle of a read, the complete read will still be printed.","INT");
+    opts.optopt("b","bases","Number of bases to keep, default: 0 (zero for no limit).","INT");
 
     let matches = fasten_base_options_matches("Keep first N reads or bases", opts);
 
@@ -93,32 +92,33 @@ fn main(){
         entry.push_str(&line);
         entry.push_str("\n");
 
-        // keep track of number of bases if needed
-        if line_counter % lines_per_read == 2 {
-            // we are in the sequence line
-            bases_counter+=line.len();
-        }
+        let mod_line = line_counter % lines_per_read;
 
-        // Action if we have a full entry when mod 0
-        if line_counter % lines_per_read == 0 {
-            // keep track of how many reads or pairs of reads
-            reads_counter+=1;
+        match mod_line {
+            2 => {
+                bases_counter += line.len();
+            },
+            0 => {
+                // keep track of how many reads or pairs of reads
+                reads_counter+=1;
 
-            // check if we have reached any maximum
-            if max_bases > 0 && bases_counter >= max_bases {
-                // we have reached the maximum number of bases
-                break;
+                // check if we have reached any maximum
+                if max_bases > 0 && bases_counter > max_bases {
+                    // we have reached the maximum number of bases
+                    break;
+                }
+                if reads_counter > max_reads {
+                    // we have reached the maximum number of reads
+                    break;
+                }
+
+                // print the entry
+                print!("{}",entry);
+                // reset the entry string
+                entry = String::new();
+            },
+            _ => {
             }
-            if reads_counter > max_reads {
-                // we have reached the maximum number of reads
-                break;
-            }
-
-            // print the entry
-            print!("{}",entry);
-
-            // reset the entry string
-            entry = String::new();
         }
     }
 }
