@@ -76,14 +76,28 @@ jobs:
       - name: apt
         run:  |
           sudo apt-get install -y qtwayland5 tree
-      #- uses: conda-incubator/setup-miniconda@v3
-      #  with:
-      #    auto-update-conda: true
-      #    python-version: ${{ matrix.python-version }}
-      #    channels: bioconda,conda-forge
-      #    conda-remove-defaults: true
-      #    activate-environment: benchmarking 
-      #    use-only-tar-bz2: true # IMPORTANT: This needs to be set for caching to work properly!     
+      - name: Cache conda
+        uses: actions/cache@v4
+        id: cache-conda2
+        with:
+          path: ~/conda_pkgs_dir
+          key:
+            ${{ runner.os }}-conda-${{ matrix.python-version }}-${{ env.CACHE_NUMBER }}
+      - uses: conda-incubator/setup-miniconda@v3
+        with:
+          auto-update-conda: true
+          python-version: ${{ matrix.python-version }}
+          channels: bioconda,conda-forge
+          conda-remove-defaults: true
+          activate-environment: benchmarking 
+          use-only-tar-bz2: true # IMPORTANT: This needs to be set for caching to work properly!
+      - name: Install conda packages
+        if: steps.cache-conda2.outputs.cache-hit != 'true'
+        shell: bash -el {0}
+        run:  |
+          conda info
+          conda env list
+          conda install -n benchmarking seqkit seqtk matplotlib pyqt qtwayland bbmap seqfu fastx_toolkit kmer-jellyfish
       - name: install hyperfine
         run:  |
           wget https://github.com/sharkdp/hyperfine/releases/download/v1.13.0/hyperfine-v1.13.0-x86_64-unknown-linux-gnu.tar.gz
@@ -93,16 +107,8 @@ jobs:
           echo
           ls -Fd hyperfine-v1.13.0-x86_64-unknown-linux-gnu/*
           echo hyperfine-v1.13.0-x86_64-unknown-linux-gnu >> $GITHUB_PATH
-      - name: recover conda cache
-        uses: actions/cache/restore@v4
-        id: restore-conda
-        with:
-          path: ~/conda_pkgs_dir
-          key:
-            ${{ runner.os }}-conda-${{ matrix.python-version }}-${{ env.CACHE_NUMBER }}
-
       - name: env
-        shell: bash -l {0}
+        shell: bash -el {0}
         run:  |
           which seqkit
           tree -d
