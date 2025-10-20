@@ -40,7 +40,7 @@ jobs:
         run:  |
           conda info
           conda env list
-          mamba install -n benchmarking seqkit seqtk matplotlib pyqt qtwayland bbmap seqfu
+          mamba install -n benchmarking seqkit seqtk matplotlib pyqt qtwayland bbmap seqfu fastx_toolkit
       - name: env
         shell: bash -l {0}
         run:  |
