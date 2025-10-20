@@ -41,7 +41,6 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/conda_pkgs_dir
-          id: cache-conda
           key:
             ${{ runner.os }}-conda-${{ matrix.python-version }}-${{ env.CACHE_NUMBER }}
       - uses: conda-incubator/setup-miniconda@v3
@@ -51,6 +50,7 @@ jobs:
           channels: bioconda,conda-forge
           conda-remove-defaults: true
           activate-environment: benchmarking
+          use-only-tar-bz2: true # IMPORTANT: This needs to be set for caching to work properly!
       - name: Conda info
         shell: bash -l {0}
         run: conda info
@@ -76,13 +76,14 @@ jobs:
       - name: apt
         run:  |
           sudo apt-get install -y qtwayland5 tree
-      - uses: conda-incubator/setup-miniconda@v3
-        with:
-          auto-update-conda: true
-          python-version: ${{ matrix.python-version }}
-          channels: bioconda,conda-forge
-          conda-remove-defaults: true
-          activate-environment: benchmarking      
+      #- uses: conda-incubator/setup-miniconda@v3
+      #  with:
+      #    auto-update-conda: true
+      #    python-version: ${{ matrix.python-version }}
+      #    channels: bioconda,conda-forge
+      #    conda-remove-defaults: true
+      #    activate-environment: benchmarking 
+      #    use-only-tar-bz2: true # IMPORTANT: This needs to be set for caching to work properly!     
       - name: install hyperfine
         run:  |
           wget https://github.com/sharkdp/hyperfine/releases/download/v1.13.0/hyperfine-v1.13.0-x86_64-unknown-linux-gnu.tar.gz
