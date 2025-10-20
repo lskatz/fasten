@@ -5,7 +5,7 @@ name: benchmarking
 
 jobs:
   build_and_test:
-    name: Benchmark with python ${{ matrix.python-version }} and${{matrix.os}}
+    name: Benchmark with python ${{ matrix.python-version }} and ${{matrix.os}}
     runs-on: ${{matrix.os}}
     strategy:
       matrix:
