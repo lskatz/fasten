@@ -82,9 +82,10 @@ jobs:
           echo
           ls -Fd hyperfine-v1.13.0-x86_64-unknown-linux-gnu/*
           echo hyperfine-v1.13.0-x86_64-unknown-linux-gnu >> $GITHUB_PATH
-      - name: get conda from cache
+      - name: recover conda cache
         uses: actions/cache/restore@v4
         id: restore-conda
+        path: ~/conda_pkgs_dir
         with:
           key:
             ${{ runner.os }}-conda-${{ matrix.python-version }}-${{ env.CACHE_NUMBER }}
