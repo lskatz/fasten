@@ -1,4 +1,5 @@
-on: [push]
+on: 
+  master: [push]
 name: paper formatting
 
 jobs:
