@@ -6,7 +6,7 @@ set -u
 # Hyperfine parameters
 # Locally, just run a handful of times per test
 # but in the cloud, boost it to ten
-num_runs=100 
+num_runs=1000 
 # How many times to multiply the four reads file to make a large one
 multiplier=10
 if [[ ! -z ${CI+x} ]]; then
