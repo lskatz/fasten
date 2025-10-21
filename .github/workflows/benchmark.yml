@@ -1,67 +1,184 @@
-on: 
-  push:
-    branches: [master,benchmarking,fasten_normalize]
-
+on: push
+env:
+  CACHE_NUMBER: 1
 
 name: benchmarking
 
 jobs:
-  build_and_test:
-    name: Benchmark with ${{matrix.os}} and python ${{ matrix.python-version }}
-    runs-on: ${{matrix.os}}
+  discover:
+    name: Discover benchmark scripts
+    runs-on: ubuntu-latest
+    outputs:
+      scripts: ${{ steps.set.outputs.scripts }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          path: fasten
+      - id: set
+        name: Find benchmark_*.sh files
+        run: |
+          shopt -s nullglob
+          mapfile -t files < <(cd fasten && ls tests/benchmark_*.sh)
+          # Build JSON array
+          json="["; sep=""
+          for f in "${files[@]}"; do
+            json+="$sep\"fasten/$f\""; sep=",";
+          done
+          json+="]"
+          echo "Found: $json"
+          echo "scripts=$json" >> $GITHUB_OUTPUT
+
+  build_and_cache_conda:
+    name: Set up conda for benchmarking - ${{ matrix.python-version }} on ${{ matrix.os }}
+    runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         os: ["ubuntu-latest"]
-        python-version: ["3.7"]
+        python-version: ["3.10"]
     steps:
-      - name: install hyperfine
-        run:  |
-          wget https://github.com/sharkdp/hyperfine/releases/download/v1.13.0/hyperfine-v1.13.0-x86_64-unknown-linux-gnu.tar.gz
-          tar zxvf hyperfine-v1.13.0-x86_64-unknown-linux-gnu.tar.gz
-          echo
-          ls -Fd hyperfine-v1.13.0-x86_64-unknown-linux-gnu/*
-          echo hyperfine-v1.13.0-x86_64-unknown-linux-gnu >> $GITHUB_PATH
-      - uses: conda-incubator/setup-miniconda@v2
+      - name: Cache conda
+        uses: actions/cache@v4
+        with:
+          path: ~/conda_pkgs_dir
+          key:
+            ${{ runner.os }}-conda-${{ matrix.python-version }}-${{ env.CACHE_NUMBER }}
+      - uses: conda-incubator/setup-miniconda@v3
         with:
           auto-update-conda: true
           python-version: ${{ matrix.python-version }}
-          mamba-version: "*"
-          channels: bioconda,conda-forge,defaults
+          channels: bioconda,conda-forge
+          conda-remove-defaults: true
           activate-environment: benchmarking
+          use-only-tar-bz2: true # IMPORTANT: This needs to be set for caching to work properly!
       - name: Conda info
         shell: bash -l {0}
         run: conda info
       - name: create conda env
-        shell: bash -l {0}
+        shell: bash -el {0}
+        if: steps.cache-conda.outputs.cache-hit != 'true'
         run:  |
           conda info
           conda env list
-          mamba install -n benchmarking seqkit seqtk
+          conda install -n benchmarking seqkit seqtk matplotlib pyqt qtwayland bbmap seqfu fastx_toolkit kmer-jellyfish
+
+  build_and_test:
+    name: Benchmark with python ${{ matrix.python-version }} and ${{ matrix.os }} — ${{ matrix.script }}
+    needs: [discover, build_and_cache_conda]
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ["ubuntu-latest"]
+        python-version: ["3.10"]
+        script: ${{ fromJson(needs.discover.outputs.scripts) }}
+    steps:
+      - name: apt
+        run:  |
+          sudo apt-get install -y qtwayland5 tree
+      - name: Cache conda
+        uses: actions/cache@v4
+        id: cache-conda2
+        with:
+          path: ~/conda_pkgs_dir
+          key:
+            ${{ runner.os }}-conda-${{ matrix.python-version }}-${{ env.CACHE_NUMBER }}
+      - uses: conda-incubator/setup-miniconda@v3
+        with:
+          auto-update-conda: true
+          python-version: ${{ matrix.python-version }}
+          channels: bioconda,conda-forge
+          conda-remove-defaults: true
+          activate-environment: benchmarking 
+          use-only-tar-bz2: true # IMPORTANT: This needs to be set for caching to work properly!
+      - name: Install conda packages
+        #if: steps.cache-conda2.outputs.cache-hit != 'true'
+        shell: bash -el {0}
+        run:  |
+          conda info
+          conda env list
+          conda install -n benchmarking seqkit seqtk matplotlib pyqt qtwayland bbmap seqfu fastx_toolkit kmer-jellyfish
+      - name: install hyperfine
+        run:  |
+          wget https://github.com/sharkdp/hyperfine/releases/download/v1.13.0/hyperfine-v1.13.0-x86_64-unknown-linux-gnu.tar.gz
+          tar zxvf hyperfine-v1.13.0-x86_64-unknown-linux-gnu.tar.gz
+          wget https://raw.githubusercontent.com/sharkdp/hyperfine/refs/tags/v1.19.0/scripts/plot_whisker.py -O hyperfine-v1.13.0-x86_64-unknown-linux-gnu/plot_whisker.py
+          chmod -v +x hyperfine-v1.13.0-x86_64-unknown-linux-gnu/plot_whisker.py
+          echo
+          ls -Fd hyperfine-v1.13.0-x86_64-unknown-linux-gnu/*
+          echo hyperfine-v1.13.0-x86_64-unknown-linux-gnu >> $GITHUB_PATH
       - name: env
-        shell: bash -l {0}
+        shell: bash -el {0}
         run:  |
           which seqkit
           tree -d
       - uses: actions/checkout@v3
         with:
           path: fasten
-      - uses: actions-rs/toolchain@v1
+      #- uses: actions-rs/toolchain@v1
+      #  with:
+      #    toolchain: stable
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
         with:
           toolchain: stable
-      #- uses: actions-rs/cargo@v1
-      #  with:
-      #    command: build
-      #    args: --release --all-features
       - name: cargo build
         run: |
           cd fasten && cargo build --release
           tree -d
           echo "fasten/target/release" >> $GITHUB_PATH
-      - name: benchmark
-        shell: bash -l {0}
+      - name: benchmark ${{ matrix.script }}
+        shell: bash -el {0}
+        env:
+          QT_QPA_PLATFORM: offscreen
+          # Use Agg backend for matplotlib to enable headless plotting
+          MPLBACKEND: Agg
         run:  |
           export PATH=$PATH:fasten/target/release
           which fasten_clean
-          bash fasten/tests/10_benchmark.sh
+          echo "Running benchmark: ${{ matrix.script }}"
+          bash ${{ matrix.script }}
+      - name: set artifact name
+        id: art
+        run: |
+          name=$(basename "${{ matrix.script }}" .sh)
+          echo "artifact=benchmark-results.${{ matrix.os }}.${{ matrix.python-version }}.$name" >> $GITHUB_OUTPUT
+      - name: save benchmark results
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.art.outputs.artifact }}
+          path: fasten/tests/hyperfine
+
+  aggregate:
+    name: Aggregate artifacts for ${{ matrix.os }} ${{ matrix.python-version }}
+    needs: build_and_test
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ["ubuntu-latest"]
+        python-version: ["3.10"]
+    steps:
+      - name: Download artifacts for this combo
+        uses: actions/download-artifact@v4
+        with:
+          pattern: benchmark-results.${{ matrix.os }}.${{ matrix.python-version }}.*
+          path: collected
+          #if-no-artifact-found: warn
+      - name: List collected files
+        run: |
+          echo "Collected artifacts under ./collected:"
+          ls -R collected || true
+      - name: Make grid of PNGs
+        env:
+          image: collected/grid.png
+        run: |
+          pip install pillow
+          python3 -c "import os; from PIL import Image; import math; files = [os.path.join(dp, f) for dp, dn, fn in os.walk('collected') for f in fn if f.endswith('.png')]; n = len(files); cols = min(4, n); rows = math.ceil(n / cols); imgs = [Image.open(f) for f in files]; w, h = imgs[0].size if imgs else (100, 100); grid = Image.new('RGB', (cols * w, rows * h), 'white'); [grid.paste(imgs[i], ((i % cols) * w, (i // cols) * h)) for i in range(n)]; grid.save('collected/grid.png')"
+          echo "Grid image saved as $image"
+      - name: Upload combined artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: benchmark-results.${{ matrix.os }}.${{ matrix.python-version }}.ALL
+          path: collected
 
 

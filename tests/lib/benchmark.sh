@@ -6,12 +6,13 @@ set -u
 # Hyperfine parameters
 # Locally, just run a handful of times per test
 # but in the cloud, boost it to ten
-num_runs=100 
+num_runs=1000 
 # How many times to multiply the four reads file to make a large one
-multiplier=1000
+multiplier=10
 if [[ ! -z ${CI+x} ]]; then
-  num_runs=1000
-  multiplier=10000;
+  #num_runs=1000
+  #multiplier=10000;
+  echo "! -z CI"
 fi
 
 if [[ -z ${thisDir+x} ]]; then
@@ -32,22 +33,26 @@ large_R2="$thisDir/../testdata/R2.large.fastq"
 large_interleaved="$thisDir/../testdata/shuffled.large.fastq.gz"
 large_sorted="$thisDir/../testdata/shuffled.sorted.fastq.gz"
 
-R1_content=`cat $R1`;
-R2_content=`cat $R2`;
-for i in `seq 1 $multiplier`; do 
-  echo "$R1_content"
-done | seqkit rename > $large_R1
-for i in `seq 1 $multiplier`; do 
-  echo "$R2_content"
-done | seqkit rename > $large_R2
+if [[ ! -s $large_R1 || ! -s $large_R2 ]]; then
+  R1_content=`cat $R1`;
+  R2_content=`cat $R2`;
+  for i in `seq 1 $multiplier`; do 
+    echo "$R1_content"
+  done | seqkit rename > $large_R1
+  for i in `seq 1 $multiplier`; do 
+    echo "$R2_content"
+  done | seqkit rename > $large_R2
+fi
 
-# Save this file even though it's not used in the first benchmark
-cat $R1 $R2 | fasten_shuffle | gzip -c9 > $large_interleaved
-#ls -lhS $large_interleaved $R1 $R2
+if [[ ! -s $large_interleaved ]]; then
+  # Create large interleaved file if not present
+  cat $large_R1 $large_R2 | fasten_shuffle | gzip -c9 > $large_interleaved
+fi
 
-# Fasten sort file size
-zcat $large_interleaved | fasten_sort --sort-by GC --paired-end | gzip -c > $large_sorted
-#ls -lh $large_interleaved $large_sorted
+if [[ ! -s $large_sorted ]]; then
+  # Create large sorted file if not present
+  zcat $large_interleaved | fasten_sort --sort-by GC --paired-end | gzip -c > $large_sorted
+fi
 
 which bbnorm.sh
 which fasten_clean

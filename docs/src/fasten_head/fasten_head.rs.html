@@ -135,7 +135,6 @@
 //! ```
 //!
 //! Example 2: Get the first 100 bases
-//! Note: the last read will not be truncated and so you may have more than 100 bases
 //! 
 //! ```bash
 //! fasten_head -b 100 &lt; in.fq &gt; out.fq
@@ -172,7 +171,7 @@
     <span class="kw">let </span><span class="kw-2">mut </span>opts = fasten_base_options();
 
     opts.optopt(<span class="string">"r"</span>,<span class="string">"reads"</span>,<span class="string">"Number of reads or pairs of reads to keep, default: 10"</span>,<span class="string">"INT"</span>);
-    opts.optopt(<span class="string">"b"</span>,<span class="string">"bases"</span>,<span class="string">"Number of bases to keep, default: 0 (zero for no limit). If bases are reached in the middle of a read, the complete read will still be printed."</span>,<span class="string">"INT"</span>);
+    opts.optopt(<span class="string">"b"</span>,<span class="string">"bases"</span>,<span class="string">"Number of bases to keep, default: 0 (zero for no limit)."</span>,<span class="string">"INT"</span>);
 
     <span class="kw">let </span>matches = fasten_base_options_matches(<span class="string">"Keep first N reads or bases"</span>, opts);
 
@@ -219,32 +218,33 @@
         entry.push_str(<span class="kw-2">&amp;</span>line);
         entry.push_str(<span class="string">"\n"</span>);
 
-        <span class="comment">// keep track of number of bases if needed
-        </span><span class="kw">if </span>line_counter % lines_per_read == <span class="number">2 </span>{
-            <span class="comment">// we are in the sequence line
-            </span>bases_counter+=line.len();
-        }
+        <span class="kw">let </span>mod_line = line_counter % lines_per_read;
 
-        <span class="comment">// Action if we have a full entry when mod 0
-        </span><span class="kw">if </span>line_counter % lines_per_read == <span class="number">0 </span>{
-            <span class="comment">// keep track of how many reads or pairs of reads
-            </span>reads_counter+=<span class="number">1</span>;
+        <span class="kw">match </span>mod_line {
+            <span class="number">2 </span>=&gt; {
+                bases_counter += line.len();
+            },
+            <span class="number">0 </span>=&gt; {
+                <span class="comment">// keep track of how many reads or pairs of reads
+                </span>reads_counter+=<span class="number">1</span>;
 
-            <span class="comment">// check if we have reached any maximum
-            </span><span class="kw">if </span>max_bases &gt; <span class="number">0 </span>&amp;&amp; bases_counter &gt;= max_bases {
-                <span class="comment">// we have reached the maximum number of bases
-                </span><span class="kw">break</span>;
+                <span class="comment">// check if we have reached any maximum
+                </span><span class="kw">if </span>max_bases &gt; <span class="number">0 </span>&amp;&amp; bases_counter &gt; max_bases {
+                    <span class="comment">// we have reached the maximum number of bases
+                    </span><span class="kw">break</span>;
+                }
+                <span class="kw">if </span>reads_counter &gt; max_reads {
+                    <span class="comment">// we have reached the maximum number of reads
+                    </span><span class="kw">break</span>;
+                }
+
+                <span class="comment">// print the entry
+                </span><span class="macro">print!</span>(<span class="string">"{}"</span>,entry);
+                <span class="comment">// reset the entry string
+                </span>entry = String::new();
+            },
+            <span class="kw">_ </span>=&gt; {
             }
-            <span class="kw">if </span>reads_counter &gt; max_reads {
-                <span class="comment">// we have reached the maximum number of reads
-                </span><span class="kw">break</span>;
-            }
-
-            <span class="comment">// print the entry
-            </span><span class="macro">print!</span>(<span class="string">"{}"</span>,entry);
-
-            <span class="comment">// reset the entry string
-            </span>entry = String::new();
         }
     }
 }
