@@ -163,7 +163,7 @@ jobs:
         with:
           pattern: benchmark-results.${{ matrix.os }}.${{ matrix.python-version }}.*
           path: collected
-          if-no-artifact-found: warn
+          #if-no-artifact-found: warn
       - name: List collected files
         run: |
           echo "Collected artifacts under ./collected:"
