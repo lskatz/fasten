@@ -106,7 +106,7 @@ fn main(){
                 // TODO this if statement makes the program take twice as long. Optimize?
                 if each_read {
                     let my_avg_qual = avg_qual(&my_qual_vec, 33);
-                    println!("{}",my_avg_qual);
+                    println!("{:.2}",my_avg_qual);
                 }
                 read_qual.extend(my_qual_vec.into_iter());
 

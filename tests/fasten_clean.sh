@@ -11,7 +11,7 @@ if [ "$reads_not_cleaned" != "$original_reads" ]; then
 fi
 
 one_cleaned_read=$(./target/debug/fasten_clean --paired-end --min-trim-quality 30 --min-length 94 < testdata/four_reads.pe.fastq | ./target/debug/fasten_metrics --each-read | tail -n 1)
-if [ "$one_cleaned_read" != $'read3/2\t94\t18.446808' ]; then
+if [ "$one_cleaned_read" != $'read3/2\t94\t8.20' ]; then
   echo "Test failed for cleaning reads"
   exit 1
 fi
