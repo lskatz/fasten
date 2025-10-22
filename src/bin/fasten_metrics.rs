@@ -67,11 +67,51 @@ fn main(){
     
     // Header
     if each_read {
-        println!("readID\treadLength\tavgQual");
+        each_read_metrics(&filename);
     } else {
-        println!("{}",vec!["totalLength", "numReads", "avgReadLength","avgQual"].join("\t"));
-
+        summary_metrics(&filename);
     }
+}
+
+fn each_read_metrics(filename: &str) {
+    println!("readID\treadLength\tavgQual");
+    
+    let mut num_lines   :u64      = 0;
+
+    // read the file
+    let my_file = File::open(&filename).expect("Could not open file");
+    let my_buffer=BufReader::new(my_file);
+    for line in my_buffer.lines() {
+        num_lines+=1;
+        let mod_line = num_lines % 4;
+
+        match mod_line {
+            1 => {
+                let id = line.expect("Expected an ID line");
+                // remove the @
+                print!("{}\t",&id[1..]);
+            }
+            2 => {
+                let my_read_length=line.expect("Expected a sequence line").len() as f64;
+                print!("{}\t",my_read_length);
+            }
+            0 => {
+                let qual_line=line.expect("Expected a qual line");
+                
+                let my_qual_vec: Vec<u8> = qual_line.into_bytes();
+                let my_avg_qual = avg_qual(&my_qual_vec, 33);
+                println!("{:.2}",my_avg_qual);
+            }
+            _ => {
+
+            }
+        };
+    }
+
+}
+
+fn summary_metrics(filename: &str) {
+    println!("totalReadLength\tnumReads\tavgReadLength\tavgQual");
     
     let mut read_length :Vec<f64> = vec![];
     let mut read_qual   :Vec<u8>  = vec![];
@@ -85,31 +125,15 @@ fn main(){
         let mod_line = num_lines % 4;
 
         match mod_line {
-            1 => {
-                if each_read {
-                    let id = line.expect("Expected an ID line");
-                    // remove the @
-                    print!("{}\t",&id[1..]);
-                }
-            }
             2 => {
                 let my_read_length=line.expect("Expected a sequence line").len() as f64;
-                if each_read {
-                    print!("{}\t",my_read_length);
-                }
                 read_length.push(my_read_length);
             }
             0 => {
                 let qual_line=line.expect("Expected a qual line");
                 
                 let my_qual_vec: Vec<u8> = qual_line.into_bytes();
-                // TODO this if statement makes the program take twice as long. Optimize?
-                if each_read {
-                    let my_avg_qual = avg_qual(&my_qual_vec, 33);
-                    println!("{:.2}",my_avg_qual);
-                }
                 read_qual.extend(my_qual_vec.into_iter());
-
             }
             _ => {
 
@@ -121,7 +145,6 @@ fn main(){
 
     let mut summary_metrics=vec![total_length.to_string(),num_reads.to_string()];
 
-    // add statistics if requested
     let total_length_str = (total_length as f64/num_reads as f64).to_string();
     let total_qual_str = format!("{:.2}", avg_qual(&read_qual, 33));
 
@@ -129,10 +152,7 @@ fn main(){
     summary_metrics.push(total_qual_str.to_string());
 
     // summary metrics
-    if !each_read {
-        println!("{}", summary_metrics.join("\t"));
-    }
-
+    println!("{}", summary_metrics.join("\t"));
 }
 
 /// Calculates average quality value from a vector of quality bytes

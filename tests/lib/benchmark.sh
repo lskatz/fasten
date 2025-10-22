@@ -54,7 +54,9 @@ fi
 if [[ ! -s $largest ]]; then
   # Create largest sorted file if not present
   for i in `seq 1 $multiplier`; do
-    cat $large_sorted
+    for j in `seq 1 $multiplier`; do
+      cat $large_sorted
+    done
   done > $largest
 fi
 
