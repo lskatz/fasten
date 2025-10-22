@@ -9,11 +9,6 @@ set -u
 num_runs=1000 
 # How many times to multiply the four reads file to make a large one
 multiplier=10
-if [[ ! -z ${CI+x} ]]; then
-  #num_runs=1000
-  #multiplier=10000;
-  echo "! -z CI"
-fi
 
 if [[ -z ${thisDir+x} ]]; then
   echo "ERROR: \$thisDir needs to be set up in a shell script, and then this library should be sourced."
@@ -32,6 +27,8 @@ large_R2="$thisDir/../testdata/R2.large.fastq"
 
 large_interleaved="$thisDir/../testdata/shuffled.large.fastq.gz"
 large_sorted="$thisDir/../testdata/shuffled.sorted.fastq.gz"
+
+largest="$thisDir/../testdata/shuffled.sorted.largest.fastq.gz"
 
 if [[ ! -s $large_R1 || ! -s $large_R2 ]]; then
   R1_content=`cat $R1`;
@@ -52,6 +49,17 @@ fi
 if [[ ! -s $large_sorted ]]; then
   # Create large sorted file if not present
   zcat $large_interleaved | fasten_sort --sort-by GC --paired-end | gzip -c > $large_sorted
+fi
+
+if [[ ! -s $largest ]]; then
+  # Create largest sorted file if not present
+  for i in `seq 1 $multiplier`; do
+    for j in `seq 1 $multiplier`; do
+      for k in `seq 1 $multiplier`; do
+        cat $large_sorted
+      done
+    done
+  done > $largest
 fi
 
 which bbnorm.sh

@@ -25,4 +25,9 @@ testdata/R1.large.fastq
 testdata/R2.large.fastq
 testdata/shuffled.large.fastq.gz
 testdata/shuffled.sorted.fastq.gz
+testdata/shuffled.sorted.largest.fastq.gz
+
+# some of Lee's
+/*.fastq.gz
+/*.fq.gz
 

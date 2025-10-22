@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"fn":["average_quality","main","standard_deviation"]};
+window.SIDEBAR_ITEMS = {"fn":["avg_qual","main"]};
