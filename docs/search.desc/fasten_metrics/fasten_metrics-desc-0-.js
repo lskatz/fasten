@@ -1,1 +1,1 @@
-searchState.loadedDescShard("fasten_metrics", 0, "Gives read metrics on a read set. Values are given in a …\ngiven a cigar line for quality, return its average\nLocal implementation of standard deviation")
+searchState.loadedDescShard("fasten_metrics", 0, "Gives read metrics on a read set. Values are given in a …\nCalculates average quality value from a vector of quality …")

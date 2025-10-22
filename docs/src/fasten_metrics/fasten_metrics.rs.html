@@ -162,27 +162,7 @@
 <a href="#161" id="161">161</a>
 <a href="#162" id="162">162</a>
 <a href="#163" id="163">163</a>
-<a href="#164" id="164">164</a>
-<a href="#165" id="165">165</a>
-<a href="#166" id="166">166</a>
-<a href="#167" id="167">167</a>
-<a href="#168" id="168">168</a>
-<a href="#169" id="169">169</a>
-<a href="#170" id="170">170</a>
-<a href="#171" id="171">171</a>
-<a href="#172" id="172">172</a>
-<a href="#173" id="173">173</a>
-<a href="#174" id="174">174</a>
-<a href="#175" id="175">175</a>
-<a href="#176" id="176">176</a>
-<a href="#177" id="177">177</a>
-<a href="#178" id="178">178</a>
-<a href="#179" id="179">179</a>
-<a href="#180" id="180">180</a>
-<a href="#181" id="181">181</a>
-<a href="#182" id="182">182</a>
-<a href="#183" id="183">183</a>
-<a href="#184" id="184">184</a></pre></div><pre class="rust"><code><span class="doccomment">//! Gives read metrics on a read set.
+<a href="#164" id="164">164</a></pre></div><pre class="rust"><code><span class="doccomment">//! Gives read metrics on a read set.
 //! Values are given in a column delimited stdout.
 
 //! # Examples
@@ -194,7 +174,7 @@
 //! # Usage
 //! ```text
 
-//! Usage: fasten_metrics [-h] [-n INT] [-p] [-v] [--each-read] [--distribution STRING]
+//! Usage: fasten_metrics [-h] [-n INT] [-p] [-v] [--each-read]
 
 //! Options:
 //!    -h, --help          Print this help menu.
@@ -203,9 +183,6 @@
 //!    -v, --verbose       Print more status messages
 //!        --each-read     Print the metrics for each read. This creates very
 //!                        large output
-//!        --distribution STRING
-//!                        Print the distribution for each metric. Must supply
-//!                        either 'normal' or 'nonparametric'
 //! ```
     
 </span><span class="kw">extern crate </span>fasten;
@@ -215,7 +192,8 @@
 <span class="kw">use </span>std::fs::File;
 <span class="kw">use </span>std::io::BufReader;
 <span class="kw">use </span>std::io::BufRead;
-<span class="kw">use </span>std::f32;
+<span class="comment">//use std::f32;
+</span><span class="kw">use </span>std::f64;
 
 <span class="kw">use </span>fasten::fasten_base_options;
 <span class="kw">use </span>fasten::fasten_base_options_matches;
@@ -225,13 +203,13 @@
 </span><span class="kw">fn </span>test_average_quality () {
     <span class="kw">let </span>easy_qual = <span class="string">"IIIIIIIIIIII"</span>;
     <span class="kw">let </span>easy_avg_obs = average_quality(easy_qual);
-    <span class="kw">let </span>easy_avg_exp:f32 = <span class="number">40.0</span>;
+    <span class="kw">let </span>easy_avg_exp:f64 = <span class="number">40.0</span>;
     <span class="macro">assert_eq!</span>(easy_avg_obs, easy_avg_exp, <span class="string">"Tried to calculate average quality for {}"</span>, easy_qual);
 
     <span class="comment">// a more difficult qual is the one in the first read in four_reads.fastq
     </span><span class="kw">let </span>hard_qual = <span class="string">"8AB*2D&gt;C1'02C+=I@IEFHC7&amp;-E5',I?E*33E/@3#68B%\"!B-/2%(G=*@D052IA!('7-*$+A6&gt;.$89,-CG71=AGAE3&amp;&amp;#=2B.+I&lt;E"</span>;
-    <span class="kw">let </span>hard_avg_obs = average_quality(hard_qual);
-    <span class="kw">let </span>hard_avg_exp:f32 = <span class="number">21.40</span>;
+    <span class="kw">let </span>hard_avg_obs = average_quality_from_cigar(hard_qual);
+    <span class="kw">let </span>hard_avg_exp:f64 = <span class="number">21.40</span>;
     <span class="macro">assert_eq!</span>(hard_avg_obs, hard_avg_exp, <span class="string">"Tried to calculate the average quality for {}"</span>, hard_qual);
 }
 
@@ -240,7 +218,6 @@
 
     <span class="comment">// script-specific options
     </span>opts.optflag(<span class="string">""</span>,<span class="string">"each-read"</span>,<span class="string">"Print the metrics for each read. This creates very large output"</span>);
-    opts.optopt(<span class="string">""</span>,<span class="string">"distribution"</span>,<span class="string">"Print the distribution for each metric. Must supply either 'normal' or 'nonparametric'"</span>,<span class="string">"STRING"</span>);
 
     <span class="kw">let </span>matches = fasten_base_options_matches(<span class="string">"Gives read metrics on a read set."</span>, opts);
 
@@ -249,13 +226,6 @@
     }
 
     <span class="kw">let </span>each_read :bool=matches.opt_present(<span class="string">"each-read"</span>);
-
-    <span class="kw">let </span>distribution = <span class="kw">if </span>matches.opt_present(<span class="string">"distribution"</span>) {
-        matches.opt_str(<span class="string">"distribution"</span>)
-            .expect(<span class="string">"ERROR: could not understand parameter for --distribution"</span>)
-    } <span class="kw">else </span>{
-        String::new()
-    };
 
     <span class="kw">let </span>filename = <span class="string">"/dev/stdin"</span>;
     
@@ -267,25 +237,27 @@
 
     }
     
-    <span class="kw">let </span><span class="kw-2">mut </span>read_length :Vec&lt;f32&gt; = <span class="macro">vec!</span>[];
-    <span class="kw">let </span><span class="kw-2">mut </span>read_qual   :Vec&lt;f32&gt; = <span class="macro">vec!</span>[];
-    <span class="kw">let </span><span class="kw-2">mut </span>num_lines   :u32   =<span class="number">0</span>;
+    <span class="kw">let </span><span class="kw-2">mut </span>read_length :Vec&lt;f64&gt; = <span class="macro">vec!</span>[];
+    <span class="kw">let </span><span class="kw-2">mut </span>read_qual   :Vec&lt;u8&gt;  = <span class="macro">vec!</span>[];
+    <span class="kw">let </span><span class="kw-2">mut </span>num_lines   :u64   =<span class="number">0</span>;
 
     <span class="comment">// read the file
     </span><span class="kw">let </span>my_file = File::open(<span class="kw-2">&amp;</span>filename).expect(<span class="string">"Could not open file"</span>);
     <span class="kw">let </span>my_buffer=BufReader::new(my_file);
     <span class="kw">for </span>line <span class="kw">in </span>my_buffer.lines() {
         num_lines+=<span class="number">1</span>;
+        <span class="kw">let </span>mod_line = num_lines % <span class="number">4</span>;
 
-        <span class="kw">match </span>num_lines % <span class="number">4 </span>{
+        <span class="kw">match </span>mod_line {
             <span class="number">1 </span>=&gt; {
                 <span class="kw">if </span>each_read {
                     <span class="kw">let </span>id = line.expect(<span class="string">"Expected an ID line"</span>);
-                    <span class="macro">print!</span>(<span class="string">"{}\t"</span>,<span class="kw-2">&amp;</span>id[<span class="number">1</span>..]);
+                    <span class="comment">// remove the @
+                    </span><span class="macro">print!</span>(<span class="string">"{}\t"</span>,<span class="kw-2">&amp;</span>id[<span class="number">1</span>..]);
                 }
             }
             <span class="number">2 </span>=&gt; {
-                <span class="kw">let </span>my_read_length=line.expect(<span class="string">"Expected a sequence line"</span>).len() <span class="kw">as </span>f32;
+                <span class="kw">let </span>my_read_length=line.expect(<span class="string">"Expected a sequence line"</span>).len() <span class="kw">as </span>f64;
                 <span class="kw">if </span>each_read {
                     <span class="macro">print!</span>(<span class="string">"{}\t"</span>,my_read_length);
                 }
@@ -293,44 +265,32 @@
             }
             <span class="number">0 </span>=&gt; {
                 <span class="kw">let </span>qual_line=line.expect(<span class="string">"Expected a qual line"</span>);
-                <span class="kw">let </span>my_avg_qual:f32 = average_quality(<span class="kw-2">&amp;</span>qual_line);
-                <span class="kw">if </span>each_read {
-                    <span class="macro">println!</span>(<span class="string">"{}"</span>,my_avg_qual);
+                
+                <span class="kw">let </span>my_qual_vec: Vec&lt;u8&gt; = qual_line.into_bytes();
+                <span class="comment">// TODO this if statement makes the program take twice as long. Optimize?
+                </span><span class="kw">if </span>each_read {
+                    <span class="kw">let </span>my_avg_qual = avg_qual(<span class="kw-2">&amp;</span>my_qual_vec, <span class="number">33</span>);
+                    <span class="macro">println!</span>(<span class="string">"{:.2}"</span>,my_avg_qual);
                 }
-                read_qual.push(my_avg_qual);
+                read_qual.extend(my_qual_vec.into_iter());
+
             }
             <span class="kw">_ </span>=&gt; {
 
             }
         };
     }
-    <span class="kw">let </span>num_reads :u32 = num_lines / <span class="number">4</span>;
+    <span class="kw">let </span>num_reads :u64 = num_lines / <span class="number">4</span>;
     <span class="kw">let </span>total_length = read_length.iter().fold(<span class="number">0.0</span>,|a,<span class="kw-2">&amp;</span>b| a+b);
 
     <span class="kw">let </span><span class="kw-2">mut </span>summary_metrics=<span class="macro">vec!</span>[total_length.to_string(),num_reads.to_string()];
 
     <span class="comment">// add statistics if requested
-    </span><span class="kw">let </span><span class="kw-2">mut </span>total_length_str = (total_length <span class="kw">as </span>f32/num_reads <span class="kw">as </span>f32).to_string();
-    <span class="kw">let </span><span class="kw-2">mut </span>total_qual_str   = ((read_qual.iter().fold(<span class="number">0.0</span>,|a,<span class="kw-2">&amp;</span>b| a+b)) / num_reads <span class="kw">as </span>f32).to_string();
-    <span class="kw">if </span>distribution == <span class="string">"normal" </span>{
-        total_length_str.push_str(<span class="string">"±"</span>);
-        total_length_str.push_str(<span class="kw-2">&amp;</span>standard_deviation(<span class="kw-2">&amp;</span>read_length).to_string());
-        total_qual_str.push_str(<span class="string">"±"</span>);
-        total_qual_str.push_str(<span class="kw-2">&amp;</span>standard_deviation(<span class="kw-2">&amp;</span>read_qual).to_string());
+    </span><span class="kw">let </span>total_length_str = (total_length <span class="kw">as </span>f64/num_reads <span class="kw">as </span>f64).to_string();
+    <span class="kw">let </span>total_qual_str = <span class="macro">format!</span>(<span class="string">"{:.2}"</span>, avg_qual(<span class="kw-2">&amp;</span>read_qual, <span class="number">33</span>));
 
-        summary_metrics.push(total_length_str);
-        summary_metrics.push(total_qual_str);
-    }
-    <span class="comment">// TODO median absolute deviation or similar
-    </span><span class="kw">else if </span>distribution == <span class="string">"nonparametric" </span>{
-        <span class="macro">eprintln!</span>(<span class="string">"WARNING: nonparametric distribution not yet supported"</span>);
-
-    } <span class="kw">else if </span>distribution == <span class="string">"" </span>{
-        summary_metrics.push(total_length_str);
-        summary_metrics.push(total_qual_str);
-    } <span class="kw">else </span>{
-        <span class="macro">panic!</span>(<span class="string">"I did not understand --distribution {}"</span>,distribution);
-    }
+    summary_metrics.push(total_length_str);
+    summary_metrics.push(total_qual_str.to_string());
 
     <span class="comment">// summary metrics
     </span><span class="kw">if </span>!each_read {
@@ -339,31 +299,31 @@
 
 }
 
-<span class="doccomment">/// given a cigar line for quality, return its average
-</span><span class="kw">fn </span>average_quality (qual_line:<span class="kw-2">&amp;</span>str) -&gt; f32 {
-    <span class="kw">let </span><span class="kw-2">mut </span>my_read_qual :u32=<span class="number">0</span>;
-    <span class="kw">for </span>qual_char <span class="kw">in </span>qual_line.chars() {
-        my_read_qual += qual_char <span class="kw">as </span>u8 <span class="kw">as </span>u32 - <span class="number">33</span>;
+<span class="doccomment">/// Calculates average quality value from a vector of quality bytes
+</span><span class="kw">fn </span>avg_qual(qual: <span class="kw-2">&amp;</span>[u8], ascii_base: u8) -&gt; f64 {
+    <span class="kw">if </span>qual.is_empty() {
+        <span class="kw">return </span><span class="number">0.0</span>;
     }
-    <span class="kw">let </span>my_avg_qual:f32 = my_read_qual <span class="kw">as </span>f32 / qual_line.len() <span class="kw">as </span>f32;
-    <span class="kw">return </span>my_avg_qual;
-}
-
-<span class="doccomment">/// Local implementation of standard deviation
-</span><span class="kw">fn </span>standard_deviation(vec :<span class="kw-2">&amp;</span>Vec&lt;f32&gt;) -&gt; f32{
-
-    <span class="kw">let </span>num_data_points = vec.len();
-    <span class="kw">let </span>avg :f32 = vec.iter().fold(<span class="number">0.0</span>,|a,<span class="kw-2">&amp;</span>b| a+b) <span class="kw">as </span>f32 / num_data_points <span class="kw">as </span>f32;
-
-    <span class="kw">let </span><span class="kw-2">mut </span>sum_squares :f32 = <span class="number">0.0</span>;
-    <span class="kw">for </span>int <span class="kw">in </span>vec {
-        sum_squares += (<span class="kw-2">*</span>int <span class="kw">as </span>f32 - avg).powi(<span class="number">2</span>);
-    }
-
-    <span class="kw">let </span>avg_square_diff = sum_squares / (num_data_points - <span class="number">1</span>) <span class="kw">as </span>f32;
     
-    <span class="kw">return </span>avg_square_diff.sqrt();
-
+    <span class="comment">// Parse quality values (assuming Phred scores)
+    </span><span class="kw">let </span>qual_values: Vec&lt;f64&gt; = qual.iter()
+        .map(|<span class="kw-2">&amp;</span>q| {
+            <span class="kw">let </span>phred = (q - ascii_base) <span class="kw">as </span>i16;
+            <span class="comment">// Convert Phred to probability: P = 10^(-Q/10)
+            </span><span class="number">10_f64</span>.powf(-phred <span class="kw">as </span>f64 / <span class="number">10.0</span>)
+        })
+        .collect();
+    
+    <span class="kw">if </span>qual_values.is_empty() {
+        <span class="kw">return </span><span class="number">0.0</span>;
+    }
+    
+    <span class="kw">let </span>sum: f64 = qual_values.iter().sum();
+    <span class="kw">let </span>avg_prob = sum / qual_values.len() <span class="kw">as </span>f64;
+    
+    <span class="comment">// Convert average probability back to Phred score
+    </span>-<span class="number">10.0 </span>* avg_prob.log10()
 }
+
 
 </code></pre></div></section></main></body></html>
