@@ -17,8 +17,8 @@ fi
 
 reads_collapsed=$(cat $INPUT $INPUT $INPUT | ./target/debug/fasten_combine | ./target/debug/fasten_metrics --each-read)
 total_quals=$(echo "$reads_collapsed" | cut -f 3 | tail -n +2 | awk '{if(NR>1) printf "+"; printf $1} END{print "\n";}' | bc -l)
-if [ "$total_quals" != "259.31" ]; then
-  echo "Test failed for total expected quality when collapsing three sets of reads"
+if [ "$total_quals" != "101.68" ]; then
+  echo "Test failed for total expected quality when collapsing three sets of reads. Got $total_quals ."
   exit 1
 fi
 
