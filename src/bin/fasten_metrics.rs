@@ -10,7 +10,7 @@
 //! # Usage
 //! ```text
 
-//! Usage: fasten_metrics [-h] [-n INT] [-p] [-v] [--each-read] [--distribution STRING]
+//! Usage: fasten_metrics [-h] [-n INT] [-p] [-v] [--each-read]
 
 //! Options:
 //!    -h, --help          Print this help menu.
@@ -19,9 +19,6 @@
 //!    -v, --verbose       Print more status messages
 //!        --each-read     Print the metrics for each read. This creates very
 //!                        large output
-//!        --distribution STRING
-//!                        Print the distribution for each metric. Must supply
-//!                        either 'normal' or 'nonparametric'
 //! ```
     
 extern crate fasten;
@@ -47,7 +44,7 @@ fn test_average_quality () {
 
     // a more difficult qual is the one in the first read in four_reads.fastq
     let hard_qual = "8AB*2D>C1'02C+=I@IEFHC7&-E5',I?E*33E/@3#68B%\"!B-/2%(G=*@D052IA!('7-*$+A6>.$89,-CG71=AGAE3&&#=2B.+I<E";
-    let hard_avg_obs = average_quality(hard_qual);
+    let hard_avg_obs = average_quality_from_cigar(hard_qual);
     let hard_avg_exp:f64 = 21.40;
     assert_eq!(hard_avg_obs, hard_avg_exp, "Tried to calculate the average quality for {}", hard_qual);
 }
@@ -57,7 +54,6 @@ fn main(){
 
     // script-specific options
     opts.optflag("","each-read","Print the metrics for each read. This creates very large output");
-    opts.optopt("","distribution","Print the distribution for each metric. Must supply either 'normal' or 'nonparametric'","STRING");
 
     let matches = fasten_base_options_matches("Gives read metrics on a read set.", opts);
 
@@ -66,13 +62,6 @@ fn main(){
     }
 
     let each_read :bool=matches.opt_present("each-read");
-
-    let distribution = if matches.opt_present("distribution") {
-        matches.opt_str("distribution")
-            .expect("ERROR: could not understand parameter for --distribution")
-    } else {
-        String::new()
-    };
 
     let filename = "/dev/stdin";
     
@@ -85,7 +74,7 @@ fn main(){
     }
     
     let mut read_length :Vec<f64> = vec![];
-    let mut read_qual   :Vec<f64> = vec![];
+    let mut read_qual   :Vec<u8>  = vec![];
     let mut num_lines   :u64   =0;
 
     // read the file
@@ -112,14 +101,15 @@ fn main(){
             }
             0 => {
                 let qual_line=line.expect("Expected a qual line");
-                let my_avg_qual:f64 = average_quality(&qual_line) as f64;
+                
+                let my_qual_vec: Vec<u8> = qual_line.into_bytes();
+                // TODO this if statement makes the program take twice as long. Optimize?
                 if each_read {
+                    let my_avg_qual = avg_qual(&my_qual_vec, 33);
                     println!("{}",my_avg_qual);
                 }
+                read_qual.extend(my_qual_vec.into_iter());
 
-                let my_qual: Vec<f64> = qual_line.chars().map(|c| (c as u64 - 33) as f64).collect();
-                read_qual.extend(my_qual.into_iter());
-                //TODO figure out why qual is off
             }
             _ => {
 
@@ -132,28 +122,11 @@ fn main(){
     let mut summary_metrics=vec![total_length.to_string(),num_reads.to_string()];
 
     // add statistics if requested
-    let mut total_length_str = (total_length as f64/num_reads as f64).to_string();
-    //let mut total_qual_str   = ((read_qual.iter().fold(0.0,|a,&b| a+b)) / num_reads as f32).to_string();
-    let mut total_qual_str   = ((read_qual.iter().fold(0.0,|a,&b| a+b)) / total_length as f64).to_string();
-    if distribution == "normal" || distribution == "parametric" {
-        total_length_str.push_str("±");
-        total_length_str.push_str(&standard_deviation(&read_length).to_string());
-        total_qual_str.push_str("±");
-        total_qual_str.push_str(&standard_deviation(&read_qual).to_string());
+    let total_length_str = (total_length as f64/num_reads as f64).to_string();
+    let total_qual_str = format!("{:.2}", avg_qual(&read_qual, 33));
 
-        summary_metrics.push(total_length_str);
-        summary_metrics.push(total_qual_str.to_string());
-    }
-    // TODO median absolute deviation or similar
-    else if distribution == "nonparametric" {
-        eprintln!("WARNING: nonparametric distribution not yet supported");
-
-    } else if distribution == "" {
-        summary_metrics.push(total_length_str);
-        summary_metrics.push(total_qual_str.to_string());
-    } else {
-        panic!("I did not understand --distribution {}",distribution);
-    }
+    summary_metrics.push(total_length_str);
+    summary_metrics.push(total_qual_str.to_string());
 
     // summary metrics
     if !each_read {
@@ -162,30 +135,30 @@ fn main(){
 
 }
 
-/// given a cigar line for quality, return its average
-fn average_quality (qual_line:&str) -> f64 {
-    let mut my_read_qual :u64=0;
-    for qual_char in qual_line.chars() {
-        my_read_qual += qual_char as u8 as u64 - 33;
+/// Calculates average quality value from a vector of quality bytes
+fn avg_qual(qual: &[u8], ascii_base: u8) -> f64 {
+    if qual.is_empty() {
+        return 0.0;
     }
-    let my_avg_qual:f64 = my_read_qual as f64 / qual_line.len() as f64;
-    return my_avg_qual;
-}
-
-/// Local implementation of standard deviation
-fn standard_deviation(vec :&Vec<f64>) -> f64{
-
-    let num_data_points = vec.len();
-    let avg :f64 = vec.iter().fold(0.0,|a,&b| a+b) as f64 / num_data_points as f64;
-
-    let mut sum_squares :f64 = 0.0;
-    for int in vec {
-        sum_squares += (*int as f64 - avg).powi(2);
-    }
-
-    let avg_square_diff = sum_squares / (num_data_points - 1) as f64;
     
-    return avg_square_diff.sqrt();
-
+    // Parse quality values (assuming Phred scores)
+    let qual_values: Vec<f64> = qual.iter()
+        .map(|&q| {
+            let phred = (q - ascii_base) as i16;
+            // Convert Phred to probability: P = 10^(-Q/10)
+            10_f64.powf(-phred as f64 / 10.0)
+        })
+        .collect();
+    
+    if qual_values.is_empty() {
+        return 0.0;
+    }
+    
+    let sum: f64 = qual_values.iter().sum();
+    let avg_prob = sum / qual_values.len() as f64;
+    
+    // Convert average probability back to Phred score
+    -10.0 * avg_prob.log10()
 }
+
 
