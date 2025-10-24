@@ -94,14 +94,38 @@ impl FastenSeq{
   fn as_sam(&self) -> String {
     let mut flag = "4"; // unmapped
 
-    if !self.id2.is_empty() {
-      flag = "77"; // unmapped + pair unmapped + has pair + first in pair
+    // paired + mapped in proper pair + unmapped + mate unmapped + first in pair
+    let mut flag  :u16 = 4;
+    let mut flag2 :u16 = 4;
+
+    let mut entry_vec:Vec<&str>  = vec![self.id1.as_str(), "", "*", "0", "0", "*", "*", "0", "0", self.seq1.as_str(), self.qual1.as_str()]
+    let mut entry2_vec:Vec<&str> = vec![];
+
+    match self.id2.is_empty() {
+      //unpaired
+      true  => {
+        // unmapped
+        // flag = flag;
+      },
+      // paired
+      false => {
+        // unmapped + pair unmapped + has pair + first in pair
+        flag  = flag | 1 | 2 | 8 | 32 | 64;
+        // unmapped + pair unmapped + has pair + second in pair
+        flag2 = flag2 | 1 | 2 | 8 | 16 | 128;
+
+        // set the entry for read 2 including flag
+        entry2_vec = vec![self.id2.as_str(), flag2.to_string().as_str(), "*", "0", "0", "*", "*", "0", "0", self.seq2.as_str(), self.qual2.as_str()];
+      },
     }
 
-    let mut entry:String = vec![self.id1.as_str(), flag, "*", "0", "0", "*", "*", "0", "0", self.seq1.as_str(), self.qual1.as_str()].join("\t");
+    // set the flag for read 1
+    entry_vec[1] = &flag.to_string();
+    
+    let mut entry:String = entry_vec.join("\t");
+
     if !self.id2.is_empty() {
-      let entry2:String  = vec![self.id2.as_str(), "141", "*", "0", "0", "*", "*", "0", "0", self.seq2.as_str(), self.qual2.as_str()].join("\t");
-      entry = format!("{}\n{}", entry, entry2);
+      entry = format!("{}\n{}", entry, entry2_vec.join("\t"));
     }
 
     return entry;
