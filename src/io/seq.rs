@@ -39,15 +39,15 @@ pub struct Seq {
 /// A sequence that can be cleaned
 pub trait Cleanable{
     /// new sequence object
-    fn new (id: &String, seq: &String, qual: &String) -> Seq;
+    fn new (id: &str, seq: &str, qual: &str) -> Seq;
     /// Make a blank sequence object.
     fn blank () -> Seq;
     /// Determine if it is a blank sequence.
     fn is_blank (&self) -> bool;
     /// Make a seq object from a String.
-    fn from_string (seq_str: &String) -> Seq;
+    fn from_str (seq_str: &str) -> Seq;
     /// sanitize an identifier string
-    fn sanitize_id(id: &String) -> String;
+    fn sanitize_id(id: &str) -> String;
     /// lower any low quality base to a zero and "N"
     fn lower_ambiguity_q(&mut self) -> ();
     /// Trim sequences based on quality
@@ -62,7 +62,7 @@ pub trait Cleanable{
 
 impl Cleanable for Seq {
     /// Make a new cleanable sequence object
-    fn new (id: &String, seq: &String, qual: &String) -> Seq{
+    fn new (id: &str, seq: &str, qual: &str) -> Seq{
         let id_copy = Self::sanitize_id(&id);
         let mut thresholds = HashMap::new();
         thresholds.insert("min_avg_qual".to_string(),20.0);
@@ -71,8 +71,8 @@ impl Cleanable for Seq {
 
         return Seq{
             id:     id_copy,
-            seq:    seq.clone(),
-            qual:   qual.clone(),
+            seq:    seq.to_string(),
+            qual:   qual.to_string(),
             pairid: String::new(),
             thresholds: thresholds,
         };
@@ -90,7 +90,7 @@ impl Cleanable for Seq {
     }
     /// Create a sequence object from a string.
     /// TODO make it more like the careful method than quick.
-    fn from_string (seq_str: &String) -> Seq {
+    fn from_str (seq_str: &str) -> Seq {
         let mut lines = seq_str.lines();
         let id = lines.next().expect("Could not parse ID");
         let seq = lines.next().expect("Could not parse sequence");
@@ -114,11 +114,11 @@ impl Cleanable for Seq {
 
     /// Read an identifier and return a cleaned version,
     /// e.g., removing @ in a fastq identifier.
-    fn sanitize_id(id: &String) -> String {
+    fn sanitize_id(id: &str) -> String {
         if id.len() == 0 {
             return String::new();
         }
-        let mut id_copy = id.clone();
+        let mut id_copy = id.to_string();
         if id_copy.chars().nth(0).expect("ID was empty") == '@' {
             id_copy.pop();
         }
