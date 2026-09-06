@@ -142,11 +142,8 @@ fn main(){
 
 /// Determine average quality of a qual cigar string,
 /// e.g., let q:f32 = avg_quality("AABC!...")
-fn avg_quality(qual: &String) -> f32 {
-    let mut total :u32 = 0;
-    for qual_char in qual.chars() {
-        total += qual_char as u8 as u32;
-    }
+fn avg_quality(qual: &str) -> f32 {
+    let total :u32 = qual.as_bytes().iter().map(|&qual_char| qual_char as u32).sum();
     let avg = (total as f32 / qual.len() as f32) - 33.0;
     return avg;
 }
