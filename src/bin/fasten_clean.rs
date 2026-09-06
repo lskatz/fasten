@@ -150,28 +150,15 @@ fn avg_quality(qual: &str) -> f32 {
 
 /// Trim the ends of reads with low quality
 fn trim(seq: &String, qual: &String, min_qual: u8) -> (String,String) {
-    let mut trim5 :usize=0;
-    let mut trim3 :usize=qual.len();
-
     let offset_min_qual = min_qual + 33;
+    let qual_bytes = qual.as_bytes();
     
     // 5'
-    for qual in qual.chars(){
-        if (qual as u8) < offset_min_qual {
-            trim5+=1;
-        } else {
-            break;
-        }
-    }
-
+    let trim5 = qual_bytes.iter().position(|&q| q >= offset_min_qual).unwrap_or(0);
     // 3'
-    for qual in qual.chars().rev() {
-        if (qual as u8) < offset_min_qual {
-            trim3-=1;
-        } else {
-            break;
-        }
-    }
+    let trim3 = qual_bytes
+        .iter()
+        .rposition(|&q| q >= offset_min_qual).unwrap_or(qual_bytes.len() - 1) + 1;
 
     let new_seq :String;
     let new_qual:String;
