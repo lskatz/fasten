@@ -60,7 +60,7 @@ jobs:
         run:  |
           conda info
           conda env list
-          conda install -n benchmarking seqkit seqtk matplotlib pyqt qtwayland bbmap seqfu fastx_toolkit kmer-jellyfish
+          conda install -n benchmarking seqkit seqtk matplotlib pyqt bbmap seqfu fastx_toolkit kmer-jellyfish
 
   build_and_test:
     name: Benchmark with python ${{ matrix.python-version }} and ${{ matrix.os }} — ${{ matrix.script }}
@@ -97,12 +97,12 @@ jobs:
         run:  |
           conda info
           conda env list
-          conda install -n benchmarking seqkit seqtk matplotlib pyqt qtwayland bbmap seqfu fastx_toolkit kmer-jellyfish
+          conda install -n benchmarking seqkit seqtk matplotlib pyqt bbmap seqfu fastx_toolkit kmer-jellyfish
       - name: install hyperfine
         run:  |
-          wget https://github.com/sharkdp/hyperfine/releases/download/v1.13.0/hyperfine-v1.13.0-x86_64-unknown-linux-gnu.tar.gz
+          curl --fail --location --retry 5 --retry-all-errors --output hyperfine-v1.13.0-x86_64-unknown-linux-gnu.tar.gz https://github.com/sharkdp/hyperfine/releases/download/v1.13.0/hyperfine-v1.13.0-x86_64-unknown-linux-gnu.tar.gz
           tar zxvf hyperfine-v1.13.0-x86_64-unknown-linux-gnu.tar.gz
-          wget https://raw.githubusercontent.com/sharkdp/hyperfine/refs/tags/v1.19.0/scripts/plot_whisker.py -O hyperfine-v1.13.0-x86_64-unknown-linux-gnu/plot_whisker.py
+          curl --fail --location --retry 5 --retry-all-errors --output hyperfine-v1.13.0-x86_64-unknown-linux-gnu/plot_whisker.py https://raw.githubusercontent.com/sharkdp/hyperfine/refs/tags/v1.19.0/scripts/plot_whisker.py
           chmod -v +x hyperfine-v1.13.0-x86_64-unknown-linux-gnu/plot_whisker.py
           echo
           ls -Fd hyperfine-v1.13.0-x86_64-unknown-linux-gnu/*
@@ -180,5 +180,4 @@ jobs:
         with:
           name: benchmark-results.${{ matrix.os }}.${{ matrix.python-version }}.ALL
           path: collected
-
 
