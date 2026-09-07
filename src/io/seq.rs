@@ -4,9 +4,9 @@ use std::clone::Clone;
 #[test]
 /// Test whether a cleanable sequence is instantiated
 fn test_new_seq() {
-    let id   = "MY_ID".to_string();
-    let seq  = "AATNGGCC".to_string();
-    let qual = "#ABCDE!!".to_string();
+    let id   = "MY_ID";
+    let seq  = "AATNGGCC";
+    let qual = "#ABCDE!!";
     let cleanable = Seq::new(&id,&seq,&qual);
     
     let formatted = format!("@{}\n{}\n+\n{}", &id, &seq, &qual);
@@ -15,14 +15,14 @@ fn test_new_seq() {
 #[test]
 /// Test whether a cleanable sequence can be cleaned
 fn test_cleanable() {
-    let id   = "MY_ID".to_string();
-    let seq  = "AATNGGCC".to_string();
-    let qual = "#ABCDE!!".to_string();
+    let id   = "MY_ID";
+    let seq  = "AATNGGCC";
+    let qual = "#ABCDE!!";
     let mut cleanable = Seq::new(&id,&seq,&qual);
     
     cleanable.lower_ambiguity_q();
     cleanable.trim();
-    assert_eq!(cleanable.to_string(), "@MY_ID\nATNGG\n+\nAB!DE".to_string());
+    assert!(cleanable.to_string() == "@MY_ID\nATNGG\n+\nAB!DE");
 }
 
 
@@ -79,7 +79,7 @@ impl Cleanable for Seq {
     }
     /// Make a blank sequence object.
     fn blank () -> Seq{
-        return Seq::new(&String::new(),&String::new(),&String::new());
+        return Seq::new("","","");
     }
     /// Determine if it is a blank sequence.
     fn is_blank (&self) -> bool {
