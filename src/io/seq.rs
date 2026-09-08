@@ -26,13 +26,16 @@ fn test_cleanable() {
 }
 
 #[test]
-/// Test if a single leading `@` symbols in ID is stripped
+/// Test if a single leading `@` symbols and whitespaces in ID are stripped
 fn test_sanitize_id() {
     assert_eq!(Seq::sanitize_id("@MY_ID"), "MY_ID");
     // no change for id without leading `@`
     assert_eq!(Seq::sanitize_id("MY_ID"), "MY_ID");
     // should only strip one instance
     assert_eq!(Seq::sanitize_id("@@MY_ID"), "@MY_ID");
+    // should trim whitespaces
+    assert_eq!(Seq::sanitize_id("@MY_ID\n"), "MY_ID");
+    assert_eq!(Seq::sanitize_id("@\n\n  MY_ID  \n"), "MY_ID");
 }
 
 
