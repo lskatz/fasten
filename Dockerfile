@@ -1,11 +1,11 @@
-FROM rust:bullseye as builder 
+FROM rust:bookworm AS builder 
 
-ARG SOFTWARE_VER="0.7.2"
+ARG SOFTWARE_VER="0.9.10"
 
-LABEL base.image="alpine-3.14"
+LABEL base.image="debian:bookworm-slim"
 LABEL dockerfile.version="1"
 LABEL software="Fasten"
-LABEL software.version=$SOFTWARENAME_VER
+LABEL software.version="${SOFTWARE_VER}"
 LABEL description="Fastq file manipulation suite"
 LABEL website="https://github.com/lskatz/fasten"
 LABEL license="https://github.com/lskatz/fasten/LICENSE"
@@ -19,22 +19,23 @@ RUN apt-get update && apt-get install -y \
         git \
         bc \
         libcurl4-openssl-dev \
-        libseccomp-dev 
+        libseccomp-dev \
+    && rm -rf /var/lib/apt/lists/*
 
-RUN mkdir -p /usr/src/app \
-    && cd /usr/src/app \
-    && git clone https://github.com/lskatz/fasten \
-    && cd /usr/src/app/fasten \
-    && git checkout v${SOFTWARE_VER}
-RUN cd /usr/src/app/fasten && cargo build --release
+WORKDIR /usr/src/app/fasten
+COPY . .
 
-RUN cd /usr/src/app/fasten \
-    && cargo build \
-    && (set -ex; for i in tests/fasten*.sh; do bash $i; done;)
+RUN cargo build && cargo build --release
+
+RUN (set -ex; for i in tests/fasten*.sh; do bash $i; done;)
 
 # build final container
 
-FROM alpine:3.14
+FROM debian:bookworm-slim
 
-COPY --from=builder /usr/src/app/fasten/target/release /usr/local/bin
+RUN apt-get update && apt-get install -y \
+        ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY --from=builder /usr/src/app/fasten/target/release/fasten_* /usr/local/bin/
 

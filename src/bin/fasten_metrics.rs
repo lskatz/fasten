@@ -38,14 +38,14 @@ use fasten::logmsg;
 #[test]
 fn test_average_quality () {
     let easy_qual = "IIIIIIIIIIII";
-    let easy_avg_obs = average_quality(easy_qual);
+    let easy_avg_obs = avg_qual(easy_qual.as_bytes(), 33);
     let easy_avg_exp:f64 = 40.0;
     assert_eq!(easy_avg_obs, easy_avg_exp, "Tried to calculate average quality for {}", easy_qual);
 
     // a more difficult qual is the one in the first read in four_reads.fastq
     let hard_qual = "8AB*2D>C1'02C+=I@IEFHC7&-E5',I?E*33E/@3#68B%\"!B-/2%(G=*@D052IA!('7-*$+A6>.$89,-CG71=AGAE3&&#=2B.+I<E";
-    let hard_avg_obs = average_quality_from_cigar(hard_qual);
-    let hard_avg_exp:f64 = 21.40;
+    let hard_avg_obs = format!("{:.2}", avg_qual(hard_qual.as_bytes(), 33)).parse::<f64>().unwrap();
+    let hard_avg_exp:f64 = 10.12;
     assert_eq!(hard_avg_obs, hard_avg_exp, "Tried to calculate the average quality for {}", hard_qual);
 }
 
