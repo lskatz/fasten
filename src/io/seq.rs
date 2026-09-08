@@ -25,6 +25,16 @@ fn test_cleanable() {
     assert!(cleanable.to_string() == "@MY_ID\nATNGG\n+\nAB!DE");
 }
 
+#[test]
+/// Test if a single leading `@` symbols in ID is stripped
+fn test_sanitize_id() {
+    assert_eq!(Seq::sanitize_id("@MY_ID"), "MY_ID");
+    // no change for id without leading `@`
+    assert_eq!(Seq::sanitize_id("MY_ID"), "MY_ID");
+    // should only strip one instance
+    assert_eq!(Seq::sanitize_id("@@MY_ID"), "@MY_ID");
+}
+
 
 /// A sequence struct that contains the ID, sequence, and quality cigar line
 #[derive(Debug)]
