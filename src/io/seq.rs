@@ -125,7 +125,7 @@ impl Cleanable for Seq {
     /// Read an identifier and return a cleaned version,
     /// e.g., removing @ in a fastq identifier.
     fn sanitize_id(id: &str) -> String {
-        id.strip_prefix('@').unwrap_or(id).to_string()
+        id.strip_prefix('@').unwrap_or(id).trim().to_string()
     }
         
 
