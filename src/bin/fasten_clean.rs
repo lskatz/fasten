@@ -123,7 +123,7 @@ fn main(){
 
         if passed {
             for i in 0..trimmed_seqs.len() {
-                println!("{}\n{}\n+\n{}",
+                println!("@{}\n{}\n+\n{}",
                          &trimmed_ids[i],
                          &trimmed_seqs[i],
                          &trimmed_quals[i],

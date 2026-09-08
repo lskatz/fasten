@@ -25,6 +25,19 @@ fn test_cleanable() {
     assert!(cleanable.to_string() == "@MY_ID\nATNGG\n+\nAB!DE");
 }
 
+#[test]
+/// Test if a single leading `@` symbols and whitespaces in ID are stripped
+fn test_sanitize_id() {
+    assert_eq!(Seq::sanitize_id("@MY_ID"), "MY_ID");
+    // no change for id without leading `@`
+    assert_eq!(Seq::sanitize_id("MY_ID"), "MY_ID");
+    // should only strip one instance
+    assert_eq!(Seq::sanitize_id("@@MY_ID"), "@MY_ID");
+    // should trim whitespaces
+    assert_eq!(Seq::sanitize_id("@MY_ID\n"), "MY_ID");
+    assert_eq!(Seq::sanitize_id("@\n\n  MY_ID  \n"), "MY_ID");
+}
+
 
 /// A sequence struct that contains the ID, sequence, and quality cigar line
 #[derive(Debug)]
@@ -115,14 +128,7 @@ impl Cleanable for Seq {
     /// Read an identifier and return a cleaned version,
     /// e.g., removing @ in a fastq identifier.
     fn sanitize_id(id: &str) -> String {
-        if id.len() == 0 {
-            return String::new();
-        }
-        let mut id_copy = id.to_string();
-        if id_copy.chars().nth(0).expect("ID was empty") == '@' {
-            id_copy.pop();
-        }
-        return id_copy;
+        id.strip_prefix('@').unwrap_or(id).trim().to_string()
     }
         
 
