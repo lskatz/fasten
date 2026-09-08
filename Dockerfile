@@ -1,4 +1,4 @@
-FROM rust:1.73.0-bullseye as builder 
+FROM rust:bullseye as builder 
 
 ARG SOFTWARE_VER="0.7.2"
 
@@ -14,10 +14,8 @@ LABEL maintainer.email="gzu2@cdc.gov"
 LABEL maintainer2="John Phan"
 LABEL tag="${SOFTWARE_VER}"
 
-RUN apt-get update
-RUN apt-get install -y \
+RUN apt-get update && apt-get install -y \
         ca-certificates \
-        linux-headers-amd64 \
         git \
         bc \
         libcurl4-openssl-dev \
