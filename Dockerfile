@@ -1,4 +1,4 @@
-FROM rust:bullseye as builder 
+FROM rust:bookworm as builder 
 
 ARG SOFTWARE_VER="0.7.2"
 
@@ -37,4 +37,3 @@ RUN cd /usr/src/app/fasten \
 FROM alpine:3.14
 
 COPY --from=builder /usr/src/app/fasten/target/release /usr/local/bin
-
