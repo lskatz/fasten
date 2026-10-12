@@ -207,21 +207,12 @@ fn main(){
         // Make a new cigar line for quality
         let mut qual_cigar = String::new();
         for p in combined_qual {
-            let mut qual_recalc :f32 = -TEN * (p).log(TEN)+33.0;
+            let qual_recalc :f32 = -TEN * p.log10() + 33.0;
             // check for overflow before switching to u8
-            if qual_recalc.is_infinite() || qual_recalc > max_qual as f32 {
-                qual_recalc = max_qual as f32;
-            }
-
             // switch to u8 and then the corresponding char
-            let mut qual_recalc_char = qual_recalc.round() as u8 as char;
-            if (qual_recalc_char as u8) > max_qual {
-                qual_recalc_char = max_qual_char;
-            }
             // a reduction in quality is not expected... but just in case.
-            if (qual_recalc_char as u8) < min_qual {
-                qual_recalc_char = min_qual_char;
-            }
+            let qual_recalc_char = (qual_recalc.round() as u8)
+                           .clamp(min_qual, max_qual) as char;
             qual_cigar.push(qual_recalc_char);
         }
 
