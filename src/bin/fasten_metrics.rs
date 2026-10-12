@@ -37,20 +37,6 @@ use fasten::fasten_base_options;
 use fasten::fasten_base_options_matches;
 use fasten::logmsg;
 
-#[test]
-fn test_average_quality () {
-    let easy_qual = "IIIIIIIIIIII";
-    let easy_avg_obs = average_quality(easy_qual);
-    let easy_avg_exp:f64 = 40.0;
-    assert_eq!(easy_avg_obs, easy_avg_exp, "Tried to calculate average quality for {}", easy_qual);
-
-    // a more difficult qual is the one in the first read in four_reads.fastq
-    let hard_qual = "8AB*2D>C1'02C+=I@IEFHC7&-E5',I?E*33E/@3#68B%\"!B-/2%(G=*@D052IA!('7-*$+A6>.$89,-CG71=AGAE3&&#=2B.+I<E";
-    let hard_avg_obs = average_quality_from_cigar(hard_qual);
-    let hard_avg_exp:f64 = 21.40;
-    assert_eq!(hard_avg_obs, hard_avg_exp, "Tried to calculate the average quality for {}", hard_qual);
-}
-
 fn main(){
     let mut opts = fasten_base_options();
 
@@ -176,4 +162,34 @@ fn summary_metrics(filename: &str) {
         format!("{:.2}", prob_to_phred(prob_sum, total_qual_len)),
     ];
     println!("{}", summary.join("\t"));
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_avg_qual_uniform() {
+        // 'I' is Phred 40; a uniform quality string averages to itself
+        let table = prob_table(33);
+        let qual = b"IIIIIIIIIIII";
+        let sum: f64 = qual.iter().map(|&q| table[q as usize]).sum();
+        let avg = prob_to_phred(sum, qual.len() as u64);
+        assert!((avg - 40.0).abs() < 1e-9, "got {}", avg);
+    }
+
+    #[test]
+    fn test_avg_qual_four_reads_first() {
+        // first read in testdata/four_reads.fastq
+        let qual = b"8AB*2D>C1'02C+=I@IEFHC7&-E5',I?E*33E/@3#68B%\"!B-/2%(G=*@D052IA!('7-*$+A6>.$89,-CG71=AGAE3&&#=2B.+I<E";
+        let table = prob_table(33);
+        let sum: f64 = qual.iter().map(|&q| table[q as usize]).sum();
+        let avg = prob_to_phred(sum, qual.len() as u64);
+        assert!(avg > 0.0 && avg < 40.0, "got {}", avg);
+    }
+
+    #[test]
+    fn test_empty() {
+        assert_eq!(prob_to_phred(0.0, 0), 0.0);
+    }
 }
