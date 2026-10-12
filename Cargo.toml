@@ -116,3 +116,8 @@ rand         = "0.8"
 fastq        = "0.6"
 threadpool   = "1.8.1"
 bam          = "0.1.4"
+
+[profile.release]
+opt-level = 3
+lto = "fat"
+codegen-units = 1
