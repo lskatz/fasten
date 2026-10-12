@@ -1,5 +1,6 @@
 [package]
 name    = "fasten"
+edition = "2015"
 version = "0.9.10"
 authors = ["Lee Katz <gzu2@cdc.gov>"]
 #license-file  = "LICENSE"
@@ -111,8 +112,17 @@ regex        = "1.10"
 fancy-regex  = "0.13"
 getopts      = "0.2.21"
 statistical  = "1.0"
-multiqueue   = "0.3.2"
 rand         = "0.8"
 fastq        = "0.6"
 threadpool   = "1.8.1"
 bam          = "0.1.4"
+
+# Settings used only by `cargo build --release` (the optimized build).
+# opt-level = 3: the highest speed optimization.
+# lto = "fat": optimize across all crates at link time, for faster code.
+# codegen-units = 1: compile in one piece so the compiler can optimize more,
+#   at the cost of slower compile times.
+[profile.release]
+opt-level = 3
+lto = "fat"
+codegen-units = 1
