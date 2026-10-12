@@ -28,8 +28,6 @@ extern crate getopts;
 use std::fs::File;
 use std::io::BufReader;
 use std::io::BufRead;
-use std::io::BufWriter;
-use std::io::Write;
 //use std::f32;
 use std::f64;
 
@@ -61,107 +59,106 @@ fn main(){
     }
 }
 
-const BUF_CAPACITY: usize = 256 * 1024;
-
-/// Lookup table: quality byte (phred+33) => error probability
-fn prob_table(ascii_base: u8) -> [f64; 256] {
-    let mut table = [0.0f64; 256];
-    for (q, slot) in table.iter_mut().enumerate() {
-        let phred = (q as i16 - ascii_base as i16).max(0);
-        *slot = 10_f64.powf(-(phred as f64) / 10.0);
-    }
-    table
-}
-
-/// Reads one line into buf without the trailing newline. Returns false at EOF.
-fn next_line<R: BufRead>(reader: &mut R, buf: &mut Vec<u8>) -> bool {
-    buf.clear();
-    let n = reader.read_until(b'\n', buf).expect("Could not read line");
-    if n == 0 {
-        return false;
-    }
-    if buf.last() == Some(&b'\n') {
-        buf.pop();
-    }
-    if buf.last() == Some(&b'\r') {
-        buf.pop();
-    }
-    true
-}
-
-fn prob_to_phred(sum: f64, n: u64) -> f64 {
-    if n == 0 {
-        return 0.0;
-    }
-    -10.0 * (sum / n as f64).log10()
-}
-
 fn each_read_metrics(filename: &str) {
-    let table = prob_table(33);
-    let stdout = std::io::stdout();
-    let mut out = BufWriter::new(stdout.lock());
-    writeln!(out, "readID\treadLength\tavgQual").unwrap();
+    println!("readID\treadLength\tavgQual");
+    
+    let mut num_lines   :u64      = 0;
 
+    // read the file
     let my_file = File::open(&filename).expect("Could not open file");
-    let mut reader = BufReader::with_capacity(BUF_CAPACITY, my_file);
-    let mut buf: Vec<u8> = Vec::new();
-    let mut id: Vec<u8> = Vec::new();
-    let mut length: usize = 0;
-    let mut num_lines: u64 = 0;
+    let my_buffer=BufReader::new(my_file);
+    for line in my_buffer.lines() {
+        num_lines+=1;
+        let mod_line = num_lines % 4;
 
-    while next_line(&mut reader, &mut buf) {
-        num_lines += 1;
-        match num_lines % 4 {
+        match mod_line {
             1 => {
-                id.clear();
-                if !buf.is_empty() {
-                    id.extend_from_slice(&buf[1..]);
-                }
+                let id = line.expect("Expected an ID line");
+                // remove the @
+                print!("{}\t",&id[1..]);
             }
-            2 => length = buf.len(),
+            2 => {
+                let my_read_length=line.expect("Expected a sequence line").len() as f64;
+                print!("{}\t",my_read_length);
+            }
             0 => {
-                let sum: f64 = buf.iter().map(|&q| table[q as usize]).sum();
-                out.write_all(&id).unwrap();
-                writeln!(out, "\t{}\t{:.2}", length as f64, prob_to_phred(sum, buf.len() as u64)).unwrap();
+                let qual_line=line.expect("Expected a qual line");
+                
+                let my_qual_vec: Vec<u8> = qual_line.into_bytes();
+                let my_avg_qual = avg_qual(&my_qual_vec, 33);
+                println!("{:.2}",my_avg_qual);
             }
-            _ => {}
-        }
+            _ => {
+
+            }
+        };
     }
+
 }
 
 fn summary_metrics(filename: &str) {
     println!("totalReadLength\tnumReads\tavgReadLength\tavgQual");
+    
+    let mut read_length :Vec<f64> = vec![];
+    let mut read_qual   :Vec<u8>  = vec![];
+    let mut num_lines   :u64   =0;
 
-    let table = prob_table(33);
-    let mut total_length: u64 = 0;
-    let mut total_qual_len: u64 = 0;
-    let mut prob_sum: f64 = 0.0;
-    let mut num_lines: u64 = 0;
-
+    // read the file
     let my_file = File::open(&filename).expect("Could not open file");
-    let mut reader = BufReader::with_capacity(BUF_CAPACITY, my_file);
-    let mut buf: Vec<u8> = Vec::new();
+    let my_buffer=BufReader::new(my_file);
+    for line in my_buffer.lines() {
+        num_lines+=1;
+        let mod_line = num_lines % 4;
 
-    while next_line(&mut reader, &mut buf) {
-        num_lines += 1;
-        match num_lines % 4 {
-            2 => total_length += buf.len() as u64,
-            0 => {
-                prob_sum += buf.iter().map(|&q| table[q as usize]).sum::<f64>();
-                total_qual_len += buf.len() as u64;
+        match mod_line {
+            2 => {
+                let my_read_length=line.expect("Expected a sequence line").len() as f64;
+                read_length.push(my_read_length);
             }
-            _ => {}
-        }
-    }
-    let num_reads: u64 = num_lines / 4;
+            0 => {
+                let qual_line=line.expect("Expected a qual line");
+                
+                let my_qual_vec: Vec<u8> = qual_line.into_bytes();
+                read_qual.extend(my_qual_vec.into_iter());
+            }
+            _ => {
 
-    let summary = vec![
-        (total_length as f64).to_string(),
-        num_reads.to_string(),
-        (total_length as f64 / num_reads as f64).to_string(),
-        format!("{:.2}", prob_to_phred(prob_sum, total_qual_len)),
-    ];
-    println!("{}", summary.join("\t"));
+            }
+        };
+    }
+    let num_reads :u64 = num_lines / 4;
+    let total_length = read_length.iter().fold(0.0,|a,&b| a+b);
+
+    let mut summary_metrics=vec![total_length.to_string(),num_reads.to_string()];
+
+    let total_length_str = (total_length as f64/num_reads as f64).to_string();
+    let total_qual_str = format!("{:.2}", avg_qual(&read_qual, 33));
+
+    summary_metrics.push(total_length_str);
+    summary_metrics.push(total_qual_str.to_string());
+
+    // summary metrics
+    println!("{}", summary_metrics.join("\t"));
+}
+
+/// Calculates average quality value from a vector of quality bytes
+fn avg_qual(qual: &[u8], ascii_base: u8) -> f64 {
+    if qual.is_empty() {
+        return 0.0;
+    }
+    
+    // Precompute Phred => probability (P = 10^(-Q/10)) once per call
+    // instead of calling powf for every base
+    let mut prob = [0.0f64; 256];
+    for q in ascii_base as usize..256 {
+        prob[q] = 10_f64.powf(-((q - ascii_base as usize) as f64) / 10.0);
+    }
+
+    let sum: f64 = qual.iter().map(|&q| prob[q as usize]).sum();
+    let avg_prob = sum / qual.len() as f64;
+    
+    // Convert average probability back to Phred score
+    -10.0 * avg_prob.log10()
 }
 
 #[cfg(test)]
@@ -169,27 +166,17 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_avg_qual_uniform() {
+    fn test_avg_qual() {
         // 'I' is Phred 40; a uniform quality string averages to itself
-        let table = prob_table(33);
-        let qual = b"IIIIIIIIIIII";
-        let sum: f64 = qual.iter().map(|&q| table[q as usize]).sum();
-        let avg = prob_to_phred(sum, qual.len() as u64);
-        assert!((avg - 40.0).abs() < 1e-9, "got {}", avg);
-    }
+        let easy_qual = "IIIIIIIIIIII";
+        let obs = avg_qual(easy_qual.as_bytes(), 33);
+        assert!((obs - 40.0).abs() < 1e-9, "Tried to calculate average quality for {}", easy_qual);
 
-    #[test]
-    fn test_avg_qual_four_reads_first() {
-        // first read in testdata/four_reads.fastq
-        let qual = b"8AB*2D>C1'02C+=I@IEFHC7&-E5',I?E*33E/@3#68B%\"!B-/2%(G=*@D052IA!('7-*$+A6>.$89,-CG71=AGAE3&&#=2B.+I<E";
-        let table = prob_table(33);
-        let sum: f64 = qual.iter().map(|&q| table[q as usize]).sum();
-        let avg = prob_to_phred(sum, qual.len() as u64);
-        assert!(avg > 0.0 && avg < 40.0, "got {}", avg);
-    }
+        // first read in four_reads.fastq
+        let hard_qual = "8AB*2D>C1'02C+=I@IEFHC7&-E5',I?E*33E/@3#68B%\"!B-/2%(G=*@D052IA!('7-*$+A6>.$89,-CG71=AGAE3&&#=2B.+I<E";
+        let hard = avg_qual(hard_qual.as_bytes(), 33);
+        assert!(hard > 0.0 && hard < 40.0, "got {}", hard);
 
-    #[test]
-    fn test_empty() {
-        assert_eq!(prob_to_phred(0.0, 0), 0.0);
+        assert_eq!(avg_qual(b"", 33), 0.0);
     }
 }
