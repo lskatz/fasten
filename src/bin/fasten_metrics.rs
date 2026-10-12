@@ -149,9 +149,11 @@ fn avg_qual(qual: &[u8], ascii_base: u8) -> f64 {
     
     // Precompute Phred => probability (P = 10^(-Q/10)) once per call
     // instead of calling powf for every base
-    let mut prob = [0.0f64; 256];
-    for q in ascii_base as usize..256 {
-        prob[q] = 10_f64.powf(-((q - ascii_base as usize) as f64) / 10.0);
+    let ten: f64 = 10.0;
+    let mut prob: [f64; 256] = [0.0; 256];
+    for byte_value in (ascii_base as usize)..256 {
+        let phred: f64 = (byte_value - ascii_base as usize) as f64;
+        prob[byte_value] = ten.powf(-phred / 10.0);
     }
 
     let sum: f64 = qual.iter().map(|&q| prob[q as usize]).sum();

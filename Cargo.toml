@@ -117,6 +117,11 @@ fastq        = "0.6"
 threadpool   = "1.8.1"
 bam          = "0.1.4"
 
+# Settings used only by `cargo build --release` (the optimized build).
+# opt-level = 3: the highest speed optimization.
+# lto = "fat": optimize across all crates at link time, for faster code.
+# codegen-units = 1: compile in one piece so the compiler can optimize more,
+#   at the cost of slower compile times.
 [profile.release]
 opt-level = 3
 lto = "fat"
